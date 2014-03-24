@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Radio Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="devices.html" title="Chapter&#160;4.&#160;Interfaces" /><link rel="prev" href="ttx.html" title="Teletext Interface" /><link rel="next" href="rds.html" title="RDS Interface" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Radio Interface</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ttx.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;4.&#160;Interfaces</th><td width="20%" align="right">&#160;<a accesskey="n" href="rds.html">Next</a></td></tr></table><hr /></div><div class="section" title="Radio Interface"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="radio"></a>Radio Interface</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="radio.html#idp27477792">Querying Capabilities</a></span></dt><dt><span class="section"><a href="radio.html#idp27492896">Supplemental Functions</a></span></dt><dt><span class="section"><a href="radio.html#idp27494824">Programming</a></span></dt></dl></div><p>This interface is intended for AM and FM (analog) radio
+receivers and transmitters.</p><p>Conventionally V4L2 radio devices are accessed through
+character device special files named <code class="filename">/dev/radio</code>
+and <code class="filename">/dev/radio0</code> to
+<code class="filename">/dev/radio63</code> with major number 81 and minor
+numbers 64 to 127.</p><div class="section" title="Querying Capabilities"><div class="titlepage"><div><div><h3 class="title"><a id="idp27477792"></a>Querying Capabilities</h3></div></div></div><p>Devices supporting the radio interface set the
+<code class="constant">V4L2_CAP_RADIO</code> and
+<code class="constant">V4L2_CAP_TUNER</code> or
+<code class="constant">V4L2_CAP_MODULATOR</code> flag in the
+<em class="structfield"><code>capabilities</code></em> field of struct&#160;<a class="link" href="vidioc-querycap.html#v4l2-capability" title="Table&#160;A.88.&#160;struct v4l2_capability">v4l2_capability</a>
+returned by the <a class="link" href="vidioc-querycap.html" title="ioctl VIDIOC_QUERYCAP"><code class="constant">VIDIOC_QUERYCAP</code></a> ioctl. Other combinations of
+capability flags are reserved for future extensions.</p></div><div class="section" title="Supplemental Functions"><div class="titlepage"><div><div><h3 class="title"><a id="idp27492896"></a>Supplemental Functions</h3></div></div></div><p>Radio devices can support <a class="link" href="control.html" title="User Controls">controls</a>, and must support the <a class="link" href="tuner.html" title="Tuners and Modulators">tuner or modulator</a> ioctls.</p><p>They do not support the video input or output, audio input
+or output, video standard, cropping and scaling, compression and
+streaming parameter, or overlay ioctls. All other ioctls and I/O
+methods are reserved for future extensions.</p></div><div class="section" title="Programming"><div class="titlepage"><div><div><h3 class="title"><a id="idp27494824"></a>Programming</h3></div></div></div><p>Radio devices may have a couple audio controls (as discussed
+in <a class="xref" href="control.html" title="User Controls">the section called &#8220;User Controls&#8221;</a>) such as a volume control, possibly custom
+controls. Further all radio devices have one tuner or modulator (these are
+discussed in <a class="xref" href="tuner.html" title="Tuners and Modulators">the section called &#8220;Tuners and Modulators&#8221;</a>) with index number zero to select
+the radio frequency and to determine if a monaural or FM stereo
+program is received/emitted. Drivers switch automatically between AM and FM
+depending on the selected frequency. The <a class="link" href="vidioc-g-tuner.html" title="ioctl VIDIOC_G_TUNER, VIDIOC_S_TUNER"><code class="constant">VIDIOC_G_TUNER</code></a> or
+<a class="link" href="vidioc-g-modulator.html" title="ioctl VIDIOC_G_MODULATOR, VIDIOC_S_MODULATOR"><code class="constant">VIDIOC_G_MODULATOR</code></a> ioctl
+reports the supported frequency range.</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ttx.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="devices.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="rds.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Teletext Interface&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;RDS Interface</td></tr></table></div></body></html>

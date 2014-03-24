@@ -1,0 +1,21 @@
+devu-uvc - USB Video Class diver for QNX 6.5/6.6 and above.
+
+    The driver very precisely emulates V4L2 Linux kernel API (V4L2 core) and
+uvcvideo API for controlling extension units functionality. Therefore driver
+is not rely on Linux kernel code, except for headers. This is not a fork, but
+standalone UVC implementation. V4L2 API was choosen because it is de facto
+standard for video capturing for even non-Linux operation systems, like
+OpenBSD, NetBSD, FreeBSD, and now QNX.
+    Due to non-monolithic kernel restrictions, driver implements only MMAP
+buffers handling and generic read/write access through the accessing file
+descriptor. Other types of buffer access (USERPTR and DMABUF) can't be
+implemented on QNX 6.x.
+    This implementation goes far beyond comparing to the Linux uvcvideo driver
+and supports more controls and UVC variety of devices, for example, UVC analog
+video grabbers, audio inputs, etc. All features are tighted strongly with V4L2
+API.
+
+TODO: Note about sysfs.
+TODO: Note about media.
+TODO: Note about raw control read.
+TODO: Note about QNX extensions of buffer handling.

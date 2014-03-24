@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Frontend Function Calls</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_frontend.html" title="Chapter&#160;9.&#160;DVB Frontend API" /><link rel="prev" href="dvb_frontend.html" title="Chapter&#160;9.&#160;DVB Frontend API" /><link rel="next" href="FE_GET_SET_PROPERTY.html" title="FE_GET_PROPERTY/FE_SET_PROPERTY" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Frontend Function Calls</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="dvb_frontend.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;9.&#160;DVB Frontend API</th><td width="20%" align="right">&#160;<a accesskey="n" href="FE_GET_SET_PROPERTY.html">Next</a></td></tr></table><hr /></div><div class="section" title="Frontend Function Calls"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="frontend_fcalls"></a>Frontend Function Calls</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="frontend_fcalls.html#frontend_f_open">open()</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#frontend_f_close">close()</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_READ_STATUS">FE_READ_STATUS</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_READ_BER">FE_READ_BER</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_READ_SNR">FE_READ_SNR</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_READ_SIGNAL_STRENGTH">FE_READ_SIGNAL_STRENGTH</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_READ_UNCORRECTED_BLOCKS">FE_READ_UNCORRECTED_BLOCKS</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_SET_FRONTEND">FE_SET_FRONTEND</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_GET_FRONTEND">FE_GET_FRONTEND</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_GET_EVENT">FE_GET_EVENT</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_GET_INFO">FE_GET_INFO</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_DISEQC_RESET_OVERLOAD">FE_DISEQC_RESET_OVERLOAD</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_DISEQC_SEND_MASTER_CMD">FE_DISEQC_SEND_MASTER_CMD</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_DISEQC_RECV_SLAVE_REPLY">FE_DISEQC_RECV_SLAVE_REPLY</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_DISEQC_SEND_BURST">FE_DISEQC_SEND_BURST</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_SET_TONE">FE_SET_TONE</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_SET_VOLTAGE">FE_SET_VOLTAGE</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_ENABLE_HIGH_LNB_VOLTAGE">FE_ENABLE_HIGH_LNB_VOLTAGE</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_SET_FRONTEND_TUNE_MODE">FE_SET_FRONTEND_TUNE_MODE</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_DISHNETWORK_SEND_LEGACY_CMD">FE_DISHNETWORK_SEND_LEGACY_CMD</a></span></dt></dl></div><div class="section" title="open()"><div class="titlepage"><div><div><h3 class="title"><a id="frontend_f_open"></a>open()</h3></div></div></div><p>DESCRIPTION</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call opens a named frontend device (/dev/dvb/adapter0/frontend0)
+ for subsequent use. Usually the first thing to do after a successful open is to
+ find out the frontend type with <a class="link" href="frontend_fcalls.html#FE_GET_INFO" title="FE_GET_INFO">FE_GET_INFO</a>.</p>
+<p>The device can be opened in read-only mode, which only allows monitoring of
+ device status and statistics, or read/write mode, which allows any kind of use
+ (e.g. performing tuning operations.)
+</p>
+<p>In a system with multiple front-ends, it is usually the case that multiple devices
+ cannot be open in read/write mode simultaneously. As long as a front-end
+ device is opened in read/write mode, other open() calls in read/write mode will
+ either fail or block, depending on whether non-blocking or blocking mode was
+ specified. A front-end device opened in blocking mode can later be put into
+ non-blocking mode (and vice versa) using the F_SETFL command of the fcntl
+ system call. This is a standard system call, documented in the Linux manual
+ page for fcntl. When an open() call has succeeded, the device will be ready
+ for use in the specified mode. This implies that the corresponding hardware is
+ powered up, and that other front-ends may have been powered down to make
+ that possible.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int open(const char &#8902;deviceName, int flags);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>const char
+ *deviceName</p>
+</td><td align="char">
+<p>Name of specific video device.</p>
+</td></tr><tr><td align="char">
+<p>int flags</p>
+</td><td align="char">
+<p>A bit-wise OR of the following flags:</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_RDONLY read-only access</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_RDWR read/write access</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_NONBLOCK open in non-blocking mode</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>(blocking mode is the default)</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>ENODEV</p>
+</td><td align="char">
+<p>Device driver not loaded/available.</p>
+</td></tr><tr><td align="char">
+<p>EINTERNAL</p>
+</td><td align="char">
+<p>Internal error.</p>
+</td></tr><tr><td align="char">
+<p>EBUSY</p>
+</td><td align="char">
+<p>Device or resource busy.</p>
+</td></tr><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>Invalid argument.</p>
+</td></tr></tbody></table></div></div><div class="section" title="close()"><div class="titlepage"><div><div><h3 class="title"><a id="frontend_f_close"></a>close()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call closes a previously opened front-end device. After closing
+ a front-end device, its corresponding hardware might be powered down
+ automatically.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int close(int fd);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EBADF</p>
+</td><td align="char">
+<p>fd is not a valid open file descriptor.</p>
+</td></tr></tbody></table></div></div><div class="section" title="FE_READ_STATUS"><div class="titlepage"><div><div><h3 class="title"><a id="FE_READ_STATUS"></a>FE_READ_STATUS</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call returns status information about the front-end. This call only
+ requires read-only access to the device.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = <a class="link" href="frontend_fcalls.html#FE_READ_STATUS" title="FE_READ_STATUS">FE_READ_STATUS</a>,
+ fe_status_t &#8902;status);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_READ_STATUS" title="FE_READ_STATUS">FE_READ_STATUS</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>struct fe_status_t
+ *status</p>
+</td><td align="char">
+<p>Points to the location where the front-end status word is
+ to be stored.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EBADF</p>
+</td><td align="char">
+<p>fd is not a valid open file descriptor.</p>
+</td></tr><tr><td align="char">
+<p>EFAULT</p>
+</td><td align="char">
+<p>status points to invalid address.</p>
+</td></tr></tbody></table></div></div><div class="section" title="FE_READ_BER"><div class="titlepage"><div><div><h3 class="title"><a id="FE_READ_BER"></a>FE_READ_BER</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call returns the bit error rate for the signal currently
+ received/demodulated by the front-end. For this command, read-only access to
+ the device is sufficient.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = <a class="link" href="frontend_fcalls.html#FE_READ_BER" title="FE_READ_BER">FE_READ_BER</a>,
+ uint32_t &#8902;ber);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_READ_BER" title="FE_READ_BER">FE_READ_BER</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>uint32_t *ber</p>
+</td><td align="char">
+<p>The bit error rate is stored into *ber.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_READ_SNR"><div class="titlepage"><div><div><h3 class="title"><a id="FE_READ_SNR"></a>FE_READ_SNR</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call returns the signal-to-noise ratio for the signal currently received
+ by the front-end. For this command, read-only access to the device is sufficient.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = <a class="link" href="frontend_fcalls.html#FE_READ_SNR" title="FE_READ_SNR">FE_READ_SNR</a>, int16_t
+ &#8902;snr);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_READ_SNR" title="FE_READ_SNR">FE_READ_SNR</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>int16_t *snr</p>
+</td><td align="char">
+<p>The signal-to-noise ratio is stored into *snr.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_READ_SIGNAL_STRENGTH"><div class="titlepage"><div><div><h3 class="title"><a id="FE_READ_SIGNAL_STRENGTH"></a>FE_READ_SIGNAL_STRENGTH</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call returns the signal strength value for the signal currently received
+ by the front-end. For this command, read-only access to the device is sufficient.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl( int fd, int request =
+ <a class="link" href="frontend_fcalls.html#FE_READ_SIGNAL_STRENGTH" title="FE_READ_SIGNAL_STRENGTH">FE_READ_SIGNAL_STRENGTH</a>, int16_t &#8902;strength);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_READ_SIGNAL_STRENGTH" title="FE_READ_SIGNAL_STRENGTH">FE_READ_SIGNAL_STRENGTH</a> for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>int16_t *strength</p>
+</td><td align="char">
+<p>The signal strength value is stored into *strength.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_READ_UNCORRECTED_BLOCKS"><div class="titlepage"><div><div><h3 class="title"><a id="FE_READ_UNCORRECTED_BLOCKS"></a>FE_READ_UNCORRECTED_BLOCKS</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call returns the number of uncorrected blocks detected by the device
+ driver during its lifetime. For meaningful measurements, the increment in block
+ count during a specific time interval should be calculated. For this command,
+ read-only access to the device is sufficient.</p>
+</td></tr><tr><td align="char">
+<p>Note that the counter will wrap to zero after its maximum count has been
+ reached.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl( int fd, int request =
+ <a class="link" href="frontend_fcalls.html#FE_READ_UNCORRECTED_BLOCKS" title="FE_READ_UNCORRECTED_BLOCKS">FE_READ_UNCORRECTED_BLOCKS</a>, uint32_t &#8902;ublocks);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_READ_UNCORRECTED_BLOCKS" title="FE_READ_UNCORRECTED_BLOCKS">FE_READ_UNCORRECTED_BLOCKS</a> for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>uint32_t *ublocks</p>
+</td><td align="char">
+<p>The total number of uncorrected blocks seen by the driver
+ so far.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_SET_FRONTEND"><div class="titlepage"><div><div><h3 class="title"><a id="FE_SET_FRONTEND"></a>FE_SET_FRONTEND</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call starts a tuning operation using specified parameters. The result
+ of this call will be successful if the parameters were valid and the tuning could
+ be initiated. The result of the tuning operation in itself, however, will arrive
+ asynchronously as an event (see documentation for <a class="link" href="frontend_fcalls.html#FE_GET_EVENT" title="FE_GET_EVENT">FE_GET_EVENT</a> and
+ FrontendEvent.) If a new <a class="link" href="frontend_fcalls.html#FE_SET_FRONTEND" title="FE_SET_FRONTEND">FE_SET_FRONTEND</a> operation is initiated before
+ the previous one was completed, the previous operation will be aborted in favor
+ of the new one. This command requires read/write access to the device.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = <a class="link" href="frontend_fcalls.html#FE_SET_FRONTEND" title="FE_SET_FRONTEND">FE_SET_FRONTEND</a>,
+ struct dvb_frontend_parameters &#8902;p);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_SET_FRONTEND" title="FE_SET_FRONTEND">FE_SET_FRONTEND</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>struct
+ dvb_frontend_parameters
+ *p</p>
+</td><td align="char">
+<p>Points to parameters for tuning operation.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>Maximum supported symbol rate reached.</p>
+</td></tr></tbody></table></div></div><div class="section" title="FE_GET_FRONTEND"><div class="titlepage"><div><div><h3 class="title"><a id="FE_GET_FRONTEND"></a>FE_GET_FRONTEND</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call queries the currently effective frontend parameters. For this
+ command, read-only access to the device is sufficient.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = <a class="link" href="frontend_fcalls.html#FE_GET_FRONTEND" title="FE_GET_FRONTEND">FE_GET_FRONTEND</a>,
+ struct dvb_frontend_parameters &#8902;p);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_SET_FRONTEND" title="FE_SET_FRONTEND">FE_SET_FRONTEND</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>struct
+ dvb_frontend_parameters
+ *p</p>
+</td><td align="char">
+<p>Points to parameters for tuning operation.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>Maximum supported symbol rate reached.</p>
+</td></tr></tbody></table></div></div><div class="section" title="FE_GET_EVENT"><div class="titlepage"><div><div><h3 class="title"><a id="FE_GET_EVENT"></a>FE_GET_EVENT</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call returns a frontend event if available. If an event is not
+ available, the behavior depends on whether the device is in blocking or
+ non-blocking mode. In the latter case, the call fails immediately with errno
+ set to EWOULDBLOCK. In the former case, the call blocks until an event
+ becomes available.</p>
+</td></tr><tr><td align="char">
+<p>The standard Linux poll() and/or select() system calls can be used with the
+ device file descriptor to watch for new events. For select(), the file descriptor
+ should be included in the exceptfds argument, and for poll(), POLLPRI should
+ be specified as the wake-up condition. Since the event queue allocated is
+ rather small (room for 8 events), the queue must be serviced regularly to avoid
+ overflow. If an overflow happens, the oldest event is discarded from the queue,
+ and an error (EOVERFLOW) occurs the next time the queue is read. After
+ reporting the error condition in this fashion, subsequent
+ <a class="link" href="frontend_fcalls.html#FE_GET_EVENT" title="FE_GET_EVENT">FE_GET_EVENT</a>
+ calls will return events from the queue as usual.</p>
+</td></tr><tr><td align="char">
+<p>For the sake of implementation simplicity, this command requires read/write
+ access to the device.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = QPSK_GET_EVENT,
+ struct dvb_frontend_event &#8902;ev);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_GET_EVENT" title="FE_GET_EVENT">FE_GET_EVENT</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>struct
+ dvb_frontend_event
+ *ev</p>
+</td><td align="char">
+<p>Points to the location where the event,</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>if any, is to be stored.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EWOULDBLOCK</p>
+</td><td align="char">
+<p>There is no event pending, and the device is in
+ non-blocking mode.</p>
+</td></tr><tr><td align="char">
+<p>EOVERFLOW</p>
+</td><td align="char">
+<p>Overflow in event queue - one or more events were lost.</p>
+</td></tr></tbody></table></div></div><div class="section" title="FE_GET_INFO"><div class="titlepage"><div><div><h3 class="title"><a id="FE_GET_INFO"></a>FE_GET_INFO</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call returns information about the front-end. This call only requires
+ read-only access to the device.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p> int ioctl(int fd, int request = <a class="link" href="frontend_fcalls.html#FE_GET_INFO" title="FE_GET_INFO">FE_GET_INFO</a>, struct
+ dvb_frontend_info &#8902;info);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_GET_INFO" title="FE_GET_INFO">FE_GET_INFO</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>struct
+ dvb_frontend_info
+ *info</p>
+</td><td align="char">
+<p>Points to the location where the front-end information is
+ to be stored.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_DISEQC_RESET_OVERLOAD"><div class="titlepage"><div><div><h3 class="title"><a id="FE_DISEQC_RESET_OVERLOAD"></a>FE_DISEQC_RESET_OVERLOAD</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>If the bus has been automatically powered off due to power overload, this ioctl
+ call restores the power to the bus. The call requires read/write access to the
+ device. This call has no effect if the device is manually powered off. Not all
+ DVB adapters support this ioctl.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+ <a class="link" href="frontend_fcalls.html#FE_DISEQC_RESET_OVERLOAD" title="FE_DISEQC_RESET_OVERLOAD">FE_DISEQC_RESET_OVERLOAD</a>);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_DISEQC_RESET_OVERLOAD" title="FE_DISEQC_RESET_OVERLOAD">FE_DISEQC_RESET_OVERLOAD</a> for this
+ command.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_DISEQC_SEND_MASTER_CMD"><div class="titlepage"><div><div><h3 class="title"><a id="FE_DISEQC_SEND_MASTER_CMD"></a>FE_DISEQC_SEND_MASTER_CMD</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call is used to send a a DiSEqC command.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+ <a class="link" href="frontend_fcalls.html#FE_DISEQC_SEND_MASTER_CMD" title="FE_DISEQC_SEND_MASTER_CMD">FE_DISEQC_SEND_MASTER_CMD</a>, struct
+ dvb_diseqc_master_cmd &#8902;cmd);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_DISEQC_SEND_MASTER_CMD" title="FE_DISEQC_SEND_MASTER_CMD">FE_DISEQC_SEND_MASTER_CMD</a> for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>struct
+ dvb_diseqc_master_cmd
+ *cmd</p>
+</td><td align="char">
+<p>Pointer to the command to be transmitted.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_DISEQC_RECV_SLAVE_REPLY"><div class="titlepage"><div><div><h3 class="title"><a id="FE_DISEQC_RECV_SLAVE_REPLY"></a>FE_DISEQC_RECV_SLAVE_REPLY</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call is used to receive reply to a DiSEqC 2.0 command.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+ <a class="link" href="frontend_fcalls.html#FE_DISEQC_RECV_SLAVE_REPLY" title="FE_DISEQC_RECV_SLAVE_REPLY">FE_DISEQC_RECV_SLAVE_REPLY</a>, struct
+ dvb_diseqc_slave_reply &#8902;reply);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_DISEQC_RECV_SLAVE_REPLY" title="FE_DISEQC_RECV_SLAVE_REPLY">FE_DISEQC_RECV_SLAVE_REPLY</a> for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>struct
+ dvb_diseqc_slave_reply
+ *reply</p>
+</td><td align="char">
+<p>Pointer to the command to be received.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_DISEQC_SEND_BURST"><div class="titlepage"><div><div><h3 class="title"><a id="FE_DISEQC_SEND_BURST"></a>FE_DISEQC_SEND_BURST</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call is used to send a 22KHz tone burst.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+ <a class="link" href="frontend_fcalls.html#FE_DISEQC_SEND_BURST" title="FE_DISEQC_SEND_BURST">FE_DISEQC_SEND_BURST</a>, fe_sec_mini_cmd_t burst);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_DISEQC_SEND_BURST" title="FE_DISEQC_SEND_BURST">FE_DISEQC_SEND_BURST</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>fe_sec_mini_cmd_t
+ burst</p>
+</td><td align="char">
+<p>burst A or B.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_SET_TONE"><div class="titlepage"><div><div><h3 class="title"><a id="FE_SET_TONE"></a>FE_SET_TONE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This call is used to set the generation of the continuous 22kHz tone. This call
+ requires read/write permissions.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = <a class="link" href="frontend_fcalls.html#FE_SET_TONE" title="FE_SET_TONE">FE_SET_TONE</a>,
+ fe_sec_tone_mode_t tone);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_SET_TONE" title="FE_SET_TONE">FE_SET_TONE</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>fe_sec_tone_mode_t
+ tone</p>
+</td><td align="char">
+<p>The requested tone generation mode (on/off).</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_SET_VOLTAGE"><div class="titlepage"><div><div><h3 class="title"><a id="FE_SET_VOLTAGE"></a>FE_SET_VOLTAGE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This call is used to set the bus voltage. This call requires read/write
+ permissions.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = <a class="link" href="frontend_fcalls.html#FE_SET_VOLTAGE" title="FE_SET_VOLTAGE">FE_SET_VOLTAGE</a>,
+ fe_sec_voltage_t voltage);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_SET_VOLTAGE" title="FE_SET_VOLTAGE">FE_SET_VOLTAGE</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>fe_sec_voltage_t
+ voltage</p>
+</td><td align="char">
+<p>The requested bus voltage.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_ENABLE_HIGH_LNB_VOLTAGE"><div class="titlepage"><div><div><h3 class="title"><a id="FE_ENABLE_HIGH_LNB_VOLTAGE"></a>FE_ENABLE_HIGH_LNB_VOLTAGE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>If high != 0 enables slightly higher voltages instead of 13/18V (to compensate
+ for long cables). This call requires read/write permissions. Not all DVB
+ adapters support this ioctl.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+ <a class="link" href="frontend_fcalls.html#FE_ENABLE_HIGH_LNB_VOLTAGE" title="FE_ENABLE_HIGH_LNB_VOLTAGE">FE_ENABLE_HIGH_LNB_VOLTAGE</a>, int high);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals <a class="link" href="frontend_fcalls.html#FE_SET_VOLTAGE" title="FE_SET_VOLTAGE">FE_SET_VOLTAGE</a> for this command.</p>
+</td></tr><tr><td align="char">
+<p>int high</p>
+</td><td align="char">
+<p>The requested bus voltage.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_SET_FRONTEND_TUNE_MODE"><div class="titlepage"><div><div><h3 class="title"><a id="FE_SET_FRONTEND_TUNE_MODE"></a>FE_SET_FRONTEND_TUNE_MODE</h3></div></div></div><p>DESCRIPTION</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>Allow setting tuner mode flags to the frontend.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+<a class="link" href="frontend_fcalls.html#FE_SET_FRONTEND_TUNE_MODE" title="FE_SET_FRONTEND_TUNE_MODE">FE_SET_FRONTEND_TUNE_MODE</a>, unsigned int flags);</p>
+</td></tr></tbody></table></div><p>PARAMETERS</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+	<p>unsigned int flags</p>
+</td><td align="char">
+<p>
+FE_TUNE_MODE_ONESHOT When set, this flag will disable any zigzagging or other "normal" tuning behaviour. Additionally, there will be no automatic monitoring of the lock status, and hence no frontend events will be generated. If a frontend device is closed, this flag will be automatically turned off when the device is reopened read-write.
+</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="FE_DISHNETWORK_SEND_LEGACY_CMD"><div class="titlepage"><div><div><h3 class="title"><a id="FE_DISHNETWORK_SEND_LEGACY_CMD"></a>FE_DISHNETWORK_SEND_LEGACY_CMD</h3></div></div></div><p>DESCRIPTION</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>WARNING: This is a very obscure legacy command, used only at stv0299 driver. Should not be used on newer drivers.</p>
+<p>It provides a non-standard method for selecting Diseqc voltage on the frontend, for Dish Network legacy switches.</p>
+<p>As support for this ioctl were added in 2004, this means that such dishes were already legacy in 2004.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+	<a class="link" href="frontend_fcalls.html#FE_DISHNETWORK_SEND_LEGACY_CMD" title="FE_DISHNETWORK_SEND_LEGACY_CMD">FE_DISHNETWORK_SEND_LEGACY_CMD</a>, unsigned long cmd);</p>
+</td></tr></tbody></table></div><p>PARAMETERS</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+	<p>unsigned long cmd</p>
+</td><td align="char">
+<p>
+sends the specified raw cmd to the dish via DISEqC.
+</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dvb_frontend.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_frontend.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="FE_GET_SET_PROPERTY.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&#160;9.&#160;DVB Frontend API&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;<code class="constant">FE_GET_PROPERTY/FE_SET_PROPERTY</code></td></tr></table></div></body></html>

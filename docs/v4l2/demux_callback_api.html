@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Demux Callback API</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_kdapi.html" title="Chapter&#160;15.&#160;Kernel Demux API" /><link rel="prev" href="demux_api.html" title="Demux API" /><link rel="next" href="ts_feed_api.html" title="TS Feed API" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Demux Callback API</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="demux_api.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;15.&#160;Kernel Demux API</th><td width="20%" align="right">&#160;<a accesskey="n" href="ts_feed_api.html">Next</a></td></tr></table><hr /></div><div class="section" title="Demux Callback API"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="demux_callback_api"></a>Demux Callback API</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="demux_callback_api.html#idp49751744">dmx_ts_cb()</a></span></dt><dt><span class="section"><a href="demux_callback_api.html#idp49772272">dmx_section_cb()</a></span></dt></dl></div><p>This kernel-space API comprises the callback functions that deliver filtered data to the
+demux client. Unlike the other APIs, these API functions are provided by the client and called
+from the demux code.
+</p><p>The function pointers of this abstract interface are not packed into a structure as in the
+other demux APIs, because the callback functions are registered and used independent
+of each other. As an example, it is possible for the API client to provide several
+callback functions for receiving TS packets and no callbacks for PES packets or
+sections.
+</p><p>The functions that implement the callback API need not be re-entrant: when a demux
+driver calls one of these functions, the driver is not allowed to call the function again before
+the original call returns. If a callback is triggered by a hardware interrupt, it is recommended
+to use the Linux &#8220;bottom half&#8221; mechanism or start a tasklet instead of making the callback
+function call directly from a hardware interrupt.
+</p><div class="section" title="dmx_ts_cb()"><div class="titlepage"><div><div><h3 class="title"><a id="idp49751744"></a>dmx_ts_cb()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This function, provided by the client of the demux API, is called from the
+ demux code. The function is only called when filtering on this TS feed has
+ been enabled using the start_filtering() function.</p>
+</td></tr><tr><td align="char">
+<p>Any TS packets that match the filter settings are copied to a circular buffer. The
+ filtered TS packets are delivered to the client using this callback function. The
+ size of the circular buffer is controlled by the circular_buffer_size parameter
+ of the set() function in the TS Feed API. It is expected that the buffer1 and
+ buffer2 callback parameters point to addresses within the circular buffer, but
+ other implementations are also possible. Note that the called party should not
+ try to free the memory the buffer1 and buffer2 parameters point to.</p>
+</td></tr><tr><td align="char">
+<p>When this function is called, the buffer1 parameter typically points to the
+ start of the first undelivered TS packet within a circular buffer. The buffer2
+ buffer parameter is normally NULL, except when the received TS packets have
+ crossed the last address of the circular buffer and &#8221;wrapped&#8221; to the beginning
+ of the buffer. In the latter case the buffer1 parameter would contain an address
+ within the circular buffer, while the buffer2 parameter would contain the first
+ address of the circular buffer.</p>
+</td></tr><tr><td align="char">
+<p>The number of bytes delivered with this function (i.e. buffer1_length +
+ buffer2_length) is usually equal to the value of callback_length parameter
+ given in the set() function, with one exception: if a timeout occurs before
+ receiving callback_length bytes of TS data, any undelivered packets are
+ immediately delivered to the client by calling this function. The timeout
+ duration is controlled by the set() function in the TS Feed API.</p>
+</td></tr><tr><td align="char">
+<p>If a TS packet is received with errors that could not be fixed by the TS-level
+ forward error correction (FEC), the Transport_error_indicator flag of the TS
+ packet header should be set. The TS packet should not be discarded, as
+ the error can possibly be corrected by a higher layer protocol. If the called
+ party is slow in processing the callback, it is possible that the circular buffer
+ eventually fills up. If this happens, the demux driver should discard any TS
+ packets received while the buffer is full. The error should be indicated to the
+ client on the next callback by setting the success parameter to the value of
+ DMX_OVERRUN_ERROR.</p>
+</td></tr><tr><td align="char">
+<p>The type of data returned to the callback can be selected by the new
+ function int (*set_type) (struct dmx_ts_feed_s* feed, int type, dmx_ts_pes_t
+ pes_type) which is part of the dmx_ts_feed_s struct (also cf. to the
+ include file ost/demux.h) The type parameter decides if the raw TS packet
+ (TS_PACKET) or just the payload (TS_PACKET&#8212;TS_PAYLOAD_ONLY)
+ should be returned. If additionally the TS_DECODER bit is set the stream
+ will also be sent to the hardware MPEG decoder. In this case, the second
+ flag decides as what kind of data the stream should be interpreted. The
+ possible choices are one of DMX_TS_PES_AUDIO, DMX_TS_PES_VIDEO,
+ DMX_TS_PES_TELETEXT, DMX_TS_PES_SUBTITLE,
+ DMX_TS_PES_PCR, or DMX_TS_PES_OTHER.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int dmx_ts_cb(__u8&#8902; buffer1, size_t buffer1_length,
+ __u8&#8902; buffer2, size_t buffer2_length, dmx_ts_feed_t&#8902;
+ source, dmx_success_t success);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>__u8* buffer1</p>
+</td><td align="char">
+<p>Pointer to the start of the filtered TS packets.</p>
+</td></tr><tr><td align="char">
+<p>size_t buffer1_length</p>
+</td><td align="char">
+<p>Length of the TS data in buffer1.</p>
+</td></tr><tr><td align="char">
+<p>__u8* buffer2</p>
+</td><td align="char">
+<p>Pointer to the tail of the filtered TS packets, or NULL.</p>
+</td></tr><tr><td align="char">
+<p>size_t buffer2_length</p>
+</td><td align="char">
+<p>Length of the TS data in buffer2.</p>
+</td></tr><tr><td align="char">
+<p>dmx_ts_feed_t*
+ source</p>
+</td><td align="char">
+<p>Indicates which TS feed is the source of the callback.</p>
+</td></tr><tr><td align="char">
+<p>dmx_success_t
+ success</p>
+</td><td align="char">
+<p>Indicates if there was an error in TS reception.</p>
+</td></tr></tbody></table></div><p>RETURNS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>0</p>
+</td><td align="char">
+<p>Continue filtering.</p>
+</td></tr><tr><td align="char">
+<p>-1</p>
+</td><td align="char">
+<p>Stop filtering - has the same effect as a call to
+ stop_filtering() on the TS Feed API.</p>
+</td></tr></tbody></table></div></div><div class="section" title="dmx_section_cb()"><div class="titlepage"><div><div><h3 class="title"><a id="idp49772272"></a>dmx_section_cb()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This function, provided by the client of the demux API, is called from the
+ demux code. The function is only called when filtering of sections has been
+ enabled using the function start_filtering() of the section feed API. When the
+ demux driver has received a complete section that matches at least one section
+ filter, the client is notified via this callback function. Normally this function is
+ called for each received section; however, it is also possible to deliver multiple
+ sections with one callback, for example when the system load is high. If an
+ error occurs while receiving a section, this function should be called with
+ the corresponding error type set in the success field, whether or not there is
+ data to deliver. The Section Feed implementation should maintain a circular
+ buffer for received sections. However, this is not necessary if the Section Feed
+ API is implemented as a client of the TS Feed API, because the TS Feed
+ implementation then buffers the received data. The size of the circular buffer
+ can be configured using the set() function in the Section Feed API. If there
+ is no room in the circular buffer when a new section is received, the section
+ must be discarded. If this happens, the value of the success parameter should
+ be DMX_OVERRUN_ERROR on the next callback.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int dmx_section_cb(__u8&#8902; buffer1, size_t
+ buffer1_length, __u8&#8902; buffer2, size_t
+ buffer2_length, dmx_section_filter_t&#8902; source,
+ dmx_success_t success);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>__u8* buffer1</p>
+</td><td align="char">
+<p>Pointer to the start of the filtered section, e.g. within the
+ circular buffer of the demux driver.</p>
+</td></tr><tr><td align="char">
+<p>size_t buffer1_length</p>
+</td><td align="char">
+<p>Length of the filtered section data in buffer1, including
+ headers and CRC.</p>
+</td></tr><tr><td align="char">
+<p>__u8* buffer2</p>
+</td><td align="char">
+<p>Pointer to the tail of the filtered section data, or NULL.
+ Useful to handle the wrapping of a circular buffer.</p>
+</td></tr><tr><td align="char">
+<p>size_t buffer2_length</p>
+</td><td align="char">
+<p>Length of the filtered section data in buffer2, including
+ headers and CRC.</p>
+</td></tr><tr><td align="char">
+<p>dmx_section_filter_t*
+ filter</p>
+</td><td align="char">
+<p>Indicates the filter that triggered the callback.</p>
+</td></tr><tr><td align="char">
+<p>dmx_success_t
+ success</p>
+</td><td align="char">
+<p>Indicates if there was an error in section reception.</p>
+</td></tr></tbody></table></div><p>RETURNS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>0</p>
+</td><td align="char">
+<p>Continue filtering.</p>
+</td></tr><tr><td align="char">
+<p>-1</p>
+</td><td align="char">
+<p>Stop filtering - has the same effect as a call to
+ stop_filtering() on the Section Feed API.</p>
+</td></tr></tbody></table></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="demux_api.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_kdapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="ts_feed_api.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Demux API&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;TS Feed API</td></tr></table></div></body></html>

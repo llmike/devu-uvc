@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;9.&#160;DVB Frontend API</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvbapi.html" title="Part&#160;II.&#160;LINUX DVB API" /><link rel="prev" href="include_files.html" title="API include files" /><link rel="next" href="frontend_fcalls.html" title="Frontend Function Calls" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;9.&#160;DVB Frontend API</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="include_files.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;II.&#160;LINUX DVB API</th><td width="20%" align="right">&#160;<a accesskey="n" href="frontend_fcalls.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;9.&#160;DVB Frontend API"><div class="titlepage"><div><div><h2 class="title"><a id="dvb_frontend"></a>Chapter&#160;9.&#160;DVB Frontend API</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="dvb_frontend.html#frontend_types">Frontend Data Types</a></span></dt><dd><dl><dt><span class="section"><a href="dvb_frontend.html#fe-type-t">Frontend type</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-caps-t">frontend capabilities</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-frontend-info">frontend information</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-diseqc-master-cmd">diseqc master command</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-diseqc-slave-reply">diseqc slave reply</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-sec-voltage-t">diseqc slave reply</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-sec-tone-mode-t">SEC continuous tone</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-sec-mini-cmd-t">SEC tone burst</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-status-t">frontend status</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-frontend-parameters">frontend parameters</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-frontend-event">frontend events</a></span></dt></dl></dd><dt><span class="section"><a href="frontend_fcalls.html">Frontend Function Calls</a></span></dt><dd><dl><dt><span class="section"><a href="frontend_fcalls.html#frontend_f_open">open()</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#frontend_f_close">close()</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_READ_STATUS">FE_READ_STATUS</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_READ_BER">FE_READ_BER</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_READ_SNR">FE_READ_SNR</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_READ_SIGNAL_STRENGTH">FE_READ_SIGNAL_STRENGTH</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_READ_UNCORRECTED_BLOCKS">FE_READ_UNCORRECTED_BLOCKS</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_SET_FRONTEND">FE_SET_FRONTEND</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_GET_FRONTEND">FE_GET_FRONTEND</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_GET_EVENT">FE_GET_EVENT</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_GET_INFO">FE_GET_INFO</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_DISEQC_RESET_OVERLOAD">FE_DISEQC_RESET_OVERLOAD</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_DISEQC_SEND_MASTER_CMD">FE_DISEQC_SEND_MASTER_CMD</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_DISEQC_RECV_SLAVE_REPLY">FE_DISEQC_RECV_SLAVE_REPLY</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_DISEQC_SEND_BURST">FE_DISEQC_SEND_BURST</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_SET_TONE">FE_SET_TONE</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_SET_VOLTAGE">FE_SET_VOLTAGE</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_ENABLE_HIGH_LNB_VOLTAGE">FE_ENABLE_HIGH_LNB_VOLTAGE</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_SET_FRONTEND_TUNE_MODE">FE_SET_FRONTEND_TUNE_MODE</a></span></dt><dt><span class="section"><a href="frontend_fcalls.html#FE_DISHNETWORK_SEND_LEGACY_CMD">FE_DISHNETWORK_SEND_LEGACY_CMD</a></span></dt></dl></dd><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html"><code class="constant">FE_GET_PROPERTY/FE_SET_PROPERTY</code></a></span></dt><dd><dl><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#dtv-stats">DTV stats type</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#dtv-fe-stats">DTV stats type</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#dtv-property">DTV property type</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#dtv-properties">DTV properties type</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#FE_GET_PROPERTY">FE_GET_PROPERTY</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#FE_SET_PROPERTY">FE_SET_PROPERTY</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#idp46641592">Property types</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#fe_property_parameters">Digital TV property parameters</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#frontend-stat-properties">Frontend statistics indicators</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#frontend-property-terrestrial-systems">Properties used on terrestrial delivery systems</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#frontend-property-cable-systems">Properties used on cable delivery systems</a></span></dt><dt><span class="section"><a href="FE_GET_SET_PROPERTY.html#frontend-property-satellital-systems">Properties used on satellital delivery systems</a></span></dt></dl></dd></dl></div><p>The DVB frontend device controls the tuner and DVB demodulator
+hardware. It can be accessed through <span class="tt">/dev/dvb/adapter0/frontend0</span>. Data types and and
+ioctl definitions can be accessed by including <span class="tt">linux/dvb/frontend.h</span> in your application.</p><p>DVB frontends come in three varieties: DVB-S (satellite), DVB-C
+(cable) and DVB-T (terrestrial). Transmission via the internet (DVB-IP)
+is not yet handled by this API but a future extension is possible. For
+DVB-S the frontend device also supports satellite equipment control
+(SEC) via DiSEqC and V-SEC protocols. The DiSEqC (digital SEC)
+specification is available from
+<a class="ulink" href="http://www.eutelsat.com/satellites/4_5_5.html" target="_top">Eutelsat</a>.</p><p>Note that the DVB API may also be used for MPEG decoder-only PCI
+cards, in which case there exists no frontend device.</p><div class="section" title="Frontend Data Types"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="frontend_types"></a>Frontend Data Types</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="dvb_frontend.html#fe-type-t">Frontend type</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-caps-t">frontend capabilities</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-frontend-info">frontend information</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-diseqc-master-cmd">diseqc master command</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-diseqc-slave-reply">diseqc slave reply</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-sec-voltage-t">diseqc slave reply</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-sec-tone-mode-t">SEC continuous tone</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-sec-mini-cmd-t">SEC tone burst</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-status-t">frontend status</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-frontend-parameters">frontend parameters</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-frontend-event">frontend events</a></span></dt></dl></div><div class="section" title="Frontend type"><div class="titlepage"><div><div><h3 class="title"><a id="fe-type-t"></a>Frontend type</h3></div></div></div><p>For historical reasons, frontend types are named by the type of modulation used in
+transmission. The fontend types are given by fe_type_t type, defined as:</p><div class="table"><a id="fe-type"></a><p class="title"><b>Table&#160;9.1.&#160;Frontend types</b></p><div class="table-contents"><table summary="Frontend types" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><thead><tr><th>fe_type</th><th>Description</th><th><a class="link" href="FE_GET_SET_PROPERTY.html#DTV-DELIVERY-SYSTEM" title="DTV_DELIVERY_SYSTEM">DTV_DELIVERY_SYSTEM</a> equivalent type</th></tr></thead><tbody valign="top"><tr><td valign="top"><a id="FE_QPSK"></a><code class="constant">FE_QPSK</code></td><td valign="top">For DVB-S standard</td><td valign="top"><code class="constant">SYS_DVBS</code></td></tr><tr><td valign="top"><a id="FE_QAM"></a><code class="constant">FE_QAM</code></td><td valign="top">For DVB-C annex A standard</td><td valign="top"><code class="constant">SYS_DVBC_ANNEX_A</code></td></tr><tr><td valign="top"><a id="FE_OFDM"></a><code class="constant">FE_OFDM</code></td><td valign="top">For DVB-T standard</td><td valign="top"><code class="constant">SYS_DVBT</code></td></tr><tr><td valign="top"><a id="FE_ATSC"></a><code class="constant">FE_ATSC</code></td><td valign="top">For ATSC standard (terrestrial) or for DVB-C Annex B (cable) used in US.</td><td valign="top"><code class="constant">SYS_ATSC</code> (terrestrial) or <code class="constant">SYS_DVBC_ANNEX_B</code> (cable)</td></tr></tbody></table></div></div><br class="table-break" /><p>Newer formats like DVB-S2, ISDB-T, ISDB-S and DVB-T2 are not described at the above, as they're
+supported via the new <a class="link" href="FE_GET_SET_PROPERTY.html" title="FE_GET_PROPERTY/FE_SET_PROPERTY">FE_GET_PROPERTY/FE_GET_SET_PROPERTY</a> ioctl's, using the <a class="link" href="FE_GET_SET_PROPERTY.html#DTV-DELIVERY-SYSTEM" title="DTV_DELIVERY_SYSTEM">DTV_DELIVERY_SYSTEM</a> parameter.
+</p><p>The usage of this field is deprecated, as it doesn't report all supported standards, and
+will provide an incomplete information for frontends that support multiple delivery systems.
+Please use <a class="link" href="FE_GET_SET_PROPERTY.html#DTV-ENUM-DELSYS" title="DTV_ENUM_DELSYS">DTV_ENUM_DELSYS</a> instead.</p></div><div class="section" title="frontend capabilities"><div class="titlepage"><div><div><h3 class="title"><a id="fe-caps-t"></a>frontend capabilities</h3></div></div></div><p>Capabilities describe what a frontend can do. Some capabilities can only be supported for
+a specific frontend type.</p><pre class="programlisting">
+	typedef enum fe_caps {
+	FE_IS_STUPID                  = 0,
+	FE_CAN_INVERSION_AUTO         = 0x1,
+	FE_CAN_FEC_1_2                = 0x2,
+	FE_CAN_FEC_2_3                = 0x4,
+	FE_CAN_FEC_3_4                = 0x8,
+	FE_CAN_FEC_4_5                = 0x10,
+	FE_CAN_FEC_5_6                = 0x20,
+	FE_CAN_FEC_6_7                = 0x40,
+	FE_CAN_FEC_7_8                = 0x80,
+	FE_CAN_FEC_8_9                = 0x100,
+	FE_CAN_FEC_AUTO               = 0x200,
+	FE_CAN_QPSK                   = 0x400,
+	FE_CAN_QAM_16                 = 0x800,
+	FE_CAN_QAM_32                 = 0x1000,
+	FE_CAN_QAM_64                 = 0x2000,
+	FE_CAN_QAM_128                = 0x4000,
+	FE_CAN_QAM_256                = 0x8000,
+	FE_CAN_QAM_AUTO               = 0x10000,
+	FE_CAN_TRANSMISSION_MODE_AUTO = 0x20000,
+	FE_CAN_BANDWIDTH_AUTO         = 0x40000,
+	FE_CAN_GUARD_INTERVAL_AUTO    = 0x80000,
+	FE_CAN_HIERARCHY_AUTO         = 0x100000,
+	FE_CAN_8VSB                   = 0x200000,
+	FE_CAN_16VSB                  = 0x400000,
+	FE_HAS_EXTENDED_CAPS          = 0x800000,
+	FE_CAN_MULTISTREAM            = 0x4000000,
+	FE_CAN_TURBO_FEC              = 0x8000000,
+	FE_CAN_2G_MODULATION          = 0x10000000,
+	FE_NEEDS_BENDING              = 0x20000000,
+	FE_CAN_RECOVER                = 0x40000000,
+	FE_CAN_MUTE_TS                = 0x80000000
+	} fe_caps_t;
+</pre></div><div class="section" title="frontend information"><div class="titlepage"><div><div><h3 class="title"><a id="dvb-frontend-info"></a>frontend information</h3></div></div></div><p>Information about the frontend ca be queried with
+	<a class="link" href="frontend_fcalls.html#FE_GET_INFO" title="FE_GET_INFO">FE_GET_INFO</a>.</p><pre class="programlisting">
+	struct dvb_frontend_info {
+	char       name[128];
+	fe_type_t  type;
+	uint32_t   frequency_min;
+	uint32_t   frequency_max;
+	uint32_t   frequency_stepsize;
+	uint32_t   frequency_tolerance;
+	uint32_t   symbol_rate_min;
+	uint32_t   symbol_rate_max;
+	uint32_t   symbol_rate_tolerance;     /&#8902; ppm &#8902;/
+	uint32_t   notifier_delay;            /&#8902; ms &#8902;/
+	fe_caps_t  caps;
+	};
+</pre></div><div class="section" title="diseqc master command"><div class="titlepage"><div><div><h3 class="title"><a id="dvb-diseqc-master-cmd"></a>diseqc master command</h3></div></div></div><p>A message sent from the frontend to DiSEqC capable equipment.</p><pre class="programlisting">
+	struct dvb_diseqc_master_cmd {
+	uint8_t msg [6]; /&#8902;  { framing, address, command, data[3] } &#8902;/
+	uint8_t msg_len; /&#8902;  valid values are 3...6  &#8902;/
+	};
+</pre></div><div class="section" title="diseqc slave reply"><div class="titlepage"><div><div><h3 class="title"><a id="dvb-diseqc-slave-reply"></a>diseqc slave reply</h3></div></div></div><p>A reply to the frontend from DiSEqC 2.0 capable equipment.</p><pre class="programlisting">
+	struct dvb_diseqc_slave_reply {
+	uint8_t msg [4]; /&#8902;  { framing, data [3] } &#8902;/
+	uint8_t msg_len; /&#8902;  valid values are 0...4, 0 means no msg  &#8902;/
+	int     timeout; /&#8902;  return from ioctl after timeout ms with &#8902;/
+	};                       /&#8902;  errorcode when no message was received  &#8902;/
+</pre></div><div class="section" title="diseqc slave reply"><div class="titlepage"><div><div><h3 class="title"><a id="fe-sec-voltage-t"></a>diseqc slave reply</h3></div></div></div><p>The voltage is usually used with non-DiSEqC capable LNBs to switch the polarzation
+(horizontal/vertical). When using DiSEqC epuipment this voltage has to be switched
+consistently to the DiSEqC commands as described in the DiSEqC spec.</p><pre class="programlisting">
+	typedef enum fe_sec_voltage {
+	SEC_VOLTAGE_13,
+	SEC_VOLTAGE_18
+	} fe_sec_voltage_t;
+</pre></div><div class="section" title="SEC continuous tone"><div class="titlepage"><div><div><h3 class="title"><a id="fe-sec-tone-mode-t"></a>SEC continuous tone</h3></div></div></div><p>The continuous 22KHz tone is usually used with non-DiSEqC capable LNBs to switch the
+high/low band of a dual-band LNB. When using DiSEqC epuipment this voltage has to
+be switched consistently to the DiSEqC commands as described in the DiSEqC
+spec.</p><pre class="programlisting">
+	typedef enum fe_sec_tone_mode {
+	SEC_TONE_ON,
+	SEC_TONE_OFF
+	} fe_sec_tone_mode_t;
+</pre></div><div class="section" title="SEC tone burst"><div class="titlepage"><div><div><h3 class="title"><a id="fe-sec-mini-cmd-t"></a>SEC tone burst</h3></div></div></div><p>The 22KHz tone burst is usually used with non-DiSEqC capable switches to select
+between two connected LNBs/satellites. When using DiSEqC epuipment this voltage has to
+be switched consistently to the DiSEqC commands as described in the DiSEqC
+spec.</p><pre class="programlisting">
+	typedef enum fe_sec_mini_cmd {
+	SEC_MINI_A,
+	SEC_MINI_B
+	} fe_sec_mini_cmd_t;
+</pre><p></p></div><div class="section" title="frontend status"><div class="titlepage"><div><div><h3 class="title"><a id="fe-status-t"></a>frontend status</h3></div></div></div><p>Several functions of the frontend device use the fe_status data type defined
+by</p><pre class="programlisting">
+typedef enum fe_status {
+	FE_HAS_SIGNAL		= 0x01,
+	FE_HAS_CARRIER		= 0x02,
+	FE_HAS_VITERBI		= 0x04,
+	FE_HAS_SYNC		= 0x08,
+	FE_HAS_LOCK		= 0x10,
+	FE_TIMEDOUT		= 0x20,
+	FE_REINIT		= 0x40,
+} fe_status_t;
+</pre><p>to indicate the current state and/or state changes of the frontend hardware:
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">FE_HAS_SIGNAL</td><td align="char">The frontend has found something above the noise level</td></tr><tr><td align="char">FE_HAS_CARRIER</td><td align="char">The frontend has found a DVB signal</td></tr><tr><td align="char">FE_HAS_VITERBI</td><td align="char">The frontend FEC inner coding (Viterbi, LDPC or other inner code) is stable</td></tr><tr><td align="char">FE_HAS_SYNC</td><td align="char">Synchronization bytes was found</td></tr><tr><td align="char">FE_HAS_LOCK</td><td align="char">The DVB were locked and everything is working</td></tr><tr><td align="char">FE_TIMEDOUT</td><td align="char">no lock within the last about 2 seconds</td></tr><tr><td align="char">FE_REINIT</td><td align="char">The frontend was reinitialized, application is
+recommended to reset DiSEqC, tone and parameters</td></tr></tbody></table></div></div><div class="section" title="frontend parameters"><div class="titlepage"><div><div><h3 class="title"><a id="dvb-frontend-parameters"></a>frontend parameters</h3></div></div></div><div class="toc"><dl><dt><span class="section"><a href="dvb_frontend.html#dvb-qpsk-parameters">QPSK parameters</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-qam-parameters">QAM parameters</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-vsb-parameters">VSB parameters</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#dvb-ofdm-parameters">OFDM parameters</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-spectral-inversion-t">frontend spectral inversion</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-code-rate-t">frontend code rate</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#fe-modulation-t">frontend modulation type for QAM, OFDM and VSB</a></span></dt><dt><span class="section"><a href="dvb_frontend.html#idp46369024">More OFDM parameters</a></span></dt></dl></div><p>The kind of parameters passed to the frontend device for tuning depend on
+the kind of hardware you are using.</p><p>The struct <code class="constant">dvb_frontend_parameters</code> uses an
+union with specific per-system parameters. However, as newer delivery systems
+required more data, the structure size weren't enough to fit, and just
+extending its size would break the existing applications. So, those parameters
+were replaced by the usage of <a class="link" href="FE_GET_SET_PROPERTY.html" title="FE_GET_PROPERTY/FE_SET_PROPERTY">
+<code class="constant">FE_GET_PROPERTY/FE_SET_PROPERTY</code></a> ioctl's. The
+new API is flexible enough to add new parameters to existing delivery systems,
+and to add newer delivery systems.</p><p>So, newer applications should use <a class="link" href="FE_GET_SET_PROPERTY.html" title="FE_GET_PROPERTY/FE_SET_PROPERTY">
+<code class="constant">FE_GET_PROPERTY/FE_SET_PROPERTY</code></a> instead, in
+order to be able to support the newer System Delivery like  DVB-S2, DVB-T2,
+DVB-C2, ISDB, etc.</p><p>All kinds of parameters are combined as an union in the FrontendParameters structure:
+</p><pre class="programlisting">
+struct dvb_frontend_parameters {
+	uint32_t frequency;     /&#8902; (absolute) frequency in Hz for QAM/OFDM &#8902;/
+				/&#8902; intermediate frequency in kHz for QPSK &#8902;/
+	fe_spectral_inversion_t inversion;
+	union {
+		struct dvb_qpsk_parameters qpsk;
+		struct dvb_qam_parameters  qam;
+		struct dvb_ofdm_parameters ofdm;
+		struct dvb_vsb_parameters  vsb;
+	} u;
+};
+</pre><p>In the case of QPSK frontends the <code class="constant">frequency</code> field specifies the intermediate
+frequency, i.e. the offset which is effectively added to the local oscillator frequency (LOF) of
+the LNB. The intermediate frequency has to be specified in units of kHz. For QAM and
+OFDM frontends the <code class="constant">frequency</code> specifies the absolute frequency and is given in Hz.
+</p><div class="section" title="QPSK parameters"><div class="titlepage"><div><div><h4 class="title"><a id="dvb-qpsk-parameters"></a>QPSK parameters</h4></div></div></div><p>For satellite QPSK frontends you have to use the <code class="constant">dvb_qpsk_parameters</code> structure:</p><pre class="programlisting">
+ struct dvb_qpsk_parameters {
+	 uint32_t        symbol_rate;  /&#8902; symbol rate in Symbols per second &#8902;/
+	 fe_code_rate_t  fec_inner;    /&#8902; forward error correction (see above) &#8902;/
+ };
+</pre></div><div class="section" title="QAM parameters"><div class="titlepage"><div><div><h4 class="title"><a id="dvb-qam-parameters"></a>QAM parameters</h4></div></div></div><p>for cable QAM frontend you use the <code class="constant">dvb_qam_parameters</code> structure:</p><pre class="programlisting">
+ struct dvb_qam_parameters {
+	 uint32_t         symbol_rate; /&#8902; symbol rate in Symbols per second &#8902;/
+	 fe_code_rate_t   fec_inner;   /&#8902; forward error correction (see above) &#8902;/
+	 fe_modulation_t  modulation;  /&#8902; modulation type (see above) &#8902;/
+ };
+</pre></div><div class="section" title="VSB parameters"><div class="titlepage"><div><div><h4 class="title"><a id="dvb-vsb-parameters"></a>VSB parameters</h4></div></div></div><p>ATSC frontends are supported by the <code class="constant">dvb_vsb_parameters</code> structure:</p><pre class="programlisting">
+struct dvb_vsb_parameters {
+	fe_modulation_t modulation;	/&#8902; modulation type (see above) &#8902;/
+};
+</pre></div><div class="section" title="OFDM parameters"><div class="titlepage"><div><div><h4 class="title"><a id="dvb-ofdm-parameters"></a>OFDM parameters</h4></div></div></div><p>DVB-T frontends are supported by the <code class="constant">dvb_ofdm_parameters</code> structure:</p><pre class="programlisting">
+ struct dvb_ofdm_parameters {
+	 fe_bandwidth_t      bandwidth;
+	 fe_code_rate_t      code_rate_HP;  /&#8902; high priority stream code rate &#8902;/
+	 fe_code_rate_t      code_rate_LP;  /&#8902; low priority stream code rate &#8902;/
+	 fe_modulation_t     constellation; /&#8902; modulation type (see above) &#8902;/
+	 fe_transmit_mode_t  transmission_mode;
+	 fe_guard_interval_t guard_interval;
+	 fe_hierarchy_t      hierarchy_information;
+ };
+</pre></div><div class="section" title="frontend spectral inversion"><div class="titlepage"><div><div><h4 class="title"><a id="fe-spectral-inversion-t"></a>frontend spectral inversion</h4></div></div></div><p>The Inversion field can take one of these values:
+</p><pre class="programlisting">
+typedef enum fe_spectral_inversion {
+	INVERSION_OFF,
+	INVERSION_ON,
+	INVERSION_AUTO
+} fe_spectral_inversion_t;
+</pre><p>It indicates if spectral inversion should be presumed or not. In the automatic setting
+(<code class="constant">INVERSION_AUTO</code>) the hardware will try to figure out the correct setting by
+itself.
+</p></div><div class="section" title="frontend code rate"><div class="titlepage"><div><div><h4 class="title"><a id="fe-code-rate-t"></a>frontend code rate</h4></div></div></div><p>The possible values for the <code class="constant">fec_inner</code> field used on
+<a class="link" href="dvb_frontend.html#dvb-qpsk-parameters" title="QPSK parameters"><code class="constant">struct dvb_qpsk_parameters</code></a> and
+<a class="link" href="dvb_frontend.html#dvb-qam-parameters" title="QAM parameters"><code class="constant">struct dvb_qam_parameters</code></a> are:
+</p><pre class="programlisting">
+typedef enum fe_code_rate {
+	FEC_NONE = 0,
+	FEC_1_2,
+	FEC_2_3,
+	FEC_3_4,
+	FEC_4_5,
+	FEC_5_6,
+	FEC_6_7,
+	FEC_7_8,
+	FEC_8_9,
+	FEC_AUTO,
+	FEC_3_5,
+	FEC_9_10,
+} fe_code_rate_t;
+</pre><p>which correspond to error correction rates of 1/2, 2/3, etc., no error correction or auto
+detection.
+</p></div><div class="section" title="frontend modulation type for QAM, OFDM and VSB"><div class="titlepage"><div><div><h4 class="title"><a id="fe-modulation-t"></a>frontend modulation type for QAM, OFDM and VSB</h4></div></div></div><p>For cable and terrestrial frontends, e. g. for
+<a class="link" href="dvb_frontend.html#dvb-qam-parameters" title="QAM parameters"><code class="constant">struct dvb_qpsk_parameters</code></a>,
+<a class="link" href="dvb_frontend.html#dvb-ofdm-parameters" title="OFDM parameters"><code class="constant">struct dvb_qam_parameters</code></a> and
+<a class="link" href="dvb_frontend.html#dvb-vsb-parameters" title="VSB parameters"><code class="constant">struct dvb_qam_parameters</code></a>,
+it needs to specify the quadrature modulation mode which can be one of the following:
+</p><pre class="programlisting">
+ typedef enum fe_modulation {
+	QPSK,
+	QAM_16,
+	QAM_32,
+	QAM_64,
+	QAM_128,
+	QAM_256,
+	QAM_AUTO,
+	VSB_8,
+	VSB_16,
+	PSK_8,
+	APSK_16,
+	APSK_32,
+	DQPSK,
+ } fe_modulation_t;
+</pre></div><div class="section" title="More OFDM parameters"><div class="titlepage"><div><div><h4 class="title"><a id="idp46369024"></a>More OFDM parameters</h4></div></div></div><div class="section" title="Number of carriers per channel"><div class="titlepage"><div><div><h5 class="title"><a id="fe-transmit-mode-t"></a>Number of carriers per channel</h5></div></div></div><pre class="programlisting">
+typedef enum fe_transmit_mode {
+	TRANSMISSION_MODE_2K,
+	TRANSMISSION_MODE_8K,
+	TRANSMISSION_MODE_AUTO,
+	TRANSMISSION_MODE_4K,
+	TRANSMISSION_MODE_1K,
+	TRANSMISSION_MODE_16K,
+	TRANSMISSION_MODE_32K,
+ } fe_transmit_mode_t;
+</pre></div><div class="section" title="frontend bandwidth"><div class="titlepage"><div><div><h5 class="title"><a id="fe-bandwidth-t"></a>frontend bandwidth</h5></div></div></div><pre class="programlisting">
+typedef enum fe_bandwidth {
+	BANDWIDTH_8_MHZ,
+	BANDWIDTH_7_MHZ,
+	BANDWIDTH_6_MHZ,
+	BANDWIDTH_AUTO,
+	BANDWIDTH_5_MHZ,
+	BANDWIDTH_10_MHZ,
+	BANDWIDTH_1_712_MHZ,
+} fe_bandwidth_t;
+</pre></div><div class="section" title="frontend guard inverval"><div class="titlepage"><div><div><h5 class="title"><a id="fe-guard-interval-t"></a>frontend guard inverval</h5></div></div></div><pre class="programlisting">
+typedef enum fe_guard_interval {
+	GUARD_INTERVAL_1_32,
+	GUARD_INTERVAL_1_16,
+	GUARD_INTERVAL_1_8,
+	GUARD_INTERVAL_1_4,
+	GUARD_INTERVAL_AUTO,
+	GUARD_INTERVAL_1_128,
+	GUARD_INTERVAL_19_128,
+	GUARD_INTERVAL_19_256,
+} fe_guard_interval_t;
+</pre></div><div class="section" title="frontend hierarchy"><div class="titlepage"><div><div><h5 class="title"><a id="fe-hierarchy-t"></a>frontend hierarchy</h5></div></div></div><pre class="programlisting">
+typedef enum fe_hierarchy {
+	 HIERARCHY_NONE,
+	 HIERARCHY_1,
+	 HIERARCHY_2,
+	 HIERARCHY_4,
+	 HIERARCHY_AUTO
+ } fe_hierarchy_t;
+</pre></div></div></div><div class="section" title="frontend events"><div class="titlepage"><div><div><h3 class="title"><a id="dvb-frontend-event"></a>frontend events</h3></div></div></div><pre class="programlisting">
+ struct dvb_frontend_event {
+	 fe_status_t status;
+	 struct dvb_frontend_parameters parameters;
+ };
+</pre></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="include_files.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvbapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="frontend_fcalls.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">API include files&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Frontend Function Calls</td></tr></table></div></body></html>

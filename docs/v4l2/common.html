@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;1.&#160;Common API Elements</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="v4l2spec.html" title="Part&#160;I.&#160;Video for Linux Two API Specification" /><link rel="prev" href="v4l2spec.html" title="Part&#160;I.&#160;Video for Linux Two API Specification" /><link rel="next" href="querycap.html" title="Querying Capabilities" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;1.&#160;Common API Elements</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="v4l2spec.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;I.&#160;Video for Linux Two API Specification</th><td width="20%" align="right">&#160;<a accesskey="n" href="querycap.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;1.&#160;Common API Elements"><div class="titlepage"><div><div><h2 class="title"><a id="common"></a>Chapter&#160;1.&#160;Common API Elements</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="common.html#open">Opening and Closing Devices</a></span></dt><dd><dl><dt><span class="section"><a href="common.html#idp19112656">Device Naming</a></span></dt><dt><span class="section"><a href="common.html#related">Related Devices</a></span></dt><dt><span class="section"><a href="common.html#idp19130584">Multiple Opens</a></span></dt><dt><span class="section"><a href="common.html#idp19138928">Shared Data Streams</a></span></dt><dt><span class="section"><a href="common.html#idp19140208">Functions</a></span></dt></dl></dd><dt><span class="section"><a href="querycap.html">Querying Capabilities</a></span></dt><dt><span class="section"><a href="app-pri.html">Application Priority</a></span></dt><dt><span class="section"><a href="video.html">Video Inputs and Outputs</a></span></dt><dt><span class="section"><a href="audio.html">Audio Inputs and Outputs</a></span></dt><dt><span class="section"><a href="tuner.html">Tuners and Modulators</a></span></dt><dd><dl><dt><span class="section"><a href="tuner.html#idp19178640">Tuners</a></span></dt><dt><span class="section"><a href="tuner.html#idp19184712">Modulators</a></span></dt><dt><span class="section"><a href="tuner.html#idp19190800">Radio Frequency</a></span></dt></dl></dd><dt><span class="section"><a href="standard.html">Video Standards</a></span></dt><dt><span class="section"><a href="dv-timings.html">Digital Video (DV) Timings</a></span></dt><dt><span class="section"><a href="control.html">User Controls</a></span></dt><dt><span class="section"><a href="extended-controls.html">Extended Controls</a></span></dt><dd><dl><dt><span class="section"><a href="extended-controls.html#idp19263704">Introduction</a></span></dt><dt><span class="section"><a href="extended-controls.html#idp19266168">The Extended Control API</a></span></dt><dt><span class="section"><a href="extended-controls.html#idp19369352">Enumerating Extended Controls</a></span></dt><dt><span class="section"><a href="extended-controls.html#idp19377368">Creating Control Panels</a></span></dt><dt><span class="section"><a href="extended-controls.html#mpeg-controls">Codec Control Reference</a></span></dt><dt><span class="section"><a href="extended-controls.html#camera-controls">Camera Control Reference</a></span></dt><dt><span class="section"><a href="extended-controls.html#fm-tx-controls">FM Transmitter Control Reference</a></span></dt><dt><span class="section"><a href="extended-controls.html#flash-controls">Flash Control Reference</a></span></dt><dt><span class="section"><a href="extended-controls.html#jpeg-controls">JPEG Control Reference</a></span></dt><dt><span class="section"><a href="extended-controls.html#image-source-controls">Image Source Control Reference</a></span></dt><dt><span class="section"><a href="extended-controls.html#image-process-controls">Image Process Control Reference</a></span></dt><dt><span class="section"><a href="extended-controls.html#dv-controls">Digital Video Control Reference</a></span></dt><dt><span class="section"><a href="extended-controls.html#fm-rx-controls">FM Receiver Control Reference</a></span></dt></dl></dd><dt><span class="section"><a href="format.html">Data Formats</a></span></dt><dd><dl><dt><span class="section"><a href="format.html#idp21061936">Data Format Negotiation</a></span></dt><dt><span class="section"><a href="format.html#idp21072520">Image Format Enumeration</a></span></dt></dl></dd><dt><span class="section"><a href="planar-apis.html">Single- and multi-planar APIs</a></span></dt><dd><dl><dt><span class="section"><a href="planar-apis.html#idp21112312">Multi-planar formats</a></span></dt><dt><span class="section"><a href="planar-apis.html#idp21078000">Calls that distinguish between single and multi-planar APIs</a></span></dt></dl></dd><dt><span class="section"><a href="crop.html">Image Cropping, Insertion and Scaling</a></span></dt><dd><dl><dt><span class="section"><a href="crop.html#idp21109368">Cropping Structures</a></span></dt><dt><span class="section"><a href="crop.html#idp21099632">Scaling Adjustments</a></span></dt><dt><span class="section"><a href="crop.html#idp21089336">Examples</a></span></dt></dl></dd><dt><span class="section"><a href="selection-api.html">Experimental API for cropping, composing and scaling</a></span></dt><dd><dl><dt><span class="section"><a href="selection-api.html#idp21141856">Introduction</a></span></dt><dt><span class="section"><a href="selection-api.html#idp21179040">Selection targets</a></span></dt><dt><span class="section"><a href="selection-api.html#idp21182288">Configuration</a></span></dt><dt><span class="section"><a href="selection-api.html#idp21200992">Comparison with old cropping API</a></span></dt><dt><span class="section"><a href="selection-api.html#idp21206000">Examples</a></span></dt></dl></dd><dt><span class="section"><a href="streaming-par.html">Streaming Parameters</a></span></dt></dl></div><p>Programming a V4L2 device consists of these
+steps:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Opening the device</p></li><li class="listitem"><p>Changing device properties, selecting a video and audio
+input, video standard, picture brightness a.&#160;o.</p></li><li class="listitem"><p>Negotiating a data format</p></li><li class="listitem"><p>Negotiating an input/output method</p></li><li class="listitem"><p>The actual input/output loop</p></li><li class="listitem"><p>Closing the device</p></li></ul></div><p>In practice most steps are optional and can be executed out of
+order. It depends on the V4L2 device type, you can read about the
+details in <a class="xref" href="devices.html" title="Chapter&#160;4.&#160;Interfaces">Chapter&#160;4, <i>Interfaces</i></a>. In this chapter we will discuss
+the basic concepts applicable to all devices.</p><div class="section" title="Opening and Closing Devices"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="open"></a>Opening and Closing Devices</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="common.html#idp19112656">Device Naming</a></span></dt><dt><span class="section"><a href="common.html#related">Related Devices</a></span></dt><dt><span class="section"><a href="common.html#idp19130584">Multiple Opens</a></span></dt><dt><span class="section"><a href="common.html#idp19138928">Shared Data Streams</a></span></dt><dt><span class="section"><a href="common.html#idp19140208">Functions</a></span></dt></dl></div><div class="section" title="Device Naming"><div class="titlepage"><div><div><h3 class="title"><a id="idp19112656"></a>Device Naming</h3></div></div></div><p>V4L2 drivers are implemented as kernel modules, loaded
+manually by the system administrator or automatically when a device is
+first opened. The driver modules plug into the "videodev" kernel
+module. It provides helper functions and a common application
+interface specified in this document.</p><p>Each driver thus loaded registers one or more device nodes
+with major number 81 and a minor number between 0 and 255. Assigning
+minor numbers to V4L2 devices is entirely up to the system administrator,
+this is primarily intended to solve conflicts between devices.<sup>[<a id="idp19113864" href="#ftn.idp19113864" class="footnote">1</a>]</sup> The module options to select minor numbers are named
+after the device special file with a "_nr" suffix. For example "video_nr"
+for <code class="filename">/dev/video</code> video capture devices. The number is
+an offset to the base minor number associated with the device type.
+<sup>[<a id="idp19115200" href="#ftn.idp19115200" class="footnote">2</a>]</sup> When the driver supports multiple devices of the same
+type more than one minor number can be assigned, separated by commas:
+</p><div class="informalexample"><pre class="screen">
+&gt; insmod mydriver.o video_nr=0,1 radio_nr=0,1</pre></div><p>In <code class="filename">/etc/modules.conf</code> this may be
+written as: </p><div class="informalexample"><pre class="screen">
+alias char-major-81-0 mydriver
+alias char-major-81-1 mydriver
+alias char-major-81-64 mydriver              <a id="alias"></a>(1)
+options mydriver video_nr=0,1 radio_nr=0,1   <a id="options"></a>(2)
+	  </pre><div class="calloutlist"><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left"><p><a href="#alias">(1)</a> </p></td><td valign="top" align="left"><p>When an application attempts to open a device
+special file with major number 81 and minor number 0, 1, or 64, load
+"mydriver" (and the "videodev" module it depends upon).</p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#options">(2)</a> </p></td><td valign="top" align="left"><p>Register the first two video capture devices with
+minor number 0 and 1 (base number is 0), the first two radio device
+with minor number 64 and 65 (base 64).</p></td></tr></table></div></div><p> When no minor number is given as module
+option the driver supplies a default. <a class="xref" href="devices.html" title="Chapter&#160;4.&#160;Interfaces">Chapter&#160;4, <i>Interfaces</i></a>
+recommends the base minor numbers to be used for the various device
+types. Obviously minor numbers must be unique. When the number is
+already in use the <span class="emphasis"><em>offending device</em></span> will not be
+registered. </p><p>By convention system administrators create various
+character device special files with these major and minor numbers in
+the <code class="filename">/dev</code> directory. The names recommended for the
+different V4L2 device types are listed in <a class="xref" href="devices.html" title="Chapter&#160;4.&#160;Interfaces">Chapter&#160;4, <i>Interfaces</i></a>.
+</p><p>The creation of character special files (with
+<span class="application">mknod</span>) is a privileged operation and
+devices cannot be opened by major and minor number. That means
+applications cannot <span class="emphasis"><em>reliable</em></span> scan for loaded or
+installed drivers. The user must enter a device name, or the
+application can try the conventional device names.</p><p>Under the device filesystem (devfs) the minor number
+options are ignored. V4L2 drivers (or by proxy the "videodev" module)
+automatically create the required device files in the
+<code class="filename">/dev/v4l</code> directory using the conventional device
+names above.</p></div><div class="section" title="Related Devices"><div class="titlepage"><div><div><h3 class="title"><a id="related"></a>Related Devices</h3></div></div></div><p>Devices can support several related functions. For example
+video capturing, video overlay and VBI capturing are related because
+these functions share, amongst other, the same video input and tuner
+frequency. V4L and earlier versions of V4L2 used the same device name
+and minor number for video capturing and overlay, but different ones
+for VBI. Experience showed this approach has several problems<sup>[<a id="idp19124560" href="#ftn.idp19124560" class="footnote">3</a>]</sup>, and to make things worse the V4L videodev module
+used to prohibit multiple opens of a device.</p><p>As a remedy the present version of the V4L2 API relaxed the
+concept of device types with specific names and minor numbers. For
+compatibility with old applications drivers must still register different
+minor numbers to assign a default function to the device. But if related
+functions are supported by the driver they must be available under all
+registered minor numbers. The desired function can be selected after
+opening the device as described in <a class="xref" href="devices.html" title="Chapter&#160;4.&#160;Interfaces">Chapter&#160;4, <i>Interfaces</i></a>.</p><p>Imagine a driver supporting video capturing, video
+overlay, raw VBI capturing, and FM radio reception. It registers three
+devices with minor number 0, 64 and 224 (this numbering scheme is
+inherited from the V4L API). Regardless if
+<code class="filename">/dev/video</code> (81, 0) or
+<code class="filename">/dev/vbi</code> (81, 224) is opened the application can
+select any one of the video capturing, overlay or VBI capturing
+functions. Without programming (e.&#160;g. reading from the device
+with <span class="application">dd</span> or <span class="application">cat</span>)
+<code class="filename">/dev/video</code> captures video images, while
+<code class="filename">/dev/vbi</code> captures raw VBI data.
+<code class="filename">/dev/radio</code> (81, 64) is invariable a radio device,
+unrelated to the video functions. Being unrelated does not imply the
+devices can be used at the same time, however. The <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>
+function may very well return an <span class="errorcode">EBUSY</span> error code.</p><p>Besides video input or output the hardware may also
+support audio sampling or playback. If so, these functions are
+implemented as OSS or ALSA PCM devices and eventually OSS or ALSA
+audio mixer. The V4L2 API makes no provisions yet to find these
+related devices. If you have an idea please write to the linux-media
+mailing list: <a class="ulink" href="http://www.linuxtv.org/lists.php" target="_top">http://www.linuxtv.org/lists.php</a>.</p></div><div class="section" title="Multiple Opens"><div class="titlepage"><div><div><h3 class="title"><a id="idp19130584"></a>Multiple Opens</h3></div></div></div><p>In general, V4L2 devices can be opened more than once.
+When this is supported by the driver, users can for example start a
+"panel" application to change controls like brightness or audio
+volume, while another application captures video and audio. In other words, panel
+applications are comparable to an OSS or ALSA audio mixer application.
+When a device supports multiple functions like capturing and overlay
+<span class="emphasis"><em>simultaneously</em></span>, multiple opens allow concurrent
+use of the device by forked processes or specialized applications.</p><p>Multiple opens are optional, although drivers should
+permit at least concurrent accesses without data exchange, i.&#160;e. panel
+applications. This implies <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a> can return an <span class="errorcode">EBUSY</span> error code when the
+device is already in use, as well as <a class="link" href="func-ioctl.html" title="V4L2 ioctl()"><code class="function">ioctl()</code></a> functions initiating
+data exchange (namely the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl), and the <a class="link" href="func-read.html" title="V4L2 read()"><code class="function">read()</code></a>
+and <a class="link" href="func-write.html" title="V4L2 write()"><code class="function">write()</code></a> functions.</p><p>Mere opening a V4L2 device does not grant exclusive
+access.<sup>[<a id="idp19135728" href="#ftn.idp19135728" class="footnote">4</a>]</sup> Initiating data exchange however assigns the right
+to read or write the requested type of data, and to change related
+properties, to this file descriptor. Applications can request
+additional access privileges using the priority mechanism described in
+<a class="xref" href="app-pri.html" title="Application Priority">the section called &#8220;Application Priority&#8221;</a>.</p></div><div class="section" title="Shared Data Streams"><div class="titlepage"><div><div><h3 class="title"><a id="idp19138928"></a>Shared Data Streams</h3></div></div></div><p>V4L2 drivers should not support multiple applications
+reading or writing the same data stream on a device by copying
+buffers, time multiplexing or similar means. This is better handled by
+a proxy application in user space. When the driver supports stream
+sharing anyway it must be implemented transparently. The V4L2 API does
+not specify how conflicts are solved. </p></div><div class="section" title="Functions"><div class="titlepage"><div><div><h3 class="title"><a id="idp19140208"></a>Functions</h3></div></div></div><p>To open and close V4L2 devices applications use the
+<a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a> and <a class="link" href="func-close.html" title="V4L2 close()"><code class="function">close()</code></a> function, respectively. Devices are
+programmed using the <a class="link" href="func-ioctl.html" title="V4L2 ioctl()"><code class="function">ioctl()</code></a> function as explained in the
+following sections.</p></div></div><div class="footnotes"><br /><hr width="100" align="left" /><div class="footnote"><p><sup>[<a id="ftn.idp19113864" href="#idp19113864" class="para">1</a>] </sup>Access permissions are associated with character
+device special files, hence we must ensure device numbers cannot
+change with the module load order. To this end minor numbers are no
+longer automatically assigned by the "videodev" module as in V4L but
+requested by the driver. The defaults will suffice for most people
+unless two drivers compete for the same minor numbers.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp19115200" href="#idp19115200" class="para">2</a>] </sup>In earlier versions of the V4L2 API the module options
+where named after the device special file with a "unit_" prefix, expressing
+the minor number itself, not an offset. Rationale for this change is unknown.
+Lastly the naming and semantics are just a convention among driver writers,
+the point to note is that minor numbers are not supposed to be hardcoded
+into drivers.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp19124560" href="#idp19124560" class="para">3</a>] </sup>Given a device file name one cannot reliable find
+related devices. For once names are arbitrary and in a system with
+multiple devices, where only some support VBI capturing, a
+<code class="filename">/dev/video2</code> is not necessarily related to
+<code class="filename">/dev/vbi2</code>. The V4L
+<code class="constant">VIDIOCGUNIT</code> ioctl would require a search for a
+device file with a particular major and minor number.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp19135728" href="#idp19135728" class="para">4</a>] </sup>Drivers could recognize the
+<code class="constant">O_EXCL</code> open flag. Presently this is not required,
+so applications cannot know if it really works.</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="v4l2spec.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="v4l2spec.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="querycap.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&#160;I.&#160;Video for Linux Two API Specification&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Querying Capabilities</td></tr></table></div></body></html>

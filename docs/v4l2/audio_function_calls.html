@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Audio Function Calls</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_audio.html" title="Chapter&#160;12.&#160;DVB Audio Device" /><link rel="prev" href="dvb_audio.html" title="Chapter&#160;12.&#160;DVB Audio Device" /><link rel="next" href="dvb_ca.html" title="Chapter&#160;13.&#160;DVB CA Device" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Audio Function Calls</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="dvb_audio.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;12.&#160;DVB Audio Device</th><td width="20%" align="right">&#160;<a accesskey="n" href="dvb_ca.html">Next</a></td></tr></table><hr /></div><div class="section" title="Audio Function Calls"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="audio_function_calls"></a>Audio Function Calls</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="audio_function_calls.html#audio_fopen">open()</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#audio_fclose">close()</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#audio_fwrite">write()</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_STOP">AUDIO_STOP</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_PLAY">AUDIO_PLAY</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_PAUSE">AUDIO_PAUSE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_CONTINUE">AUDIO_CONTINUE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SELECT_SOURCE">AUDIO_SELECT_SOURCE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_MUTE">AUDIO_SET_MUTE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_AV_SYNC">AUDIO_SET_AV_SYNC</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_BYPASS_MODE">AUDIO_SET_BYPASS_MODE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_CHANNEL_SELECT">AUDIO_CHANNEL_SELECT</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_BILINGUAL_CHANNEL_SELECT">AUDIO_BILINGUAL_CHANNEL_SELECT</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_GET_PTS">AUDIO_GET_PTS</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_GET_STATUS">AUDIO_GET_STATUS</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_GET_CAPABILITIES">AUDIO_GET_CAPABILITIES</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_CLEAR_BUFFER">AUDIO_CLEAR_BUFFER</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_ID">AUDIO_SET_ID</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_MIXER">AUDIO_SET_MIXER</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_STREAMTYPE">AUDIO_SET_STREAMTYPE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_EXT_ID">AUDIO_SET_EXT_ID</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_ATTRIBUTES">AUDIO_SET_ATTRIBUTES</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_KARAOKE">AUDIO_SET_KARAOKE</a></span></dt></dl></div><div class="section" title="open()"><div class="titlepage"><div><div><h3 class="title"><a id="audio_fopen"></a>open()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call opens a named audio device (e.g. /dev/dvb/adapter0/audio0)
+ for subsequent use. When an open() call has succeeded, the device will be ready
+ for use. The significance of blocking or non-blocking mode is described in the
+ documentation for functions where there is a difference. It does not affect the
+ semantics of the open() call itself. A device opened in blocking mode can later
+ be put into non-blocking mode (and vice versa) using the F_SETFL command
+ of the fcntl system call. This is a standard system call, documented in the Linux
+ manual page for fcntl. Only one user can open the Audio Device in O_RDWR
+ mode. All other attempts to open the device in this mode will fail, and an error
+ code will be returned. If the Audio Device is opened in O_RDONLY mode, the
+ only ioctl call that can be used is AUDIO_GET_STATUS. All other call will
+ return with an error code.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int open(const char &#8902;deviceName, int flags);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>const char
+ *deviceName</p>
+</td><td align="char">
+<p>Name of specific audio device.</p>
+</td></tr><tr><td align="char">
+<p>int flags</p>
+</td><td align="char">
+<p>A bit-wise OR of the following flags:</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_RDONLY read-only access</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_RDWR read/write access</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_NONBLOCK open in non-blocking mode</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>(blocking mode is the default)</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>ENODEV</p>
+</td><td align="char">
+<p>Device driver not loaded/available.</p>
+</td></tr><tr><td align="char">
+<p>EBUSY</p>
+</td><td align="char">
+<p>Device or resource busy.</p>
+</td></tr><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>Invalid argument.</p>
+</td></tr></tbody></table></div></div><div class="section" title="close()"><div class="titlepage"><div><div><h3 class="title"><a id="audio_fclose"></a>close()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call closes a previously opened audio device.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int close(int fd);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EBADF</p>
+</td><td align="char">
+<p>fd is not a valid open file descriptor.</p>
+</td></tr></tbody></table></div></div><div class="section" title="write()"><div class="titlepage"><div><div><h3 class="title"><a id="audio_fwrite"></a>write()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call can only be used if AUDIO_SOURCE_MEMORY is selected
+ in the ioctl call AUDIO_SELECT_SOURCE. The data provided shall be in
+ PES format. If O_NONBLOCK is not specified the function will block until
+ buffer space is available. The amount of data to be transferred is implied by
+ count.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>size_t write(int fd, const void &#8902;buf, size_t count);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>void *buf</p>
+</td><td align="char">
+<p>Pointer to the buffer containing the PES data.</p>
+</td></tr><tr><td align="char">
+<p>size_t count</p>
+</td><td align="char">
+<p>Size of buf.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EPERM</p>
+</td><td align="char">
+<p>Mode AUDIO_SOURCE_MEMORY not selected.</p>
+</td></tr><tr><td align="char">
+<p>ENOMEM</p>
+</td><td align="char">
+<p>Attempted to write more data than the internal buffer can
+ hold.</p>
+</td></tr><tr><td align="char">
+<p>EBADF</p>
+</td><td align="char">
+<p>fd is not a valid open file descriptor.</p>
+</td></tr></tbody></table></div></div><div class="section" title="AUDIO_STOP"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_STOP"></a>AUDIO_STOP</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the Audio Device to stop playing the current stream.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_STOP);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_STOP for this command.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_PLAY"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_PLAY"></a>AUDIO_PLAY</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the Audio Device to start playing an audio stream from the
+ selected source.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_PLAY);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_PLAY for this command.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_PAUSE"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_PAUSE"></a>AUDIO_PAUSE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call suspends the audio stream being played. Decoding and playing
+ are paused. It is then possible to restart again decoding and playing process of
+ the audio stream using AUDIO_CONTINUE command.</p>
+</td></tr><tr><td align="char">
+<p>If AUDIO_SOURCE_MEMORY is selected in the ioctl call
+ AUDIO_SELECT_SOURCE, the DVB-subsystem will not decode (consume)
+ any more data until the ioctl call AUDIO_CONTINUE or AUDIO_PLAY is
+ performed.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_PAUSE);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_PAUSE for this command.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_CONTINUE"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_CONTINUE"></a>AUDIO_CONTINUE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl restarts the decoding and playing process previously paused
+with AUDIO_PAUSE command.</p>
+</td></tr><tr><td align="char">
+<p>It only works if the stream were previously stopped with AUDIO_PAUSE</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_CONTINUE);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_CONTINUE for this command.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_SELECT_SOURCE"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_SELECT_SOURCE"></a>AUDIO_SELECT_SOURCE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call informs the audio device which source shall be used
+ for the input data. The possible sources are demux or memory. If
+ AUDIO_SOURCE_MEMORY is selected, the data is fed to the Audio Device
+ through the write command.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_SELECT_SOURCE,
+ audio_stream_source_t source);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_SELECT_SOURCE for this command.</p>
+</td></tr><tr><td align="char">
+<p>audio_stream_source_t
+ source</p>
+</td><td align="char">
+<p>Indicates the source that shall be used for the Audio
+ stream.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_SET_MUTE"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_SET_MUTE"></a>AUDIO_SET_MUTE</h3></div></div></div><p>DESCRIPTION
+</p><p>This ioctl is for DVB devices only. To control a V4L2 decoder use the V4L2
+<a class="link" href="vidioc-decoder-cmd.html" title="ioctl VIDIOC_DECODER_CMD, VIDIOC_TRY_DECODER_CMD"><code class="constant">VIDIOC_DECODER_CMD</code></a> with the <code class="constant">V4L2_DEC_CMD_START_MUTE_AUDIO</code> flag instead.</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the audio device to mute the stream that is currently being
+ played.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_SET_MUTE,
+ boolean state);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_SET_MUTE for this command.</p>
+</td></tr><tr><td align="char">
+<p>boolean state</p>
+</td><td align="char">
+<p>Indicates if audio device shall mute or not.</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>TRUE Audio Mute</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>FALSE Audio Un-mute</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_SET_AV_SYNC"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_SET_AV_SYNC"></a>AUDIO_SET_AV_SYNC</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the Audio Device to turn ON or OFF A/V synchronization.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_SET_AV_SYNC,
+ boolean state);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_AV_SYNC for this command.</p>
+</td></tr><tr><td align="char">
+<p>boolean state</p>
+</td><td align="char">
+<p>Tells the DVB subsystem if A/V synchronization shall be
+ ON or OFF.</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>TRUE AV-sync ON</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>FALSE AV-sync OFF</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_SET_BYPASS_MODE"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_SET_BYPASS_MODE"></a>AUDIO_SET_BYPASS_MODE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the Audio Device to bypass the Audio decoder and forward
+ the stream without decoding. This mode shall be used if streams that can&#8217;t be
+ handled by the DVB system shall be decoded. Dolby DigitalTM streams are
+ automatically forwarded by the DVB subsystem if the hardware can handle it.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+ AUDIO_SET_BYPASS_MODE, boolean mode);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_SET_BYPASS_MODE for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>boolean mode</p>
+</td><td align="char">
+<p>Enables or disables the decoding of the current Audio
+ stream in the DVB subsystem.</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>TRUE Bypass is disabled</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>FALSE Bypass is enabled</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_CHANNEL_SELECT"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_CHANNEL_SELECT"></a>AUDIO_CHANNEL_SELECT</h3></div></div></div><p>DESCRIPTION
+</p><p>This ioctl is for DVB devices only. To control a V4L2 decoder use the V4L2
+<code class="constant">V4L2_CID_MPEG_AUDIO_DEC_PLAYBACK</code> control instead.</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the Audio Device to select the requested channel if possible.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+ AUDIO_CHANNEL_SELECT, audio_channel_select_t);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_CHANNEL_SELECT for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>audio_channel_select_t
+ ch</p>
+</td><td align="char">
+<p>Select the output format of the audio (mono left/right,
+ stereo).</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_BILINGUAL_CHANNEL_SELECT"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_BILINGUAL_CHANNEL_SELECT"></a>AUDIO_BILINGUAL_CHANNEL_SELECT</h3></div></div></div><p>DESCRIPTION
+</p><p>This ioctl is obsolete. Do not use in new drivers. It has been replaced by
+the V4L2 <code class="constant">V4L2_CID_MPEG_AUDIO_DEC_MULTILINGUAL_PLAYBACK</code> control
+for MPEG decoders controlled through V4L2.</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the Audio Device to select the requested channel for bilingual streams if possible.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+ AUDIO_BILINGUAL_CHANNEL_SELECT, audio_channel_select_t);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_BILINGUAL_CHANNEL_SELECT for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>audio_channel_select_t
+ch</p>
+</td><td align="char">
+<p>Select the output format of the audio (mono left/right,
+ stereo).</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_GET_PTS"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_GET_PTS"></a>AUDIO_GET_PTS</h3></div></div></div><p>DESCRIPTION
+</p><p>This ioctl is obsolete. Do not use in new drivers. If you need this functionality,
+then please contact the linux-media mailing list (<a class="ulink" href="http://www.linuxtv.org/lists.php" target="_top">http://www.linuxtv.org/lists.php</a>).</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the Audio Device to return the current PTS timestamp.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+ AUDIO_GET_PTS, __u64 *pts);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_GET_PTS for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>__u64 *pts
+</p>
+</td><td align="char">
+<p>Returns the 33-bit timestamp as defined in ITU T-REC-H.222.0 / ISO/IEC 13818-1.
+</p>
+<p>
+The PTS should belong to the currently played
+frame if possible, but may also be a value close to it
+like the PTS of the last decoded frame or the last PTS
+extracted by the PES parser.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_GET_STATUS"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_GET_STATUS"></a>AUDIO_GET_STATUS</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the Audio Device to return the current state of the Audio
+ Device.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_GET_STATUS,
+ struct audio_status &#8902;status);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_GET_STATUS for this command.</p>
+</td></tr><tr><td align="char">
+<p>struct audio_status
+ *status</p>
+</td><td align="char">
+<p>Returns the current state of Audio Device.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_GET_CAPABILITIES"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_GET_CAPABILITIES"></a>AUDIO_GET_CAPABILITIES</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the Audio Device to tell us about the decoding capabilities
+ of the audio hardware.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request =
+ AUDIO_GET_CAPABILITIES, unsigned int &#8902;cap);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_GET_CAPABILITIES for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>unsigned int *cap</p>
+</td><td align="char">
+<p>Returns a bit array of supported sound formats.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_CLEAR_BUFFER"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_CLEAR_BUFFER"></a>AUDIO_CLEAR_BUFFER</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call asks the Audio Device to clear all software and hardware buffers
+ of the audio decoder device.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_CLEAR_BUFFER);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_CLEAR_BUFFER for this command.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_SET_ID"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_SET_ID"></a>AUDIO_SET_ID</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl selects which sub-stream is to be decoded if a program or system
+ stream is sent to the video device. If no audio stream type is set the id has to be
+ in [0xC0,0xDF] for MPEG sound, in [0x80,0x87] for AC3 and in [0xA0,0xA7]
+ for LPCM. More specifications may follow for other stream types. If the stream
+ type is set the id just specifies the substream id of the audio stream and only
+ the first 5 bits are recognized.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_SET_ID, int
+ id);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_SET_ID for this command.</p>
+</td></tr><tr><td align="char">
+<p>int id</p>
+</td><td align="char">
+<p>audio sub-stream id</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_SET_MIXER"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_SET_MIXER"></a>AUDIO_SET_MIXER</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl lets you adjust the mixer settings of the audio decoder.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(int fd, int request = AUDIO_SET_MIXER,
+ audio_mixer_t &#8902;mix);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_SET_ID for this command.</p>
+</td></tr><tr><td align="char">
+<p>audio_mixer_t *mix</p>
+</td><td align="char">
+<p>mixer settings.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="AUDIO_SET_STREAMTYPE"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_SET_STREAMTYPE"></a>AUDIO_SET_STREAMTYPE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl tells the driver which kind of audio stream to expect. This is useful
+ if the stream offers several audio sub-streams like LPCM and AC3.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = AUDIO_SET_STREAMTYPE,
+ int type);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_SET_STREAMTYPE for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>int type</p>
+</td><td align="char">
+<p>stream type</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>type is not a valid or supported stream type.</p>
+</td></tr></tbody></table></div></div><div class="section" title="AUDIO_SET_EXT_ID"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_SET_EXT_ID"></a>AUDIO_SET_EXT_ID</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl can be used to set the extension id for MPEG streams in DVD
+ playback. Only the first 3 bits are recognized.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = AUDIO_SET_EXT_ID, int
+ id);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_SET_EXT_ID for this command.</p>
+</td></tr><tr><td align="char">
+<p>int id</p>
+</td><td align="char">
+<p>audio sub_stream_id</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>id is not a valid id.</p>
+</td></tr></tbody></table></div></div><div class="section" title="AUDIO_SET_ATTRIBUTES"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_SET_ATTRIBUTES"></a>AUDIO_SET_ATTRIBUTES</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is intended for DVD playback and allows you to set certain
+ information about the audio stream.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = AUDIO_SET_ATTRIBUTES,
+ audio_attributes_t attr );</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_SET_ATTRIBUTES for this command.</p>
+</td></tr><tr><td align="char">
+<p>audio_attributes_t
+ attr</p>
+</td><td align="char">
+<p>audio attributes according to section ??</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>attr is not a valid or supported attribute setting.</p>
+</td></tr></tbody></table></div></div><div class="section" title="AUDIO_SET_KARAOKE"><div class="titlepage"><div><div><h3 class="title"><a id="AUDIO_SET_KARAOKE"></a>AUDIO_SET_KARAOKE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl allows one to set the mixer settings for a karaoke DVD.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = AUDIO_SET_KARAOKE,
+ audio_karaoke_t &#8902;karaoke);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals AUDIO_SET_KARAOKE for this
+ command.</p>
+</td></tr><tr><td align="char">
+<p>audio_karaoke_t
+ *karaoke</p>
+</td><td align="char">
+<p>karaoke settings according to section ??.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>karaoke is not a valid or supported karaoke setting.</p>
+</td></tr></tbody></table></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dvb_audio.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_audio.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="dvb_ca.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&#160;12.&#160;DVB Audio Device&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Chapter&#160;13.&#160;DVB CA Device</td></tr></table></div></body></html>

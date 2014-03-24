@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Tuners and Modulators</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="common.html" title="Chapter&#160;1.&#160;Common API Elements" /><link rel="prev" href="audio.html" title="Audio Inputs and Outputs" /><link rel="next" href="standard.html" title="Video Standards" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Tuners and Modulators</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="audio.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;1.&#160;Common API Elements</th><td width="20%" align="right">&#160;<a accesskey="n" href="standard.html">Next</a></td></tr></table><hr /></div><div class="section" title="Tuners and Modulators"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="tuner"></a>Tuners and Modulators</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="tuner.html#idp19178640">Tuners</a></span></dt><dt><span class="section"><a href="tuner.html#idp19184712">Modulators</a></span></dt><dt><span class="section"><a href="tuner.html#idp19190800">Radio Frequency</a></span></dt></dl></div><div class="section" title="Tuners"><div class="titlepage"><div><div><h3 class="title"><a id="idp19178640"></a>Tuners</h3></div></div></div><p>Video input devices can have one or more tuners
+demodulating a RF signal. Each tuner is associated with one or more
+video inputs, depending on the number of RF connectors on the tuner.
+The <em class="structfield"><code>type</code></em> field of the respective
+struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a> returned by the <a class="link" href="vidioc-enuminput.html" title="ioctl VIDIOC_ENUMINPUT"><code class="constant">VIDIOC_ENUMINPUT</code></a> ioctl is set to
+<code class="constant">V4L2_INPUT_TYPE_TUNER</code> and its
+<em class="structfield"><code>tuner</code></em> field contains the index number of
+the tuner.</p><p>Radio input devices have exactly one tuner with index zero, no
+video inputs.</p><p>To query and change tuner properties applications use the
+<a class="link" href="vidioc-g-tuner.html" title="ioctl VIDIOC_G_TUNER, VIDIOC_S_TUNER"><code class="constant">VIDIOC_G_TUNER</code></a> and <a class="link" href="vidioc-g-tuner.html" title="ioctl VIDIOC_G_TUNER, VIDIOC_S_TUNER"><code class="constant">VIDIOC_S_TUNER</code></a> ioctl, respectively. The
+struct&#160;<a class="link" href="vidioc-g-tuner.html#v4l2-tuner" title="Table&#160;A.82.&#160;struct v4l2_tuner">v4l2_tuner</a> returned by <code class="constant">VIDIOC_G_TUNER</code> also
+contains signal status information applicable when the tuner of the
+current video or radio input is queried. Note that
+<code class="constant">VIDIOC_S_TUNER</code> does not switch the current tuner,
+when there is more than one at all. The tuner is solely determined by
+the current video input. Drivers must support both ioctls and set the
+<code class="constant">V4L2_CAP_TUNER</code> flag in the struct&#160;<a class="link" href="vidioc-querycap.html#v4l2-capability" title="Table&#160;A.88.&#160;struct v4l2_capability">v4l2_capability</a>
+returned by the <a class="link" href="vidioc-querycap.html" title="ioctl VIDIOC_QUERYCAP"><code class="constant">VIDIOC_QUERYCAP</code></a> ioctl when the device has one or
+more tuners.</p></div><div class="section" title="Modulators"><div class="titlepage"><div><div><h3 class="title"><a id="idp19184712"></a>Modulators</h3></div></div></div><p>Video output devices can have one or more modulators, uh,
+modulating a video signal for radiation or connection to the antenna
+input of a TV set or video recorder. Each modulator is associated with
+one or more video outputs, depending on the number of RF connectors on
+the modulator. The <em class="structfield"><code>type</code></em> field of the
+respective struct&#160;<a class="link" href="vidioc-enumoutput.html#v4l2-output" title="Table&#160;A.39.&#160;struct v4l2_output">v4l2_output</a> returned by the <a class="link" href="vidioc-enumoutput.html" title="ioctl VIDIOC_ENUMOUTPUT"><code class="constant">VIDIOC_ENUMOUTPUT</code></a> ioctl is
+set to <code class="constant">V4L2_OUTPUT_TYPE_MODULATOR</code> and its
+<em class="structfield"><code>modulator</code></em> field contains the index number
+of the modulator.</p><p>Radio output devices have exactly one modulator with index
+zero, no video outputs.</p><p>A video or radio device cannot support both a tuner and a
+modulator. Two separate device nodes will have to be used for such
+hardware, one that supports the tuner functionality and one that supports
+the modulator functionality. The reason is a limitation with the
+<a class="link" href="vidioc-g-frequency.html" title="ioctl VIDIOC_G_FREQUENCY, VIDIOC_S_FREQUENCY"><code class="constant">VIDIOC_S_FREQUENCY</code></a> ioctl where you cannot specify whether the frequency
+is for a tuner or a modulator.</p><p>To query and change modulator properties applications use
+the <a class="link" href="vidioc-g-modulator.html" title="ioctl VIDIOC_G_MODULATOR, VIDIOC_S_MODULATOR"><code class="constant">VIDIOC_G_MODULATOR</code></a> and <a class="link" href="vidioc-g-modulator.html" title="ioctl VIDIOC_G_MODULATOR, VIDIOC_S_MODULATOR"><code class="constant">VIDIOC_S_MODULATOR</code></a> ioctl. Note that
+<code class="constant">VIDIOC_S_MODULATOR</code> does not switch the current
+modulator, when there is more than one at all. The modulator is solely
+determined by the current video output. Drivers must support both
+ioctls and set the <code class="constant">V4L2_CAP_MODULATOR</code> flag in
+the struct&#160;<a class="link" href="vidioc-querycap.html#v4l2-capability" title="Table&#160;A.88.&#160;struct v4l2_capability">v4l2_capability</a> returned by the <a class="link" href="vidioc-querycap.html" title="ioctl VIDIOC_QUERYCAP"><code class="constant">VIDIOC_QUERYCAP</code></a> ioctl when the
+device has one or more modulators.</p></div><div class="section" title="Radio Frequency"><div class="titlepage"><div><div><h3 class="title"><a id="idp19190800"></a>Radio Frequency</h3></div></div></div><p>To get and set the tuner or modulator radio frequency
+applications use the <a class="link" href="vidioc-g-frequency.html" title="ioctl VIDIOC_G_FREQUENCY, VIDIOC_S_FREQUENCY"><code class="constant">VIDIOC_G_FREQUENCY</code></a> and <a class="link" href="vidioc-g-frequency.html" title="ioctl VIDIOC_G_FREQUENCY, VIDIOC_S_FREQUENCY"><code class="constant">VIDIOC_S_FREQUENCY</code></a>
+ioctl which both take a pointer to a struct&#160;<a class="link" href="vidioc-g-frequency.html#v4l2-frequency" title="Table&#160;A.68.&#160;struct v4l2_frequency">v4l2_frequency</a>. These ioctls
+are used for TV and radio devices alike. Drivers must support both
+ioctls when the tuner or modulator ioctls are supported, or
+when the device is a radio device.</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="audio.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="common.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="standard.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Audio Inputs and Outputs&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Video Standards</td></tr></table></div></body></html>

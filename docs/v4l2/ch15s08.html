@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>allocate_filter()</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_kdapi.html" title="Chapter&#160;15.&#160;Kernel Demux API" /><link rel="prev" href="kdapi_set.html" title="set()" /><link rel="next" href="ch15s09.html" title="release_filter()" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">allocate_filter()</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="kdapi_set.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;15.&#160;Kernel Demux API</th><td width="20%" align="right">&#160;<a accesskey="n" href="ch15s09.html">Next</a></td></tr></table><hr /></div><div class="section" title="allocate_filter()"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="idp49836024"></a>allocate_filter()</h2></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This function is used to allocate a section filter on the demux. It should only be
+ called when no filtering is in progress on this section feed. If a filter cannot be
+ allocated, the function fails with -ENOSPC. See in section ?? for the format of
+ the section filter.</p>
+</td></tr><tr><td align="char">
+<p>The bitfields filter_mask and filter_value should only be modified when no
+ filtering is in progress on this section feed. filter_mask controls which bits of
+ filter_value are compared with the section headers/payload. On a binary value
+ of 1 in filter_mask, the corresponding bits are compared. The filter only accepts
+ sections that are equal to filter_value in all the tested bit positions. Any changes
+ to the values of filter_mask and filter_value are guaranteed to take effect only
+ when the start_filtering() function is called next time. The parent pointer in
+ the struct is initialized by the API implementation to the value of the feed
+ parameter. The priv pointer is not used by the API implementation, and can
+ thus be freely utilized by the caller of this function. Any data pointed to by the
+ priv pointer is available to the recipient of the dmx_section_cb() function call.</p>
+</td></tr><tr><td align="char">
+<p>While the maximum section filter length (DMX_MAX_FILTER_SIZE) is
+ currently set at 16 bytes, hardware filters of that size are not available on all
+ platforms. Therefore, section filtering will often take place first in hardware,
+ followed by filtering in software for the header bytes that were not covered
+ by a hardware filter. The filter_mask field can be checked to determine how
+ many bytes of the section filter are actually used, and if the hardware filter will
+ suffice. Additionally, software-only section filters can optionally be allocated
+ to clients when all hardware section filters are in use. Note that on most demux
+ hardware it is not possible to filter on the section_length field of the section
+ header &#8211; thus this field is ignored, even though it is included in filter_value and
+ filter_mask fields.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int allocate_filter(dmx_section_feed_t&#8902; feed,
+ dmx_section_filter_t&#8902;&#8902; filter);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>dmx_section_feed_t*
+ feed</p>
+</td><td align="char">
+<p>Pointer to the section feed API and instance data.</p>
+</td></tr><tr><td align="char">
+<p>dmx_section_filter_t**
+ filter</p>
+</td><td align="char">
+<p>Pointer to the allocated filter.</p>
+</td></tr></tbody></table></div><p>RETURNS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>0</p>
+</td><td align="char">
+<p>The function was completed without errors.</p>
+</td></tr><tr><td align="char">
+<p>-ENOSPC</p>
+</td><td align="char">
+<p>No filters of given type and length available.</p>
+</td></tr><tr><td align="char">
+<p>-EINVAL</p>
+</td><td align="char">
+<p>Bad parameters.</p>
+</td></tr></tbody></table></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="kdapi_set.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_kdapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="ch15s09.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">set()&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;release_filter()</td></tr></table></div></body></html>

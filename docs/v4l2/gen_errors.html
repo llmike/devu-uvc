@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;19.&#160;Generic Error Codes</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="prev" href="media-ioc-setup-link.html" title="ioctl MEDIA_IOC_SETUP_LINK" /><link rel="next" href="fdl.html" title="Appendix&#160;M.&#160;GNU Free Documentation License" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;19.&#160;Generic Error Codes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="media-ioc-setup-link.html">Prev</a>&#160;</td><th width="60%" align="center">&#160;</th><td width="20%" align="right">&#160;<a accesskey="n" href="fdl.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;19.&#160;Generic Error Codes"><div class="titlepage"><div><div><h2 class="title"><a id="gen_errors"></a>Chapter&#160;19.&#160;Generic Error Codes</h2></div></div></div><div class="table"><a id="gen-errors"></a><p class="title"><b>Table&#160;19.1.&#160;Generic error codes</b></p><div class="table-contents"><table summary="Generic error codes" width="100%" border="0"><colgroup><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">EAGAIN (aka EWOULDBLOCK)</td><td valign="top">The ioctl can't be handled because the device is in state where
+	       it can't perform it. This could happen for example in case where
+	       device is sleeping and ioctl is performed to query statistics.
+	       It is also returned when the ioctl would need to wait
+	       for an event, but the device was opened in non-blocking mode.
+	</td></tr><tr><td valign="top">EBADF</td><td valign="top">The file descriptor is not a valid.</td></tr><tr><td valign="top">EBUSY</td><td valign="top">The ioctl can't be handled because the device is busy. This is
+	       typically return while device is streaming, and an ioctl tried to
+	       change something that would affect the stream, or would require the
+	       usage of a hardware resource that was already allocated. The ioctl
+	       must not be retried without performing another action to fix the
+	       problem first (typically: stop the stream before retrying).</td></tr><tr><td valign="top">EFAULT</td><td valign="top">There was a failure while copying data from/to userspace,
+	       probably caused by an invalid pointer reference.</td></tr><tr><td valign="top">EINVAL</td><td valign="top">One or more of the ioctl parameters are invalid or out of the
+	       allowed range. This is a widely used error code. See the individual
+	       ioctl requests for specific causes.</td></tr><tr><td valign="top">ENODEV</td><td valign="top">Device not found or was removed.</td></tr><tr><td valign="top">ENOMEM</td><td valign="top">There's not enough memory to handle the desired operation.</td></tr><tr><td valign="top">ENOTTY</td><td valign="top">The ioctl is not supported by the driver, actually meaning that
+	       the required functionality is not available, or the file
+	       descriptor is not for a media device.</td></tr><tr><td valign="top">ENOSPC</td><td valign="top">On USB devices, the stream ioctl's can return this error, meaning
+	       that this request would overcommit the usb bandwidth reserved
+	       for periodic transfers (up to 80% of the USB bandwidth).</td></tr><tr><td valign="top">EPERM</td><td valign="top">Permission denied. Can be returned if the device needs write
+		permission, or some special capabilities is needed
+		(e. g. root)</td></tr></tbody></table></div></div><br class="table-break" /><p>Note 1: ioctls may return other error codes. Since errors may have side
+effects such as a driver reset, applications should abort on unexpected errors.
+</p><p>Note 2: Request-specific error codes are listed in the individual
+requests descriptions.</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="media-ioc-setup-link.html">Prev</a>&#160;</td><td width="20%" align="center">&#160;</td><td width="40%" align="right">&#160;<a accesskey="n" href="fdl.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ioctl MEDIA_IOC_SETUP_LINK&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Appendix&#160;M.&#160;GNU Free Documentation License</td></tr></table></div></body></html>

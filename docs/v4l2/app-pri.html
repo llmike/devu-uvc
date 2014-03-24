@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Application Priority</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="common.html" title="Chapter&#160;1.&#160;Common API Elements" /><link rel="prev" href="querycap.html" title="Querying Capabilities" /><link rel="next" href="video.html" title="Video Inputs and Outputs" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Application Priority</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="querycap.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;1.&#160;Common API Elements</th><td width="20%" align="right">&#160;<a accesskey="n" href="video.html">Next</a></td></tr></table><hr /></div><div class="section" title="Application Priority"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="app-pri"></a>Application Priority</h2></div></div></div><p>When multiple applications share a device it may be
+desirable to assign them different priorities. Contrary to the
+traditional "rm -rf /" school of thought a video recording application
+could for example block other applications from changing video
+controls or switching the current TV channel. Another objective is to
+permit low priority applications working in background, which can be
+preempted by user controlled applications and automatically regain
+control of the device at a later time.</p><p>Since these features cannot be implemented entirely in user
+space V4L2 defines the <a class="link" href="vidioc-g-priority.html" title="ioctl VIDIOC_G_PRIORITY, VIDIOC_S_PRIORITY"><code class="constant">VIDIOC_G_PRIORITY</code></a> and <a class="link" href="vidioc-g-priority.html" title="ioctl VIDIOC_G_PRIORITY, VIDIOC_S_PRIORITY"><code class="constant">VIDIOC_S_PRIORITY</code></a>
+ioctls to request and query the access priority associate with a file
+descriptor. Opening a device assigns a medium priority, compatible
+with earlier versions of V4L2 and drivers not supporting these ioctls.
+Applications requiring a different priority will usually call
+<code class="constant">VIDIOC_S_PRIORITY</code> after verifying the device with
+the <a class="link" href="vidioc-querycap.html" title="ioctl VIDIOC_QUERYCAP"><code class="constant">VIDIOC_QUERYCAP</code></a> ioctl.</p><p>Ioctls changing driver properties, such as <a class="link" href="vidioc-g-input.html" title="ioctl VIDIOC_G_INPUT, VIDIOC_S_INPUT"><code class="constant">VIDIOC_S_INPUT</code></a>,
+return an <span class="errorcode">EBUSY</span> error code after another application obtained higher priority.
+An event mechanism to notify applications about asynchronous property
+changes has been proposed but not added yet.</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="querycap.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="common.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="video.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Querying Capabilities&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Video Inputs and Outputs</td></tr></table></div></body></html>

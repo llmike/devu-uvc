@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Buffers</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="io.html" title="Chapter&#160;3.&#160;Input/Output" /><link rel="prev" href="async.html" title="Asynchronous I/O" /><link rel="next" href="field-order.html" title="Field Order" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Buffers</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="async.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;3.&#160;Input/Output</th><td width="20%" align="right">&#160;<a accesskey="n" href="field-order.html">Next</a></td></tr></table><hr /></div><div class="section" title="Buffers"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="buffer"></a>Buffers</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="buffer.html#idp26386896">Timecodes</a></span></dt></dl></div><p>A buffer contains data exchanged by application and
+driver using one of the Streaming I/O methods. In the multi-planar API, the
+data is held in planes, while the buffer structure acts as a container
+for the planes. Only pointers to buffers (planes) are exchanged, the data
+itself is not copied. These pointers, together with meta-information like
+timestamps or field parity, are stored in a struct
+<span class="structname">v4l2_buffer</span>, argument to
+the <a class="link" href="vidioc-querybuf.html" title="ioctl VIDIOC_QUERYBUF"><code class="constant">VIDIOC_QUERYBUF</code></a>, <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF"><code class="constant">VIDIOC_QBUF</code></a> and <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF"><code class="constant">VIDIOC_DQBUF</code></a> ioctl.
+In the multi-planar API, some plane-specific members of struct
+<span class="structname">v4l2_buffer</span>, such as pointers and sizes for each
+plane, are stored in struct <span class="structname">v4l2_plane</span> instead.
+In that case, struct <span class="structname">v4l2_buffer</span> contains an array of
+plane structures.</p><p>Nominally timestamps refer to the first data byte transmitted.
+In practice however the wide range of hardware covered by the V4L2 API
+limits timestamp accuracy. Often an interrupt routine will
+sample the system clock shortly after the field or frame was stored
+completely in memory. So applications must expect a constant
+difference up to one field or frame period plus a small (few scan
+lines) random error. The delay and error can be much
+larger due to compression or transmission over an external bus when
+the frames are not properly stamped by the sender. This is frequently
+the case with USB cameras. Here timestamps refer to the instant the
+field or frame was received by the driver, not the capture time. These
+devices identify by not enumerating any video standards, see <a class="xref" href="standard.html" title="Video Standards">the section called &#8220;Video Standards&#8221;</a>.</p><p>Similar limitations apply to output timestamps. Typically
+the video hardware locks to a clock controlling the video timing, the
+horizontal and vertical synchronization pulses. At some point in the
+line sequence, possibly the vertical blanking, an interrupt routine
+samples the system clock, compares against the timestamp and programs
+the hardware to repeat the previous field or frame, or to display the
+buffer contents.</p><p>Apart of limitations of the video device and natural
+inaccuracies of all clocks, it should be noted system time itself is
+not perfectly stable. It can be affected by power saving cycles,
+warped to insert leap seconds, or even turned back or forth by the
+system administrator affecting long term measurements. <sup>[<a id="idp26282512" href="#ftn.idp26282512" class="footnote">19</a>]</sup></p><div class="table"><a id="v4l2-buffer"></a><p class="title"><b>Table&#160;3.1.&#160;struct <span class="structname">v4l2_buffer</span></b></p><div class="table-contents"><table summary="struct v4l2_buffer" width="100%" border="0"><colgroup><col /><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>index</code></em></td><td valign="top">&#160;</td><td valign="top">Number of the buffer, set by the application. This
+field is only used for <a class="link" href="mmap.html" title="Streaming I/O (Memory Mapping)">memory mapping</a> I/O
+and can range from zero to the number of buffers allocated
+with the <a class="link" href="vidioc-reqbufs.html" title="ioctl VIDIOC_REQBUFS"><code class="constant">VIDIOC_REQBUFS</code></a> ioctl (struct&#160;<a class="link" href="vidioc-reqbufs.html#v4l2-requestbuffers" title="Table&#160;A.94.&#160;struct v4l2_requestbuffers">v4l2_requestbuffers</a> <em class="structfield"><code>count</code></em>) minus one.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>type</code></em></td><td valign="top">&#160;</td><td valign="top">Type of the buffer, same as struct&#160;<a class="link" href="vidioc-g-fmt.html#v4l2-format" title="Table&#160;A.67.&#160;struct v4l2_format">v4l2_format</a>
+<em class="structfield"><code>type</code></em> or struct&#160;<a class="link" href="vidioc-reqbufs.html#v4l2-requestbuffers" title="Table&#160;A.94.&#160;struct v4l2_requestbuffers">v4l2_requestbuffers</a>
+<em class="structfield"><code>type</code></em>, set by the application. See <a class="xref" href="buffer.html#v4l2-buf-type" title="Table&#160;3.3.&#160;enum v4l2_buf_type">Table&#160;3.3, &#8220;enum v4l2_buf_type&#8221;</a></td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>bytesused</code></em></td><td valign="top">&#160;</td><td valign="top">The number of bytes occupied by the data in the
+buffer. It depends on the negotiated data format and may change with
+each buffer for compressed variable size data like JPEG images.
+Drivers must set this field when <em class="structfield"><code>type</code></em>
+refers to an input stream, applications when an output stream.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>flags</code></em></td><td valign="top">&#160;</td><td valign="top">Flags set by the application or driver, see <a class="xref" href="buffer.html#buffer-flags" title="Table&#160;3.4.&#160;Buffer Flags">Table&#160;3.4, &#8220;Buffer Flags&#8221;</a>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>field</code></em></td><td valign="top">&#160;</td><td valign="top">Indicates the field order of the image in the
+buffer, see <a class="xref" href="field-order.html#v4l2-field" title="Table&#160;3.9.&#160;enum v4l2_field">Table&#160;3.9, &#8220;enum v4l2_field&#8221;</a>. This field is not used when
+the buffer contains VBI data. Drivers must set it when
+<em class="structfield"><code>type</code></em> refers to an input stream,
+applications when an output stream.</td></tr><tr><td valign="top">struct timeval</td><td valign="top"><em class="structfield"><code>timestamp</code></em></td><td valign="top">&#160;</td><td valign="top"><p>For input streams this is time when the first data
+	    byte was captured, as returned by the
+	    <code class="function">clock_gettime()</code> function for the relevant
+	    clock id; see <code class="constant">V4L2_BUF_FLAG_TIMESTAMP_*</code> in
+	    <a class="xref" href="buffer.html#buffer-flags" title="Table&#160;3.4.&#160;Buffer Flags">Table&#160;3.4, &#8220;Buffer Flags&#8221;</a>. For output streams the data
+	    will not be displayed before this time, secondary to the nominal
+	    frame rate determined by the current video standard in enqueued
+	    order. Applications can for example zero this field to display
+	    frames as soon as possible. The driver stores the time at which
+	    the first data byte was actually sent out in the
+	    <em class="structfield"><code>timestamp</code></em> field. This permits
+	    applications to monitor the drift between the video and system
+	    clock.</p></td></tr><tr><td valign="top">struct&#160;<a class="link" href="buffer.html#v4l2-timecode" title="Table&#160;3.6.&#160;struct v4l2_timecode">v4l2_timecode</a></td><td valign="top"><em class="structfield"><code>timecode</code></em></td><td valign="top">&#160;</td><td valign="top">When <em class="structfield"><code>type</code></em> is
+<code class="constant">V4L2_BUF_TYPE_VIDEO_CAPTURE</code> and the
+<code class="constant">V4L2_BUF_FLAG_TIMECODE</code> flag is set in
+<em class="structfield"><code>flags</code></em>, this structure contains a frame
+timecode. In <a class="link" href="field-order.html#v4l2-field" title="Table&#160;3.9.&#160;enum v4l2_field">V4L2_FIELD_ALTERNATE</a>
+mode the top and bottom field contain the same timecode.
+Timecodes are intended to help video editing and are typically recorded on
+video tapes, but also embedded in compressed formats like MPEG. This
+field is independent of the <em class="structfield"><code>timestamp</code></em> and
+<em class="structfield"><code>sequence</code></em> fields.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>sequence</code></em></td><td valign="top">&#160;</td><td valign="top">Set by the driver, counting the frames (not fields!) in
+sequence. This field is set for both input and output devices.</td></tr><tr><td colspan="4" valign="top"><p>In <a class="link" href="field-order.html#v4l2-field" title="Table&#160;3.9.&#160;enum v4l2_field">V4L2_FIELD_ALTERNATE</a> mode the top and
+bottom field have the same sequence number. The count starts at zero
+and includes dropped or repeated frames. A dropped frame was received
+by an input device but could not be stored due to lack of free buffer
+space. A repeated frame was displayed again by an output device
+because the application did not pass new data in
+time.</p><p>Note this may count the frames received
+e.g. over USB, without taking into account the frames dropped by the
+remote hardware due to limited compression throughput or bus
+bandwidth. These devices identify by not enumerating any video
+standards, see <a class="xref" href="standard.html" title="Video Standards">the section called &#8220;Video Standards&#8221;</a>.</p></td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>memory</code></em></td><td valign="top">&#160;</td><td valign="top">This field must be set by applications and/or drivers
+in accordance with the selected I/O method. See <a class="xref" href="buffer.html#v4l2-memory" title="Table&#160;3.5.&#160;enum v4l2_memory">Table&#160;3.5, &#8220;enum v4l2_memory&#8221;</a></td></tr><tr><td valign="top">union</td><td valign="top"><em class="structfield"><code>m</code></em></td><td class="auto-generated">&#160;</td><td class="auto-generated">&#160;</td></tr><tr><td valign="top">&#160;</td><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>offset</code></em></td><td valign="top">For the single-planar API and when
+<em class="structfield"><code>memory</code></em> is <code class="constant">V4L2_MEMORY_MMAP</code> this
+is the offset of the buffer from the start of the device memory. The value is
+returned by the driver and apart of serving as parameter to the <a class="link" href="func-mmap.html" title="V4L2 mmap()"><code class="function">mmap()</code></a>
+function not useful for applications. See <a class="xref" href="mmap.html" title="Streaming I/O (Memory Mapping)">the section called &#8220;Streaming I/O (Memory Mapping)&#8221;</a> for details
+	  </td></tr><tr><td valign="top">&#160;</td><td valign="top">unsigned long</td><td valign="top"><em class="structfield"><code>userptr</code></em></td><td valign="top">For the single-planar API and when
+<em class="structfield"><code>memory</code></em> is <code class="constant">V4L2_MEMORY_USERPTR</code>
+this is a pointer to the buffer (casted to unsigned long type) in virtual
+memory, set by the application. See <a class="xref" href="userp.html" title="Streaming I/O (User Pointers)">the section called &#8220;Streaming I/O (User Pointers)&#8221;</a> for details.
+	    </td></tr><tr><td valign="top">&#160;</td><td valign="top">struct v4l2_plane</td><td valign="top"><em class="structfield"><code>*planes</code></em></td><td valign="top">When using the multi-planar API, contains a userspace pointer
+	    to an array of struct&#160;<a class="link" href="buffer.html#v4l2-plane" title="Table&#160;3.2.&#160;struct v4l2_plane">v4l2_plane</a>. The size of the array should be put
+	    in the <em class="structfield"><code>length</code></em> field of this
+	    <span class="structname">v4l2_buffer</span> structure.</td></tr><tr><td valign="top">&#160;</td><td valign="top">int</td><td valign="top"><em class="structfield"><code>fd</code></em></td><td valign="top">For the single-plane API and when
+<em class="structfield"><code>memory</code></em> is <code class="constant">V4L2_MEMORY_DMABUF</code> this
+is the file descriptor associated with a DMABUF buffer.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>length</code></em></td><td valign="top">&#160;</td><td valign="top">Size of the buffer (not the payload) in bytes for the
+	    single-planar API. For the multi-planar API the application sets
+	    this to the number of elements in the <em class="structfield"><code>planes</code></em>
+	    array. The driver will fill in the actual number of valid elements in
+	    that array.
+	    </td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>reserved2</code></em></td><td valign="top">&#160;</td><td valign="top">A place holder for future extensions. Applications
+should set this to 0.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>reserved</code></em></td><td valign="top">&#160;</td><td valign="top">A place holder for future extensions. Applications
+should set this to 0.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-plane"></a><p class="title"><b>Table&#160;3.2.&#160;struct <span class="structname">v4l2_plane</span></b></p><div class="table-contents"><table summary="struct v4l2_plane" width="100%" border="0"><colgroup><col /><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>bytesused</code></em></td><td valign="top">&#160;</td><td valign="top">The number of bytes occupied by data in the plane
+	    (its payload).</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>length</code></em></td><td valign="top">&#160;</td><td valign="top">Size in bytes of the plane (not its payload).</td></tr><tr><td valign="top">union</td><td valign="top"><em class="structfield"><code>m</code></em></td><td valign="top">&#160;</td><td valign="top">&#160;</td></tr><tr><td valign="top">&#160;</td><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>mem_offset</code></em></td><td valign="top">When the memory type in the containing struct&#160;<a class="link" href="buffer.html#v4l2-buffer" title="Table&#160;3.1.&#160;struct v4l2_buffer">v4l2_buffer</a> is
+	      <code class="constant">V4L2_MEMORY_MMAP</code>, this is the value that
+	      should be passed to <a class="link" href="func-mmap.html" title="V4L2 mmap()"><code class="function">mmap()</code></a>, similar to the
+	      <em class="structfield"><code>offset</code></em> field in struct&#160;<a class="link" href="buffer.html#v4l2-buffer" title="Table&#160;3.1.&#160;struct v4l2_buffer">v4l2_buffer</a>.</td></tr><tr><td valign="top">&#160;</td><td valign="top">unsigned long</td><td valign="top"><em class="structfield"><code>userptr</code></em></td><td valign="top">When the memory type in the containing struct&#160;<a class="link" href="buffer.html#v4l2-buffer" title="Table&#160;3.1.&#160;struct v4l2_buffer">v4l2_buffer</a> is
+	      <code class="constant">V4L2_MEMORY_USERPTR</code>, this is a userspace
+	      pointer to the memory allocated for this plane by an application.
+	      </td></tr><tr><td valign="top">&#160;</td><td valign="top">int</td><td valign="top"><em class="structfield"><code>fd</code></em></td><td valign="top">When the memory type in the containing struct&#160;<a class="link" href="buffer.html#v4l2-buffer" title="Table&#160;3.1.&#160;struct v4l2_buffer">v4l2_buffer</a> is
+		<code class="constant">V4L2_MEMORY_DMABUF</code>, this is a file
+		descriptor associated with a DMABUF buffer, similar to the
+		<em class="structfield"><code>fd</code></em> field in struct&#160;<a class="link" href="buffer.html#v4l2-buffer" title="Table&#160;3.1.&#160;struct v4l2_buffer">v4l2_buffer</a>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>data_offset</code></em></td><td valign="top">&#160;</td><td valign="top">Offset in bytes to video data in the plane, if applicable.
+	    </td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>reserved[11]</code></em></td><td valign="top">&#160;</td><td valign="top">Reserved for future use. Should be zeroed by an
+	    application.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-buf-type"></a><p class="title"><b>Table&#160;3.3.&#160;enum v4l2_buf_type</b></p><div class="table-contents"><table summary="enum v4l2_buf_type" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_BUF_TYPE_VIDEO_CAPTURE</code></td><td valign="top">1</td><td valign="top">Buffer of a single-planar video capture stream, see <a class="xref" href="devices.html#capture" title="Video Capture Interface">the section called &#8220;Video Capture Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE</code>
+	    </td><td valign="top">9</td><td valign="top">Buffer of a multi-planar video capture stream, see <a class="xref" href="devices.html#capture" title="Video Capture Interface">the section called &#8220;Video Capture Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_TYPE_VIDEO_OUTPUT</code></td><td valign="top">2</td><td valign="top">Buffer of a single-planar video output stream, see <a class="xref" href="output.html" title="Video Output Interface">the section called &#8220;Video Output Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE</code>
+	    </td><td valign="top">10</td><td valign="top">Buffer of a multi-planar video output stream, see <a class="xref" href="output.html" title="Video Output Interface">the section called &#8220;Video Output Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_TYPE_VIDEO_OVERLAY</code></td><td valign="top">3</td><td valign="top">Buffer for video overlay, see <a class="xref" href="overlay.html" title="Video Overlay Interface">the section called &#8220;Video Overlay Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_TYPE_VBI_CAPTURE</code></td><td valign="top">4</td><td valign="top">Buffer of a raw VBI capture stream, see <a class="xref" href="raw-vbi.html" title="Raw VBI Data Interface">the section called &#8220;Raw VBI Data Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_TYPE_VBI_OUTPUT</code></td><td valign="top">5</td><td valign="top">Buffer of a raw VBI output stream, see <a class="xref" href="raw-vbi.html" title="Raw VBI Data Interface">the section called &#8220;Raw VBI Data Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_TYPE_SLICED_VBI_CAPTURE</code></td><td valign="top">6</td><td valign="top">Buffer of a sliced VBI capture stream, see <a class="xref" href="sliced.html" title="Sliced VBI Data Interface">the section called &#8220;Sliced VBI Data Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_TYPE_SLICED_VBI_OUTPUT</code></td><td valign="top">7</td><td valign="top">Buffer of a sliced VBI output stream, see <a class="xref" href="sliced.html" title="Sliced VBI Data Interface">the section called &#8220;Sliced VBI Data Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY</code></td><td valign="top">8</td><td valign="top">Buffer for video output overlay (OSD), see <a class="xref" href="osd.html" title="Video Output Overlay Interface">the section called &#8220;Video Output Overlay Interface&#8221;</a>.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="buffer-flags"></a><p class="title"><b>Table&#160;3.4.&#160;Buffer Flags</b></p><div class="table-contents"><table summary="Buffer Flags" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_MAPPED</code></td><td valign="top">0x0001</td><td valign="top">The buffer resides in device memory and has been mapped
+into the application's address space, see <a class="xref" href="mmap.html" title="Streaming I/O (Memory Mapping)">the section called &#8220;Streaming I/O (Memory Mapping)&#8221;</a> for details.
+Drivers set or clear this flag when the
+<a class="link" href="vidioc-querybuf.html" title="ioctl VIDIOC_QUERYBUF">VIDIOC_QUERYBUF</a>, <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF">VIDIOC_QBUF</a> or <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF">VIDIOC_DQBUF</a> ioctl is called. Set by the driver.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_QUEUED</code></td><td valign="top">0x0002</td><td valign="top">Internally drivers maintain two buffer queues, an
+incoming and outgoing queue. When this flag is set, the buffer is
+currently on the incoming queue. It automatically moves to the
+outgoing queue after the buffer has been filled (capture devices) or
+displayed (output devices). Drivers set or clear this flag when the
+<code class="constant">VIDIOC_QUERYBUF</code> ioctl is called. After
+(successful) calling the <code class="constant">VIDIOC_QBUF </code>ioctl it is
+always set and after <code class="constant">VIDIOC_DQBUF</code> always
+cleared.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_DONE</code></td><td valign="top">0x0004</td><td valign="top">When this flag is set, the buffer is currently on
+the outgoing queue, ready to be dequeued from the driver. Drivers set
+or clear this flag when the <code class="constant">VIDIOC_QUERYBUF</code> ioctl
+is called. After calling the <code class="constant">VIDIOC_QBUF</code> or
+<code class="constant">VIDIOC_DQBUF</code> it is always cleared. Of course a
+buffer cannot be on both queues at the same time, the
+<code class="constant">V4L2_BUF_FLAG_QUEUED</code> and
+<code class="constant">V4L2_BUF_FLAG_DONE</code> flag are mutually exclusive.
+They can be both cleared however, then the buffer is in "dequeued"
+state, in the application domain to say so.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_ERROR</code></td><td valign="top">0x0040</td><td valign="top">When this flag is set, the buffer has been dequeued
+	    successfully, although the data might have been corrupted.
+	    This is recoverable, streaming may continue as normal and
+	    the buffer may be reused normally.
+	    Drivers set this flag when the <code class="constant">VIDIOC_DQBUF</code>
+	    ioctl is called.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_KEYFRAME</code></td><td valign="top">0x0008</td><td valign="top">Drivers set or clear this flag when calling the
+<code class="constant">VIDIOC_DQBUF</code> ioctl. It may be set by video
+capture devices when the buffer contains a compressed image which is a
+key frame (or field), i.&#160;e. can be decompressed on its own.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_PFRAME</code></td><td valign="top">0x0010</td><td valign="top">Similar to <code class="constant">V4L2_BUF_FLAG_KEYFRAME</code>
+this flags predicted frames or fields which contain only differences to a
+previous key frame.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_BFRAME</code></td><td valign="top">0x0020</td><td valign="top">Similar to <code class="constant">V4L2_BUF_FLAG_PFRAME</code>
+	this is a bidirectional predicted frame or field. [ooc tbd]</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_TIMECODE</code></td><td valign="top">0x0100</td><td valign="top">The <em class="structfield"><code>timecode</code></em> field is valid.
+Drivers set or clear this flag when the <code class="constant">VIDIOC_DQBUF</code>
+ioctl is called.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_PREPARED</code></td><td valign="top">0x0400</td><td valign="top">The buffer has been prepared for I/O and can be queued by the
+application. Drivers set or clear this flag when the
+<a class="link" href="vidioc-querybuf.html" title="ioctl VIDIOC_QUERYBUF">VIDIOC_QUERYBUF</a>, <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF">VIDIOC_PREPARE_BUF</a>, <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF">VIDIOC_QBUF</a> or <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF">VIDIOC_DQBUF</a> ioctl is called.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_NO_CACHE_INVALIDATE</code></td><td valign="top">0x0800</td><td valign="top">Caches do not have to be invalidated for this buffer.
+Typically applications shall use this flag if the data captured in the buffer
+is not going to be touched by the CPU, instead the buffer will, probably, be
+passed on to a DMA-capable hardware unit for further processing or output.
+</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_NO_CACHE_CLEAN</code></td><td valign="top">0x1000</td><td valign="top">Caches do not have to be cleaned for this buffer.
+Typically applications shall use this flag for output buffers if the data
+in this buffer has not been created by the CPU but by some DMA-capable unit,
+in which case caches have not been used.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_TIMESTAMP_MASK</code></td><td valign="top">0xe000</td><td valign="top">Mask for timestamp types below. To test the
+	    timestamp type, mask out bits not belonging to timestamp
+	    type by performing a logical and operation with buffer
+	    flags and timestamp mask.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_TIMESTAMP_UNKNOWN</code></td><td valign="top">0x0000</td><td valign="top">Unknown timestamp type. This type is used by
+	    drivers before Linux 3.9 and may be either monotonic (see
+	    below) or realtime (wall clock). Monotonic clock has been
+	    favoured in embedded systems whereas most of the drivers
+	    use the realtime clock. Either kinds of timestamps are
+	    available in user space via
+	    <code class="function">clock_gettime(2)</code> using clock IDs
+	    <code class="constant">CLOCK_MONOTONIC</code> and
+	    <code class="constant">CLOCK_REALTIME</code>, respectively.</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC</code></td><td valign="top">0x2000</td><td valign="top">The buffer timestamp has been taken from the
+	    <code class="constant">CLOCK_MONOTONIC</code> clock. To access the
+	    same clock outside V4L2, use
+	    <code class="function">clock_gettime(2)</code> .</td></tr><tr><td valign="top"><code class="constant">V4L2_BUF_FLAG_TIMESTAMP_COPY</code></td><td valign="top">0x4000</td><td valign="top">The CAPTURE buffer timestamp has been taken from the
+	    corresponding OUTPUT buffer. This flag applies only to mem2mem devices.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-memory"></a><p class="title"><b>Table&#160;3.5.&#160;enum v4l2_memory</b></p><div class="table-contents"><table summary="enum v4l2_memory" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_MEMORY_MMAP</code></td><td valign="top">1</td><td valign="top">The buffer is used for <a class="link" href="mmap.html" title="Streaming I/O (Memory Mapping)">memory
+mapping</a> I/O.</td></tr><tr><td valign="top"><code class="constant">V4L2_MEMORY_USERPTR</code></td><td valign="top">2</td><td valign="top">The buffer is used for <a class="link" href="userp.html" title="Streaming I/O (User Pointers)">user
+pointer</a> I/O.</td></tr><tr><td valign="top"><code class="constant">V4L2_MEMORY_OVERLAY</code></td><td valign="top">3</td><td valign="top">[to do]</td></tr><tr><td valign="top"><code class="constant">V4L2_MEMORY_DMABUF</code></td><td valign="top">4</td><td valign="top">The buffer is used for <a class="link" href="dmabuf.html" title="Streaming I/O (DMA buffer importing)">DMA shared
+buffer</a> I/O.</td></tr></tbody></table></div></div><br class="table-break" /><div class="section" title="Timecodes"><div class="titlepage"><div><div><h3 class="title"><a id="idp26386896"></a>Timecodes</h3></div></div></div><p>The <span class="structname">v4l2_timecode</span> structure is
+designed to hold a <a class="xref" href="bi01.html#smpte12m" title="SMPTE 12M-1999 &quot;Television, Audio and Film - Time and Control Code&quot;">[<abbr class="abbrev">SMPTE&#160;12M</abbr>]</a> or similar timecode.
+(struct <span class="structname">timeval</span> timestamps are stored in
+struct&#160;<a class="link" href="buffer.html#v4l2-buffer" title="Table&#160;3.1.&#160;struct v4l2_buffer">v4l2_buffer</a> field <em class="structfield"><code>timestamp</code></em>.)</p><div class="table"><a id="v4l2-timecode"></a><p class="title"><b>Table&#160;3.6.&#160;struct <span class="structname">v4l2_timecode</span></b></p><div class="table-contents"><table summary="struct v4l2_timecode" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>type</code></em></td><td valign="top">Frame rate the timecodes are based on, see <a class="xref" href="buffer.html#timecode-type" title="Table&#160;3.7.&#160;Timecode Types">Table&#160;3.7, &#8220;Timecode Types&#8221;</a>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>flags</code></em></td><td valign="top">Timecode flags, see <a class="xref" href="buffer.html#timecode-flags" title="Table&#160;3.8.&#160;Timecode Flags">Table&#160;3.8, &#8220;Timecode Flags&#8221;</a>.</td></tr><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>frames</code></em></td><td valign="top">Frame count, 0 ... 23/24/29/49/59, depending on the
+	    type of timecode.</td></tr><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>seconds</code></em></td><td valign="top">Seconds count, 0 ... 59. This is a binary, not BCD number.</td></tr><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>minutes</code></em></td><td valign="top">Minutes count, 0 ... 59. This is a binary, not BCD number.</td></tr><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>hours</code></em></td><td valign="top">Hours count, 0 ... 29. This is a binary, not BCD number.</td></tr><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>userbits</code></em>[4]</td><td valign="top">The "user group" bits from the timecode.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="timecode-type"></a><p class="title"><b>Table&#160;3.7.&#160;Timecode Types</b></p><div class="table-contents"><table summary="Timecode Types" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_TC_TYPE_24FPS</code></td><td valign="top">1</td><td valign="top">24 frames per second, i.&#160;e. film.</td></tr><tr><td valign="top"><code class="constant">V4L2_TC_TYPE_25FPS</code></td><td valign="top">2</td><td valign="top">25 frames per second, i.&#160;e. PAL or SECAM video.</td></tr><tr><td valign="top"><code class="constant">V4L2_TC_TYPE_30FPS</code></td><td valign="top">3</td><td valign="top">30 frames per second, i.&#160;e. NTSC video.</td></tr><tr><td valign="top"><code class="constant">V4L2_TC_TYPE_50FPS</code></td><td valign="top">4</td><td valign="top">&#160;</td></tr><tr><td valign="top"><code class="constant">V4L2_TC_TYPE_60FPS</code></td><td valign="top">5</td><td valign="top">&#160;</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="timecode-flags"></a><p class="title"><b>Table&#160;3.8.&#160;Timecode Flags</b></p><div class="table-contents"><table summary="Timecode Flags" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_TC_FLAG_DROPFRAME</code></td><td valign="top">0x0001</td><td valign="top">Indicates "drop frame" semantics for counting frames
+in 29.97 fps material. When set, frame numbers 0 and 1 at the start of
+each minute, except minutes 0, 10, 20, 30, 40, 50 are omitted from the
+count.</td></tr><tr><td valign="top"><code class="constant">V4L2_TC_FLAG_COLORFRAME</code></td><td valign="top">0x0002</td><td valign="top">The "color frame" flag.</td></tr><tr><td valign="top"><code class="constant">V4L2_TC_USERBITS_field</code></td><td valign="top">0x000C</td><td valign="top">Field mask for the "binary group flags".</td></tr><tr><td valign="top"><code class="constant">V4L2_TC_USERBITS_USERDEFINED</code></td><td valign="top">0x0000</td><td valign="top">Unspecified format.</td></tr><tr><td valign="top"><code class="constant">V4L2_TC_USERBITS_8BITCHARS</code></td><td valign="top">0x0008</td><td valign="top">8-bit ISO characters.</td></tr></tbody></table></div></div><br class="table-break" /></div><div class="footnotes"><br /><hr width="100" align="left" /><div class="footnote"><p><sup>[<a id="ftn.idp26282512" href="#idp26282512" class="para">19</a>] </sup>Since no other Linux multimedia
+API supports unadjusted time it would be foolish to introduce here. We
+must use a universally supported clock to synchronize different media,
+hence time of day.</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="async.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="io.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="field-order.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Asynchronous I/O&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Field Order</td></tr></table></div></body></html>

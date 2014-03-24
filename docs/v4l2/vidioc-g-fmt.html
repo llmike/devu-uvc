@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="user-func.html" title="Appendix&#160;A.&#160;Function Reference" /><link rel="prev" href="vidioc-g-fbuf.html" title="ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF" /><link rel="next" href="vidioc-g-frequency.html" title="ioctl VIDIOC_G_FREQUENCY, VIDIOC_S_FREQUENCY" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">ioctl VIDIOC_G_FMT, VIDIOC_S_FMT,
+VIDIOC_TRY_FMT</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="vidioc-g-fbuf.html">Prev</a>&#160;</td><th width="60%" align="center">Appendix&#160;A.&#160;Function Reference</th><td width="20%" align="right">&#160;<a accesskey="n" href="vidioc-g-frequency.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><a id="vidioc-g-fmt"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT &#8212; Get or set the data format, try a format</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>struct v4l2_format
+*<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div></div><div class="refsect1" title="Arguments"><a id="idp34430000"></a><h2>Arguments</h2><div class="variablelist"><dl><dt><span class="term"><em class="parameter"><code>fd</code></em></span></dt><dd><p>File descriptor returned by <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>.</p></dd><dt><span class="term"><em class="parameter"><code>request</code></em></span></dt><dd><p>VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT</p></dd><dt><span class="term"><em class="parameter"><code>argp</code></em></span></dt><dd><p></p></dd></dl></div></div><div class="refsect1" title="Description"><a id="idp34434112"></a><h2>Description</h2><p>These ioctls are used to negotiate the format of data
+(typically image format) exchanged between driver and
+application.</p><p>To query the current parameters applications set the
+<em class="structfield"><code>type</code></em> field of a struct
+<span class="structname">v4l2_format</span> to the respective buffer (stream)
+type. For example video capture devices use
+<code class="constant">V4L2_BUF_TYPE_VIDEO_CAPTURE</code> or
+<code class="constant">V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE</code>. When the application
+calls the <code class="constant">VIDIOC_G_FMT</code> ioctl with a pointer to
+this structure the driver fills the respective member of the
+<em class="structfield"><code>fmt</code></em> union. In case of video capture devices
+that is either the struct&#160;<a class="link" href="pixfmt.html#v4l2-pix-format" title="Table&#160;2.1.&#160;struct v4l2_pix_format">v4l2_pix_format</a> <em class="structfield"><code>pix</code></em> or
+the struct&#160;<a class="link" href="ch02s02.html#v4l2-pix-format-mplane" title="Table&#160;2.3.&#160;struct v4l2_pix_format_mplane">v4l2_pix_format_mplane</a> <em class="structfield"><code>pix_mp</code></em> member.
+When the requested buffer type is not supported drivers return an
+<span class="errorcode">EINVAL</span> error code.</p><p>To change the current format parameters applications
+initialize the <em class="structfield"><code>type</code></em> field and all
+fields of the respective <em class="structfield"><code>fmt</code></em>
+union member. For details see the documentation of the various devices
+types in <a class="xref" href="devices.html" title="Chapter&#160;4.&#160;Interfaces">Chapter&#160;4, <i>Interfaces</i></a>. Good practice is to query the
+current parameters first, and to
+modify only those parameters not suitable for the application. When
+the application calls the <code class="constant">VIDIOC_S_FMT</code> ioctl
+with a pointer to a <span class="structname">v4l2_format</span> structure
+the driver checks
+and adjusts the parameters against hardware abilities. Drivers
+should not return an error code unless the <em class="structfield"><code>type</code></em> field is invalid, this is
+a mechanism to fathom device capabilities and to approach parameters
+acceptable for both the application and driver. On success the driver
+may program the hardware, allocate resources and generally prepare for
+data exchange.
+Finally the <code class="constant">VIDIOC_S_FMT</code> ioctl returns the
+current format parameters as <code class="constant">VIDIOC_G_FMT</code> does.
+Very simple, inflexible devices may even ignore all input and always
+return the default parameters. However all V4L2 devices exchanging
+data with the application must implement the
+<code class="constant">VIDIOC_G_FMT</code> and
+<code class="constant">VIDIOC_S_FMT</code> ioctl. When the requested buffer
+type is not supported drivers return an <span class="errorcode">EINVAL</span> error code on a
+<code class="constant">VIDIOC_S_FMT</code> attempt. When I/O is already in
+progress or the resource is not available for other reasons drivers
+return the <span class="errorcode">EBUSY</span> error code.</p><p>The <code class="constant">VIDIOC_TRY_FMT</code> ioctl is equivalent
+to <code class="constant">VIDIOC_S_FMT</code> with one exception: it does not
+change driver state. It can also be called at any time, never
+returning <span class="errorcode">EBUSY</span>. This function is provided to
+negotiate parameters, to learn about hardware limitations, without
+disabling I/O or possibly time consuming hardware preparations.
+Although strongly recommended drivers are not required to implement
+this ioctl.</p><p>The format as returned by <code class="constant">VIDIOC_TRY_FMT</code>
+must be identical to what <code class="constant">VIDIOC_S_FMT</code> returns for
+the same input or output.</p><div class="table"><a id="v4l2-format"></a><p class="title"><b>Table&#160;A.67.&#160;struct <span class="structname">v4l2_format</span></b></p><div class="table-contents"><table summary="struct v4l2_format" width="100%" border="0"><colgroup><col /><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>type</code></em></td><td valign="top">&#160;</td><td valign="top">Type of the data stream, see <a class="xref" href="buffer.html#v4l2-buf-type" title="Table&#160;3.3.&#160;enum v4l2_buf_type">Table&#160;3.3, &#8220;enum v4l2_buf_type&#8221;</a>.</td></tr><tr><td valign="top">union</td><td valign="top"><em class="structfield"><code>fmt</code></em></td><td class="auto-generated">&#160;</td><td class="auto-generated">&#160;</td></tr><tr><td valign="top">&#160;</td><td valign="top">struct&#160;<a class="link" href="pixfmt.html#v4l2-pix-format" title="Table&#160;2.1.&#160;struct v4l2_pix_format">v4l2_pix_format</a></td><td valign="top"><em class="structfield"><code>pix</code></em></td><td valign="top">Definition of an image format, see <a class="xref" href="pixfmt.html" title="Chapter&#160;2.&#160;Image Formats">Chapter&#160;2, <i>Image Formats</i></a>, used by video capture and output
+devices.</td></tr><tr><td valign="top">&#160;</td><td valign="top">struct&#160;<a class="link" href="ch02s02.html#v4l2-pix-format-mplane" title="Table&#160;2.3.&#160;struct v4l2_pix_format_mplane">v4l2_pix_format_mplane</a></td><td valign="top"><em class="structfield"><code>pix_mp</code></em></td><td valign="top">Definition of an image format, see <a class="xref" href="pixfmt.html" title="Chapter&#160;2.&#160;Image Formats">Chapter&#160;2, <i>Image Formats</i></a>, used by video capture and output
+devices that support the <a class="link" href="planar-apis.html" title="Single- and multi-planar APIs">multi-planar
+version of the API</a>.</td></tr><tr><td valign="top">&#160;</td><td valign="top">struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a></td><td valign="top"><em class="structfield"><code>win</code></em></td><td valign="top">Definition of an overlaid image, see <a class="xref" href="overlay.html" title="Video Overlay Interface">the section called &#8220;Video Overlay Interface&#8221;</a>, used by video overlay devices.</td></tr><tr><td valign="top">&#160;</td><td valign="top">struct&#160;<a class="link" href="raw-vbi.html#v4l2-vbi-format" title="Table&#160;4.4.&#160;struct v4l2_vbi_format">v4l2_vbi_format</a></td><td valign="top"><em class="structfield"><code>vbi</code></em></td><td valign="top">Raw VBI capture or output parameters. This is
+discussed in more detail in <a class="xref" href="raw-vbi.html" title="Raw VBI Data Interface">the section called &#8220;Raw VBI Data Interface&#8221;</a>. Used by raw VBI
+capture and output devices.</td></tr><tr><td valign="top">&#160;</td><td valign="top">struct&#160;<a class="link" href="sliced.html#v4l2-sliced-vbi-format" title="Table&#160;4.6.&#160;struct v4l2_sliced_vbi_format">v4l2_sliced_vbi_format</a></td><td valign="top"><em class="structfield"><code>sliced</code></em></td><td valign="top">Sliced VBI capture or output parameters. See
+<a class="xref" href="sliced.html" title="Sliced VBI Data Interface">the section called &#8220;Sliced VBI Data Interface&#8221;</a> for details. Used by sliced VBI
+capture and output devices.</td></tr><tr><td valign="top">&#160;</td><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>raw_data</code></em>[200]</td><td valign="top">Place holder for future extensions.</td></tr></tbody></table></div></div><br class="table-break" /></div><div class="refsect1" title="Return Value"><a id="idp34460144"></a><h2>Return Value</h2><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="variablelist"><dl><dt><span class="term"><span class="errorcode">EINVAL</span></span></dt><dd><p>The struct&#160;<a class="link" href="vidioc-g-fmt.html#v4l2-format" title="Table&#160;A.67.&#160;struct v4l2_format">v4l2_format</a> <em class="structfield"><code>type</code></em>
+field is invalid or the requested buffer type not supported.</p></dd></dl></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="vidioc-g-fbuf.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="user-func.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="vidioc-g-frequency.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;ioctl VIDIOC_G_FREQUENCY, VIDIOC_S_FREQUENCY</td></tr></table></div></body></html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Linux DVB Devices</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_introdution.html" title="Chapter&#160;8.&#160;Introduction" /><link rel="prev" href="overview.html" title="Overview" /><link rel="next" href="include_files.html" title="API include files" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Linux DVB Devices</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="overview.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;8.&#160;Introduction</th><td width="20%" align="right">&#160;<a accesskey="n" href="include_files.html">Next</a></td></tr></table><hr /></div><div class="section" title="Linux DVB Devices"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="dvb_devices"></a>Linux DVB Devices</h2></div></div></div><p>The Linux DVB API lets you control these hardware components
+through currently six Unix-style character devices for video, audio,
+frontend, demux, CA and IP-over-DVB networking. The video and audio
+devices control the MPEG2 decoder hardware, the frontend device the
+tuner and the DVB demodulator. The demux device gives you control over
+the PES and section filters of the hardware. If the hardware does not
+support filtering these filters can be implemented in software. Finally,
+the CA device controls all the conditional access capabilities of the
+hardware. It can depend on the individual security requirements of the
+platform, if and how many of the CA functions are made available to the
+application through this device.</p><p>All devices can be found in the <span class="tt">/dev</span>
+tree under <span class="tt">/dev/dvb</span>. The individual devices
+are called:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="tt">/dev/dvb/adapterN/audioM</span>,</p></li><li class="listitem"><p><span class="tt">/dev/dvb/adapterN/videoM</span>,</p></li><li class="listitem"><p><span class="tt">/dev/dvb/adapterN/frontendM</span>,</p></li><li class="listitem"><p><span class="tt">/dev/dvb/adapterN/netM</span>,</p></li><li class="listitem"><p><span class="tt">/dev/dvb/adapterN/demuxM</span>,</p></li><li class="listitem"><p><span class="tt">/dev/dvb/adapterN/dvrM</span>,</p></li><li class="listitem"><p><span class="tt">/dev/dvb/adapterN/caM</span>,</p></li></ul></div><p>where N enumerates the DVB PCI cards in a system starting
+from&#160;0, and M enumerates the devices of each type within each
+adapter, starting from&#160;0, too. We will omit the &#8220;<span class="tt">/dev/dvb/adapterN/</span>&#8221; in the further dicussion
+of these devices. The naming scheme for the devices is the same wheter
+devfs is used or not.</p><p>More details about the data structures and function calls of all
+the devices are described in the following chapters.</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="overview.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_introdution.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="include_files.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Overview&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;API include files</td></tr></table></div></body></html>

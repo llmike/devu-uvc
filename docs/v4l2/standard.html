@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Video Standards</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="common.html" title="Chapter&#160;1.&#160;Common API Elements" /><link rel="prev" href="tuner.html" title="Tuners and Modulators" /><link rel="next" href="dv-timings.html" title="Digital Video (DV) Timings" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Video Standards</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tuner.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;1.&#160;Common API Elements</th><td width="20%" align="right">&#160;<a accesskey="n" href="dv-timings.html">Next</a></td></tr></table><hr /></div><div class="section" title="Video Standards"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="standard"></a>Video Standards</h2></div></div></div><p>Video devices typically support one or more different video
+standards or variations of standards. Each video input and output may
+support another set of standards. This set is reported by the
+<em class="structfield"><code>std</code></em> field of struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a> and
+struct&#160;<a class="link" href="vidioc-enumoutput.html#v4l2-output" title="Table&#160;A.39.&#160;struct v4l2_output">v4l2_output</a> returned by the <a class="link" href="vidioc-enuminput.html" title="ioctl VIDIOC_ENUMINPUT"><code class="constant">VIDIOC_ENUMINPUT</code></a> and
+<a class="link" href="vidioc-enumoutput.html" title="ioctl VIDIOC_ENUMOUTPUT"><code class="constant">VIDIOC_ENUMOUTPUT</code></a> ioctl, respectively.</p><p>V4L2 defines one bit for each analog video standard
+currently in use worldwide, and sets aside bits for driver defined
+standards, e.&#160;g. hybrid standards to watch NTSC video tapes on PAL TVs
+and vice versa. Applications can use the predefined bits to select a
+particular standard, although presenting the user a menu of supported
+standards is preferred. To enumerate and query the attributes of the
+supported standards applications use the <a class="link" href="vidioc-enumstd.html" title="ioctl VIDIOC_ENUMSTD"><code class="constant">VIDIOC_ENUMSTD</code></a> ioctl.</p><p>Many of the defined standards are actually just variations
+of a few major standards. The hardware may in fact not distinguish
+between them, or do so internal and switch automatically. Therefore
+enumerated standards also contain sets of one or more standard
+bits.</p><p>Assume a hypothetic tuner capable of demodulating B/PAL,
+G/PAL and I/PAL signals. The first enumerated standard is a set of B
+and G/PAL, switched automatically depending on the selected radio
+frequency in UHF or VHF band. Enumeration gives a "PAL-B/G" or "PAL-I"
+choice. Similar a Composite input may collapse standards, enumerating
+"PAL-B/G/H/I", "NTSC-M" and "SECAM-D/K".<sup>[<a id="idp19196552" href="#ftn.idp19196552" class="footnote">6</a>]</sup></p><p>To query and select the standard used by the current video
+input or output applications call the <a class="link" href="vidioc-g-std.html" title="ioctl VIDIOC_G_STD, VIDIOC_S_STD"><code class="constant">VIDIOC_G_STD</code></a> and
+<a class="link" href="vidioc-g-std.html" title="ioctl VIDIOC_G_STD, VIDIOC_S_STD"><code class="constant">VIDIOC_S_STD</code></a> ioctl, respectively. The <span class="emphasis"><em>received</em></span>
+standard can be sensed with the <a class="link" href="vidioc-querystd.html" title="ioctl VIDIOC_QUERYSTD"><code class="constant">VIDIOC_QUERYSTD</code></a> ioctl. Note that the parameter of all these ioctls is a pointer to a <a class="link" href="vidioc-enumstd.html#v4l2-std-id" title="Table&#160;A.44.&#160;typedef v4l2_std_id">v4l2_std_id</a> type (a standard set), <span class="emphasis"><em>not</em></span> an index into the standard enumeration.<sup>[<a id="idp19201632" href="#ftn.idp19201632" class="footnote">7</a>]</sup> Drivers must implement all video standard ioctls
+when the device has one or more video inputs or outputs.</p><p>Special rules apply to devices such as USB cameras where the notion of video
+standards makes little sense. More generally for any capture or output device
+which is: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>incapable of capturing fields or frames at the nominal
+rate of the video standard, or</p></li><li class="listitem"><p>that does not support the video standard formats at all.</p></li></ul></div><p> Here the driver shall set the
+<em class="structfield"><code>std</code></em> field of struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a> and struct&#160;<a class="link" href="vidioc-enumoutput.html#v4l2-output" title="Table&#160;A.39.&#160;struct v4l2_output">v4l2_output</a>
+to zero and the <code class="constant">VIDIOC_G_STD</code>,
+<code class="constant">VIDIOC_S_STD</code>,
+<code class="constant">VIDIOC_QUERYSTD</code> and
+<code class="constant">VIDIOC_ENUMSTD</code> ioctls shall return the
+<span class="errorcode">ENOTTY</span> error code.<sup>[<a id="idp19209736" href="#ftn.idp19209736" class="footnote">8</a>]</sup></p><div class="example"><a id="idp19212328"></a><p class="title"><b>Example&#160;1.5.&#160;Information about the current video standard</b></p><div class="example-contents"><pre class="programlisting">
+<a class="link" href="vidioc-enumstd.html#v4l2-std-id" title="Table&#160;A.44.&#160;typedef v4l2_std_id">v4l2_std_id</a> std_id;
+struct&#160;<a class="link" href="vidioc-enumstd.html#v4l2-standard" title="Table&#160;A.42.&#160;struct v4l2_standard">v4l2_standard</a> standard;
+
+if (-1 == ioctl (fd, <a class="link" href="vidioc-g-std.html" title="ioctl VIDIOC_G_STD, VIDIOC_S_STD"><code class="constant">VIDIOC_G_STD</code></a>, &amp;std_id)) {
+	/* Note when VIDIOC_ENUMSTD always returns ENOTTY this
+	   is no video device or it falls under the USB exception,
+	   and VIDIOC_G_STD returning ENOTTY is no error. */
+
+	perror ("VIDIOC_G_STD");
+	exit (EXIT_FAILURE);
+}
+
+memset (&amp;standard, 0, sizeof (standard));
+standard.index = 0;
+
+while (0 == ioctl (fd, <a class="link" href="vidioc-enumstd.html" title="ioctl VIDIOC_ENUMSTD"><code class="constant">VIDIOC_ENUMSTD</code></a>, &amp;standard)) {
+	if (standard.id &amp; std_id) {
+	       printf ("Current video standard: %s\n", standard.name);
+	       exit (EXIT_SUCCESS);
+	}
+
+	standard.index++;
+}
+
+/* EINVAL indicates the end of the enumeration, which cannot be
+   empty unless this device falls under the USB exception. */
+
+if (errno == EINVAL || standard.index == 0) {
+	perror ("VIDIOC_ENUMSTD");
+	exit (EXIT_FAILURE);
+}
+      </pre></div></div><br class="example-break" /><div class="example"><a id="idp19213464"></a><p class="title"><b>Example&#160;1.6.&#160;Listing the video standards supported by the current
+input</b></p><div class="example-contents"><pre class="programlisting">
+struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a> input;
+struct&#160;<a class="link" href="vidioc-enumstd.html#v4l2-standard" title="Table&#160;A.42.&#160;struct v4l2_standard">v4l2_standard</a> standard;
+
+memset (&amp;input, 0, sizeof (input));
+
+if (-1 == ioctl (fd, <a class="link" href="vidioc-g-input.html" title="ioctl VIDIOC_G_INPUT, VIDIOC_S_INPUT"><code class="constant">VIDIOC_G_INPUT</code></a>, &amp;input.index)) {
+	perror ("VIDIOC_G_INPUT");
+	exit (EXIT_FAILURE);
+}
+
+if (-1 == ioctl (fd, <a class="link" href="vidioc-enuminput.html" title="ioctl VIDIOC_ENUMINPUT"><code class="constant">VIDIOC_ENUMINPUT</code></a>, &amp;input)) {
+	perror ("VIDIOC_ENUM_INPUT");
+	exit (EXIT_FAILURE);
+}
+
+printf ("Current input %s supports:\n", input.name);
+
+memset (&amp;standard, 0, sizeof (standard));
+standard.index = 0;
+
+while (0 == ioctl (fd, <a class="link" href="vidioc-enumstd.html" title="ioctl VIDIOC_ENUMSTD"><code class="constant">VIDIOC_ENUMSTD</code></a>, &amp;standard)) {
+	if (standard.id &amp; input.std)
+		printf ("%s\n", standard.name);
+
+	standard.index++;
+}
+
+/* EINVAL indicates the end of the enumeration, which cannot be
+   empty unless this device falls under the USB exception. */
+
+if (errno != EINVAL || standard.index == 0) {
+	perror ("VIDIOC_ENUMSTD");
+	exit (EXIT_FAILURE);
+}
+      </pre></div></div><br class="example-break" /><div class="example"><a id="idp19220528"></a><p class="title"><b>Example&#160;1.7.&#160;Selecting a new video standard</b></p><div class="example-contents"><pre class="programlisting">
+struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a> input;
+<a class="link" href="vidioc-enumstd.html#v4l2-std-id" title="Table&#160;A.44.&#160;typedef v4l2_std_id">v4l2_std_id</a> std_id;
+
+memset (&amp;input, 0, sizeof (input));
+
+if (-1 == ioctl (fd, <a class="link" href="vidioc-g-input.html" title="ioctl VIDIOC_G_INPUT, VIDIOC_S_INPUT"><code class="constant">VIDIOC_G_INPUT</code></a>, &amp;input.index)) {
+	perror ("VIDIOC_G_INPUT");
+	exit (EXIT_FAILURE);
+}
+
+if (-1 == ioctl (fd, <a class="link" href="vidioc-enuminput.html" title="ioctl VIDIOC_ENUMINPUT"><code class="constant">VIDIOC_ENUMINPUT</code></a>, &amp;input)) {
+	perror ("VIDIOC_ENUM_INPUT");
+	exit (EXIT_FAILURE);
+}
+
+if (0 == (input.std &amp; V4L2_STD_PAL_BG)) {
+	fprintf (stderr, "Oops. B/G PAL is not supported.\n");
+	exit (EXIT_FAILURE);
+}
+
+/* Note this is also supposed to work when only B
+   <span class="emphasis"><em>or</em></span> G/PAL is supported. */
+
+std_id = V4L2_STD_PAL_BG;
+
+if (-1 == ioctl (fd, <a class="link" href="vidioc-g-std.html" title="ioctl VIDIOC_G_STD, VIDIOC_S_STD"><code class="constant">VIDIOC_S_STD</code></a>, &amp;std_id)) {
+	perror ("VIDIOC_S_STD");
+	exit (EXIT_FAILURE);
+}
+      </pre></div></div><br class="example-break" /><div class="footnotes"><br /><hr width="100" align="left" /><div class="footnote"><p><sup>[<a id="ftn.idp19196552" href="#idp19196552" class="para">6</a>] </sup>Some users are already confused by technical terms PAL,
+NTSC and SECAM. There is no point asking them to distinguish between
+B, G, D, or K when the software or hardware can do that
+automatically.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp19201632" href="#idp19201632" class="para">7</a>] </sup>An alternative to the current scheme is to use pointers
+to indices as arguments of <code class="constant">VIDIOC_G_STD</code> and
+<code class="constant">VIDIOC_S_STD</code>, the struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a> and
+struct&#160;<a class="link" href="vidioc-enumoutput.html#v4l2-output" title="Table&#160;A.39.&#160;struct v4l2_output">v4l2_output</a> <em class="structfield"><code>std</code></em> field would be a set of
+indices like <em class="structfield"><code>audioset</code></em>.</p><p>Indices are consistent with the rest of the API
+and identify the standard unambiguously. In the present scheme of
+things an enumerated standard is looked up by <a class="link" href="vidioc-enumstd.html#v4l2-std-id" title="Table&#160;A.44.&#160;typedef v4l2_std_id">v4l2_std_id</a>. Now the
+standards supported by the inputs of a device can overlap. Just
+assume the tuner and composite input in the example above both
+exist on a device. An enumeration of "PAL-B/G", "PAL-H/I" suggests
+a choice which does not exist. We cannot merge or omit sets, because
+applications would be unable to find the standards reported by
+<code class="constant">VIDIOC_G_STD</code>. That leaves separate enumerations
+for each input. Also selecting a standard by <a class="link" href="vidioc-enumstd.html#v4l2-std-id" title="Table&#160;A.44.&#160;typedef v4l2_std_id">v4l2_std_id</a> can be
+ambiguous. Advantage of this method is that applications need not
+identify the standard indirectly, after enumerating.</p><p>So in
+summary, the lookup itself is unavoidable. The difference is only
+whether the lookup is necessary to find an enumerated standard or to
+switch to a standard by <a class="link" href="vidioc-enumstd.html#v4l2-std-id" title="Table&#160;A.44.&#160;typedef v4l2_std_id">v4l2_std_id</a>.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp19209736" href="#idp19209736" class="para">8</a>] </sup>See <a class="xref" href="buffer.html" title="Buffers">the section called &#8220;Buffers&#8221;</a> for a rationale.</p><p>Applications can make use of the <a class="xref" href="vidioc-enuminput.html#input-capabilities" title="Table&#160;A.38.&#160;Input capabilities">Table&#160;A.38, &#8220;Input capabilities&#8221;</a> and
+<a class="xref" href="vidioc-enumoutput.html#output-capabilities" title="Table&#160;A.41.&#160;Output capabilities">Table&#160;A.41, &#8220;Output capabilities&#8221;</a> flags to determine whether the video standard ioctls
+are available for the device.</p><p>See <a class="xref" href="buffer.html" title="Buffers">the section called &#8220;Buffers&#8221;</a> for a rationale. Probably
+even USB cameras follow some well known video standard. It might have
+been better to explicitly indicate elsewhere if a device cannot live
+up to normal expectations, instead of this exception.</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tuner.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="common.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="dv-timings.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Tuners and Modulators&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Digital Video (DV) Timings</td></tr></table></div></body></html>

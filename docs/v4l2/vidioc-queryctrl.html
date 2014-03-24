@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="user-func.html" title="Appendix&#160;A.&#160;Function Reference" /><link rel="prev" href="vidioc-querycap.html" title="ioctl VIDIOC_QUERYCAP" /><link rel="next" href="vidioc-query-dv-timings.html" title="ioctl VIDIOC_QUERY_DV_TIMINGS" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="vidioc-querycap.html">Prev</a>&#160;</td><th width="60%" align="center">Appendix&#160;A.&#160;Function Reference</th><td width="20%" align="right">&#160;<a accesskey="n" href="vidioc-query-dv-timings.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><a id="vidioc-queryctrl"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU &#8212; Enumerate controls and menu control items</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>struct v4l2_queryctrl *<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>struct v4l2_querymenu *<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div></div><div class="refsect1" title="Arguments"><a id="idp35825592"></a><h2>Arguments</h2><div class="variablelist"><dl><dt><span class="term"><em class="parameter"><code>fd</code></em></span></dt><dd><p>File descriptor returned by <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>.</p></dd><dt><span class="term"><em class="parameter"><code>request</code></em></span></dt><dd><p>VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU</p></dd><dt><span class="term"><em class="parameter"><code>argp</code></em></span></dt><dd><p></p></dd></dl></div></div><div class="refsect1" title="Description"><a id="idp35829696"></a><h2>Description</h2><p>To query the attributes of a control applications set the
+<em class="structfield"><code>id</code></em> field of a struct&#160;<a class="link" href="vidioc-queryctrl.html#v4l2-queryctrl" title="Table&#160;A.90.&#160;struct v4l2_queryctrl">v4l2_queryctrl</a> and call the
+<code class="constant">VIDIOC_QUERYCTRL</code> ioctl with a pointer to this
+structure. The driver fills the rest of the structure or returns an
+<span class="errorcode">EINVAL</span> error code when the <em class="structfield"><code>id</code></em> is invalid.</p><p>It is possible to enumerate controls by calling
+<code class="constant">VIDIOC_QUERYCTRL</code> with successive
+<em class="structfield"><code>id</code></em> values starting from
+<code class="constant">V4L2_CID_BASE</code> up to and exclusive
+<code class="constant">V4L2_CID_BASE_LASTP1</code>. Drivers may return
+<span class="errorcode">EINVAL</span> if a control in this range is not
+supported. Further applications can enumerate private controls, which
+are not defined in this specification, by starting at
+<code class="constant">V4L2_CID_PRIVATE_BASE</code> and incrementing
+<em class="structfield"><code>id</code></em> until the driver returns
+<span class="errorcode">EINVAL</span>.</p><p>In both cases, when the driver sets the
+<code class="constant">V4L2_CTRL_FLAG_DISABLED</code> flag in the
+<em class="structfield"><code>flags</code></em> field this control is permanently
+disabled and should be ignored by the application.<sup>[<a id="idp35835216" href="#ftn.idp35835216" class="footnote">25</a>]</sup></p><p>When the application ORs <em class="structfield"><code>id</code></em> with
+<code class="constant">V4L2_CTRL_FLAG_NEXT_CTRL</code> the driver returns the
+next supported control, or <span class="errorcode">EINVAL</span> if there is
+none. Drivers which do not support this flag yet always return
+<span class="errorcode">EINVAL</span>.</p><p>Additional information is required for menu controls: the
+names of the menu items. To query them applications set the
+<em class="structfield"><code>id</code></em> and <em class="structfield"><code>index</code></em>
+fields of struct&#160;<a class="link" href="vidioc-queryctrl.html#v4l2-querymenu" title="Table&#160;A.91.&#160;struct v4l2_querymenu">v4l2_querymenu</a> and call the
+<code class="constant">VIDIOC_QUERYMENU</code> ioctl with a pointer to this
+structure. The driver fills the rest of the structure or returns an
+<span class="errorcode">EINVAL</span> error code when the <em class="structfield"><code>id</code></em> or
+<em class="structfield"><code>index</code></em> is invalid. Menu items are enumerated
+by calling <code class="constant">VIDIOC_QUERYMENU</code> with successive
+<em class="structfield"><code>index</code></em> values from struct&#160;<a class="link" href="vidioc-queryctrl.html#v4l2-queryctrl" title="Table&#160;A.90.&#160;struct v4l2_queryctrl">v4l2_queryctrl</a>
+<em class="structfield"><code>minimum</code></em> to
+<em class="structfield"><code>maximum</code></em>, inclusive. Note that it is possible
+for <code class="constant">VIDIOC_QUERYMENU</code> to return an <span class="errorcode">EINVAL</span> error code for some
+indices between <em class="structfield"><code>minimum</code></em> and <em class="structfield"><code>maximum</code></em>.
+In that case that particular menu item is not supported by this driver. Also note that
+the <em class="structfield"><code>minimum</code></em> value is not necessarily 0.</p><p>See also the examples in <a class="xref" href="control.html" title="User Controls">the section called &#8220;User Controls&#8221;</a>.</p><div class="table"><a id="v4l2-queryctrl"></a><p class="title"><b>Table&#160;A.90.&#160;struct <span class="structname">v4l2_queryctrl</span></b></p><div class="table-contents"><table summary="struct v4l2_queryctrl" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>id</code></em></td><td valign="top">Identifies the control, set by the application. See
+<a class="xref" href="control.html#control-id" title="Table&#160;1.1.&#160;Control IDs">Table&#160;1.1, &#8220;Control IDs&#8221;</a> for predefined IDs. When the ID is ORed
+with V4L2_CTRL_FLAG_NEXT_CTRL the driver clears the flag and returns
+the first control with a higher ID. Drivers which do not support this
+flag yet always return an <span class="errorcode">EINVAL</span> error code.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>type</code></em></td><td valign="top">Type of control, see <a class="xref" href="vidioc-queryctrl.html#v4l2-ctrl-type" title="Table&#160;A.92.&#160;enum v4l2_ctrl_type">Table&#160;A.92, &#8220;enum v4l2_ctrl_type&#8221;</a>.</td></tr><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>name</code></em>[32]</td><td valign="top">Name of the control, a NUL-terminated ASCII
+string. This information is intended for the user.</td></tr><tr><td valign="top">__s32</td><td valign="top"><em class="structfield"><code>minimum</code></em></td><td valign="top">Minimum value, inclusive. This field gives a lower
+bound for <code class="constant">V4L2_CTRL_TYPE_INTEGER</code> controls and the
+lowest valid index for <code class="constant">V4L2_CTRL_TYPE_MENU</code> controls.
+For <code class="constant">V4L2_CTRL_TYPE_STRING</code> controls the minimum value
+gives the minimum length of the string. This length <span class="emphasis"><em>does not include the terminating
+zero</em></span>. It may not be valid for any other type of control, including
+<code class="constant">V4L2_CTRL_TYPE_INTEGER64</code> controls. Note that this is a
+signed value.</td></tr><tr><td valign="top">__s32</td><td valign="top"><em class="structfield"><code>maximum</code></em></td><td valign="top">Maximum value, inclusive. This field gives an upper
+bound for <code class="constant">V4L2_CTRL_TYPE_INTEGER</code> controls and the
+highest valid index for <code class="constant">V4L2_CTRL_TYPE_MENU</code>
+controls. For <code class="constant">V4L2_CTRL_TYPE_BITMASK</code> controls it is the
+set of usable bits.
+For <code class="constant">V4L2_CTRL_TYPE_STRING</code> controls the maximum value
+gives the maximum length of the string. This length <span class="emphasis"><em>does not include the terminating
+zero</em></span>. It may not be valid for any other type of control, including
+<code class="constant">V4L2_CTRL_TYPE_INTEGER64</code> controls. Note that this is a
+signed value.</td></tr><tr><td valign="top">__s32</td><td valign="top"><em class="structfield"><code>step</code></em></td><td valign="top"><p>This field gives a step size for
+<code class="constant">V4L2_CTRL_TYPE_INTEGER</code> controls. For
+<code class="constant">V4L2_CTRL_TYPE_STRING</code> controls this field refers to
+the string length that has to be a multiple of this step size.
+It may not be valid for any other type of control, including
+<code class="constant">V4L2_CTRL_TYPE_INTEGER64</code>
+controls.</p><p>Generally drivers should not scale hardware
+control values. It may be necessary for example when the
+<em class="structfield"><code>name</code></em> or <em class="structfield"><code>id</code></em> imply
+a particular unit and the hardware actually accepts only multiples of
+said unit. If so, drivers must take care values are properly rounded
+when scaling, such that errors will not accumulate on repeated
+read-write cycles.</p><p>This field gives the smallest change of
+an integer control actually affecting hardware. Often the information
+is needed when the user can change controls by keyboard or GUI
+buttons, rather than a slider. When for example a hardware register
+accepts values 0-511 and the driver reports 0-65535, step should be
+128.</p><p>Note that although signed, the step value is supposed to
+be always positive.</p></td></tr><tr><td valign="top">__s32</td><td valign="top"><em class="structfield"><code>default_value</code></em></td><td valign="top">The default value of a
+<code class="constant">V4L2_CTRL_TYPE_INTEGER</code>,
+<code class="constant">_BOOLEAN</code> or <code class="constant">_MENU</code> control.
+Not valid for other types of controls. Drivers reset controls only
+when the driver is loaded, not later, in particular not when the
+func-open; is called.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>flags</code></em></td><td valign="top">Control flags, see <a class="xref" href="vidioc-queryctrl.html#control-flags" title="Table&#160;A.93.&#160;Control Flags">Table&#160;A.93, &#8220;Control Flags&#8221;</a>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>reserved</code></em>[2]</td><td valign="top">Reserved for future extensions. Drivers must set
+the array to zero.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-querymenu"></a><p class="title"><b>Table&#160;A.91.&#160;struct <span class="structname">v4l2_querymenu</span></b></p><div class="table-contents"><table summary="struct v4l2_querymenu" width="100%" border="0"><colgroup><col /><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top">&#160;</td><td valign="top"><em class="structfield"><code>id</code></em></td><td valign="top">Identifies the control, set by the application
+from the respective struct&#160;<a class="link" href="vidioc-queryctrl.html#v4l2-queryctrl" title="Table&#160;A.90.&#160;struct v4l2_queryctrl">v4l2_queryctrl</a>
+<em class="structfield"><code>id</code></em>.</td></tr><tr><td valign="top">__u32</td><td valign="top">&#160;</td><td valign="top"><em class="structfield"><code>index</code></em></td><td valign="top">Index of the menu item, starting at zero, set by
+	    the application.</td></tr><tr><td valign="top">union</td><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">&#160;</td></tr><tr><td valign="top">&#160;</td><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>name</code></em>[32]</td><td valign="top">Name of the menu item, a NUL-terminated ASCII
+string. This information is intended for the user. This field is valid
+for <code class="constant">V4L2_CTRL_FLAG_MENU</code> type controls.</td></tr><tr><td valign="top">&#160;</td><td valign="top">__s64</td><td valign="top"><em class="structfield"><code>value</code></em></td><td valign="top">
+              Value of the integer menu item. This field is valid for
+              <code class="constant">V4L2_CTRL_FLAG_INTEGER_MENU</code> type
+              controls.
+            </td></tr><tr><td valign="top">__u32</td><td valign="top">&#160;</td><td valign="top"><em class="structfield"><code>reserved</code></em></td><td valign="top">Reserved for future extensions. Drivers must set
+the array to zero.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-ctrl-type"></a><p class="title"><b>Table&#160;A.92.&#160;enum v4l2_ctrl_type</b></p><div class="table-contents"><table summary="enum v4l2_ctrl_type" width="100%" border="0"><colgroup><col align="left" /><col align="center" /><col align="center" /><col align="center" /><col align="left" /></colgroup><thead><tr><th align="left">Type</th><th align="center"><em class="structfield"><code>minimum</code></em></th><th align="center"><em class="structfield"><code>step</code></em></th><th align="center"><em class="structfield"><code>maximum</code></em></th><th align="left">Description</th></tr></thead><tbody valign="top"><tr><td align="left" valign="top"><code class="constant">V4L2_CTRL_TYPE_INTEGER</code></td><td align="center" valign="top">any</td><td align="center" valign="top">any</td><td align="center" valign="top">any</td><td align="left" valign="top">An integer-valued control ranging from minimum to
+maximum inclusive. The step value indicates the increment between
+values which are actually different on the hardware.</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_CTRL_TYPE_BOOLEAN</code></td><td align="center" valign="top">0</td><td align="center" valign="top">1</td><td align="center" valign="top">1</td><td align="left" valign="top">A boolean-valued control. Zero corresponds to
+"disabled", and one means "enabled".</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_CTRL_TYPE_MENU</code></td><td align="center" valign="top">&#8805; 0</td><td align="center" valign="top">1</td><td align="center" valign="top">N-1</td><td align="left" valign="top">The control has a menu of N choices. The names of
+the menu items can be enumerated with the
+<code class="constant">VIDIOC_QUERYMENU</code> ioctl.</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_CTRL_TYPE_INTEGER_MENU</code></td><td align="center" valign="top">&#8805; 0</td><td align="center" valign="top">1</td><td align="center" valign="top">N-1</td><td align="left" valign="top">
+              The control has a menu of N choices. The values of the
+              menu items can be enumerated with the
+              <code class="constant">VIDIOC_QUERYMENU</code> ioctl. This is
+              similar to <code class="constant">V4L2_CTRL_TYPE_MENU</code>
+              except that instead of strings, the menu items are
+              signed 64-bit integers.
+            </td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_CTRL_TYPE_BITMASK</code></td><td align="center" valign="top">0</td><td align="center" valign="top">n/a</td><td align="center" valign="top">any</td><td align="left" valign="top">A bitmask field. The maximum value is the set of bits that can
+be used, all other bits are to be 0. The maximum value is interpreted as a __u32,
+allowing the use of bit 31 in the bitmask.</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_CTRL_TYPE_BUTTON</code></td><td align="center" valign="top">0</td><td align="center" valign="top">0</td><td align="center" valign="top">0</td><td align="left" valign="top">A control which performs an action when set.
+Drivers must ignore the value passed with
+<code class="constant">VIDIOC_S_CTRL</code> and return an <span class="errorcode">EINVAL</span> error code on a
+<code class="constant">VIDIOC_G_CTRL</code> attempt.</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_CTRL_TYPE_INTEGER64</code></td><td align="center" valign="top">n/a</td><td align="center" valign="top">n/a</td><td align="center" valign="top">n/a</td><td align="left" valign="top">A 64-bit integer valued control. Minimum, maximum
+and step size cannot be queried.</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_CTRL_TYPE_STRING</code></td><td align="center" valign="top">&#8805; 0</td><td align="center" valign="top">&#8805; 1</td><td align="center" valign="top">&#8805; 0</td><td align="left" valign="top">The minimum and maximum string lengths. The step size
+means that the string must be (minimum + N * step) characters long for
+N &#8805; 0. These lengths do not include the terminating zero, so in order to
+pass a string of length 8 to <a class="link" href="vidioc-g-ext-ctrls.html" title="ioctl VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS, VIDIOC_TRY_EXT_CTRLS"><code class="constant">VIDIOC_S_EXT_CTRLS</code></a> you need to set the
+<em class="structfield"><code>size</code></em> field of struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-control" title="Table&#160;A.61.&#160;struct v4l2_ext_control">v4l2_ext_control</a> to 9. For <a class="link" href="vidioc-g-ext-ctrls.html" title="ioctl VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS, VIDIOC_TRY_EXT_CTRLS"><code class="constant">VIDIOC_G_EXT_CTRLS</code></a> you can
+set the <em class="structfield"><code>size</code></em> field to <em class="structfield"><code>maximum</code></em> + 1.
+Which character encoding is used will depend on the string control itself and
+should be part of the control documentation.</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_CTRL_TYPE_CTRL_CLASS</code></td><td align="center" valign="top">n/a</td><td align="center" valign="top">n/a</td><td align="center" valign="top">n/a</td><td align="left" valign="top">This is not a control. When
+<code class="constant">VIDIOC_QUERYCTRL</code> is called with a control ID
+equal to a control class code (see <a class="xref" href="vidioc-g-ext-ctrls.html#ctrl-class" title="Table&#160;A.63.&#160;Control classes">Table&#160;A.63, &#8220;Control classes&#8221;</a>) + 1, the
+ioctl returns the name of the control class and this control type.
+Older drivers which do not support this feature return an
+<span class="errorcode">EINVAL</span> error code.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="control-flags"></a><p class="title"><b>Table&#160;A.93.&#160;Control Flags</b></p><div class="table-contents"><table summary="Control Flags" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_CTRL_FLAG_DISABLED</code></td><td valign="top">0x0001</td><td valign="top">This control is permanently disabled and should be
+ignored by the application. Any attempt to change the control will
+result in an <span class="errorcode">EINVAL</span> error code.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_FLAG_GRABBED</code></td><td valign="top">0x0002</td><td valign="top">This control is temporarily unchangeable, for
+example because another application took over control of the
+respective resource. Such controls may be displayed specially in a
+user interface. Attempts to change the control may result in an
+<span class="errorcode">EBUSY</span> error code.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_FLAG_READ_ONLY</code></td><td valign="top">0x0004</td><td valign="top">This control is permanently readable only. Any
+attempt to change the control will result in an <span class="errorcode">EINVAL</span> error code.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_FLAG_UPDATE</code></td><td valign="top">0x0008</td><td valign="top">A hint that changing this control may affect the
+value of other controls within the same control class. Applications
+should update their user interface accordingly.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_FLAG_INACTIVE</code></td><td valign="top">0x0010</td><td valign="top">This control is not applicable to the current
+configuration and should be displayed accordingly in a user interface.
+For example the flag may be set on a MPEG audio level 2 bitrate
+control when MPEG audio encoding level 1 was selected with another
+control.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_FLAG_SLIDER</code></td><td valign="top">0x0020</td><td valign="top">A hint that this control is best represented as a
+slider-like element in a user interface.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_FLAG_WRITE_ONLY</code></td><td valign="top">0x0040</td><td valign="top">This control is permanently writable only. Any
+attempt to read the control will result in an <span class="errorcode">EACCES</span> error code error code. This
+flag is typically present for relative controls or action controls where
+writing a value will cause the device to carry out a given action
+(e.&#160;g. motor control) but no meaningful value can be returned.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_FLAG_VOLATILE</code></td><td valign="top">0x0080</td><td valign="top">This control is volatile, which means that the value of the control
+changes continuously. A typical example would be the current gain value if the device
+is in auto-gain mode. In such a case the hardware calculates the gain value based on
+the lighting conditions which can change over time. Note that setting a new value for
+a volatile control will have no effect. The new value will just be ignored.</td></tr></tbody></table></div></div><br class="table-break" /></div><div class="refsect1" title="Return Value"><a id="idp35910248"></a><h2>Return Value</h2><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="variablelist"><dl><dt><span class="term"><span class="errorcode">EINVAL</span></span></dt><dd><p>The struct&#160;<a class="link" href="vidioc-queryctrl.html#v4l2-queryctrl" title="Table&#160;A.90.&#160;struct v4l2_queryctrl">v4l2_queryctrl</a> <em class="structfield"><code>id</code></em>
+is invalid. The struct&#160;<a class="link" href="vidioc-queryctrl.html#v4l2-querymenu" title="Table&#160;A.91.&#160;struct v4l2_querymenu">v4l2_querymenu</a> <em class="structfield"><code>id</code></em> is
+invalid or <em class="structfield"><code>index</code></em> is out of range (less than
+<em class="structfield"><code>minimum</code></em> or greater than <em class="structfield"><code>maximum</code></em>)
+or this particular menu item is not supported by the driver.</p></dd><dt><span class="term"><span class="errorcode">EACCES</span></span></dt><dd><p>An attempt was made to read a write-only control.</p></dd></dl></div></div><div class="footnotes"><br /><hr width="100" align="left" /><div class="footnote"><p><sup>[<a id="ftn.idp35835216" href="#idp35835216" class="para">25</a>] </sup><code class="constant">V4L2_CTRL_FLAG_DISABLED</code> was
+intended for two purposes: Drivers can skip predefined controls not
+supported by the hardware (although returning EINVAL would do as
+well), or disable predefined and private controls after hardware
+detection without the trouble of reordering control arrays and indices
+(EINVAL cannot be used to skip private controls because it would
+prematurely end the enumeration).</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="vidioc-querycap.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="user-func.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="vidioc-query-dv-timings.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ioctl VIDIOC_QUERYCAP&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;ioctl VIDIOC_QUERY_DV_TIMINGS</td></tr></table></div></body></html>

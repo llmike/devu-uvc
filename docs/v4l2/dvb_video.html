@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;11.&#160;DVB Video Device</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvbapi.html" title="Part&#160;II.&#160;LINUX DVB API" /><link rel="prev" href="dmx_fcalls.html" title="Demux Function Calls" /><link rel="next" href="video_function_calls.html" title="Video Function Calls" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;11.&#160;DVB Video Device</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="dmx_fcalls.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;II.&#160;LINUX DVB API</th><td width="20%" align="right">&#160;<a accesskey="n" href="video_function_calls.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;11.&#160;DVB Video Device"><div class="titlepage"><div><div><h2 class="title"><a id="dvb_video"></a>Chapter&#160;11.&#160;DVB Video Device</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="dvb_video.html#video_types">Video Data Types</a></span></dt><dd><dl><dt><span class="section"><a href="dvb_video.html#video-format-t">video_format_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-displayformat-t">video_displayformat_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-stream-source-t">video_stream_source_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-play-state-t">video_play_state_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-command">struct video_command</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-size-t">video_size_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-event">struct video_event</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-status">struct video_status</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-still-picture">struct video_still_picture</a></span></dt><dt><span class="section"><a href="dvb_video.html#video_caps">video capabilities</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-system">video_system_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-highlight">struct video_highlight</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-spu">struct video_spu</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-spu-palette">struct video_spu_palette</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-navi-pack">struct video_navi_pack</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-attributes-t">video_attributes_t</a></span></dt></dl></dd><dt><span class="section"><a href="video_function_calls.html">Video Function Calls</a></span></dt><dd><dl><dt><span class="section"><a href="video_function_calls.html#video_fopen">open()</a></span></dt><dt><span class="section"><a href="video_function_calls.html#video_fclose">close()</a></span></dt><dt><span class="section"><a href="video_function_calls.html#video_fwrite">write()</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_STOP">VIDEO_STOP</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_PLAY">VIDEO_PLAY</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_FREEZE">VIDEO_FREEZE</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_CONTINUE">VIDEO_CONTINUE</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SELECT_SOURCE">VIDEO_SELECT_SOURCE</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SET_BLANK">VIDEO_SET_BLANK</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_GET_STATUS">VIDEO_GET_STATUS</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_GET_FRAME_COUNT">VIDEO_GET_FRAME_COUNT</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_GET_PTS">VIDEO_GET_PTS</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_GET_FRAME_RATE">VIDEO_GET_FRAME_RATE</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_GET_EVENT">VIDEO_GET_EVENT</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_COMMAND">VIDEO_COMMAND</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_TRY_COMMAND">VIDEO_TRY_COMMAND</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_GET_SIZE">VIDEO_GET_SIZE</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SET_DISPLAY_FORMAT">VIDEO_SET_DISPLAY_FORMAT</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_STILLPICTURE">VIDEO_STILLPICTURE</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_FAST_FORWARD">VIDEO_FAST_FORWARD</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SLOWMOTION">VIDEO_SLOWMOTION</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_GET_CAPABILITIES">VIDEO_GET_CAPABILITIES</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SET_ID">VIDEO_SET_ID</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_CLEAR_BUFFER">VIDEO_CLEAR_BUFFER</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SET_STREAMTYPE">VIDEO_SET_STREAMTYPE</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SET_FORMAT">VIDEO_SET_FORMAT</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SET_SYSTEM">VIDEO_SET_SYSTEM</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SET_HIGHLIGHT">VIDEO_SET_HIGHLIGHT</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SET_SPU">VIDEO_SET_SPU</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SET_SPU_PALETTE">VIDEO_SET_SPU_PALETTE</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_GET_NAVI">VIDEO_GET_NAVI</a></span></dt><dt><span class="section"><a href="video_function_calls.html#VIDEO_SET_ATTRIBUTES">VIDEO_SET_ATTRIBUTES</a></span></dt></dl></dd></dl></div><p>The DVB video device controls the MPEG2 video decoder of the DVB hardware. It
+can be accessed through <span class="tt">/dev/dvb/adapter0/video0</span>. Data types and and
+ioctl definitions can be accessed by including <span class="tt">linux/dvb/video.h</span> in your
+application.
+</p><p>Note that the DVB video device only controls decoding of the MPEG video stream, not
+its presentation on the TV or computer screen. On PCs this is typically handled by an
+associated video4linux device, e.g. <span class="tt">/dev/video</span>, which allows scaling and defining output
+windows.
+</p><p>Some DVB cards don&#8217;t have their own MPEG decoder, which results in the omission of
+the audio and video device as well as the video4linux device.
+</p><p>The ioctls that deal with SPUs (sub picture units) and navigation packets are only
+supported on some MPEG decoders made for DVD playback.
+</p><p>
+These ioctls were also used by V4L2 to control MPEG decoders implemented in V4L2. The use
+of these ioctls for that purpose has been made obsolete and proper V4L2 ioctls or controls
+have been created to replace that functionality.</p><div class="section" title="Video Data Types"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="video_types"></a>Video Data Types</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="dvb_video.html#video-format-t">video_format_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-displayformat-t">video_displayformat_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-stream-source-t">video_stream_source_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-play-state-t">video_play_state_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-command">struct video_command</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-size-t">video_size_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-event">struct video_event</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-status">struct video_status</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-still-picture">struct video_still_picture</a></span></dt><dt><span class="section"><a href="dvb_video.html#video_caps">video capabilities</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-system">video_system_t</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-highlight">struct video_highlight</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-spu">struct video_spu</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-spu-palette">struct video_spu_palette</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-navi-pack">struct video_navi_pack</a></span></dt><dt><span class="section"><a href="dvb_video.html#video-attributes-t">video_attributes_t</a></span></dt></dl></div><div class="section" title="video_format_t"><div class="titlepage"><div><div><h3 class="title"><a id="video-format-t"></a>video_format_t</h3></div></div></div><p>The <span class="tt">video_format_t</span> data type defined by
+</p><pre class="programlisting">
+typedef enum {
+	VIDEO_FORMAT_4_3,     /&#8902; Select 4:3 format &#8902;/
+	VIDEO_FORMAT_16_9,    /&#8902; Select 16:9 format. &#8902;/
+	VIDEO_FORMAT_221_1    /&#8902; 2.21:1 &#8902;/
+} video_format_t;
+</pre><p>is used in the VIDEO_SET_FORMAT function (??) to tell the driver which aspect ratio
+the output hardware (e.g. TV) has. It is also used in the data structures video_status
+(??) returned by VIDEO_GET_STATUS (??) and video_event (??) returned by
+VIDEO_GET_EVENT (??) which report about the display format of the current video
+stream.
+</p></div><div class="section" title="video_displayformat_t"><div class="titlepage"><div><div><h3 class="title"><a id="video-displayformat-t"></a>video_displayformat_t</h3></div></div></div><p>In case the display format of the video stream and of the display hardware differ the
+application has to specify how to handle the cropping of the picture. This can be done using
+the VIDEO_SET_DISPLAY_FORMAT call (??) which accepts
+</p><pre class="programlisting">
+typedef enum {
+	VIDEO_PAN_SCAN,       /&#8902; use pan and scan format &#8902;/
+	VIDEO_LETTER_BOX,     /&#8902; use letterbox format &#8902;/
+	VIDEO_CENTER_CUT_OUT  /&#8902; use center cut out format &#8902;/
+} video_displayformat_t;
+</pre><p>as argument.
+</p></div><div class="section" title="video_stream_source_t"><div class="titlepage"><div><div><h3 class="title"><a id="video-stream-source-t"></a>video_stream_source_t</h3></div></div></div><p>The video stream source is set through the VIDEO_SELECT_SOURCE call and can take
+the following values, depending on whether we are replaying from an internal (demuxer) or
+external (user write) source.
+</p><pre class="programlisting">
+typedef enum {
+	VIDEO_SOURCE_DEMUX, /&#8902; Select the demux as the main source &#8902;/
+	VIDEO_SOURCE_MEMORY /&#8902; If this source is selected, the stream
+			       comes from the user through the write
+			       system call &#8902;/
+} video_stream_source_t;
+</pre><p>VIDEO_SOURCE_DEMUX selects the demultiplexer (fed either by the frontend or the
+DVR device) as the source of the video stream. If VIDEO_SOURCE_MEMORY
+is selected the stream comes from the application through the <span class="tt">write()</span> system
+call.
+</p></div><div class="section" title="video_play_state_t"><div class="titlepage"><div><div><h3 class="title"><a id="video-play-state-t"></a>video_play_state_t</h3></div></div></div><p>The following values can be returned by the VIDEO_GET_STATUS call representing the
+state of video playback.
+</p><pre class="programlisting">
+typedef enum {
+	VIDEO_STOPPED, /&#8902; Video is stopped &#8902;/
+	VIDEO_PLAYING, /&#8902; Video is currently playing &#8902;/
+	VIDEO_FREEZED  /&#8902; Video is freezed &#8902;/
+} video_play_state_t;
+</pre></div><div class="section" title="struct video_command"><div class="titlepage"><div><div><h3 class="title"><a id="video-command"></a>struct video_command</h3></div></div></div><p>The structure must be zeroed before use by the application
+This ensures it can be extended safely in the future.</p><pre class="programlisting">
+struct video_command {
+	__u32 cmd;
+	__u32 flags;
+	union {
+		struct {
+			__u64 pts;
+		} stop;
+
+		struct {
+			/&#8902; 0 or 1000 specifies normal speed,
+			   1 specifies forward single stepping,
+			   -1 specifies backward single stepping,
+			   &gt;&gt;1: playback at speed/1000 of the normal speed,
+			   &lt;-1: reverse playback at (-speed/1000) of the normal speed. &#8902;/
+			__s32 speed;
+			__u32 format;
+		} play;
+
+		struct {
+			__u32 data[16];
+		} raw;
+	};
+};
+</pre></div><div class="section" title="video_size_t"><div class="titlepage"><div><div><h3 class="title"><a id="video-size-t"></a>video_size_t</h3></div></div></div><pre class="programlisting">
+typedef struct {
+	int w;
+	int h;
+	video_format_t aspect_ratio;
+} video_size_t;
+</pre></div><div class="section" title="struct video_event"><div class="titlepage"><div><div><h3 class="title"><a id="video-event"></a>struct video_event</h3></div></div></div><p>The following is the structure of a video event as it is returned by the VIDEO_GET_EVENT
+call.
+</p><pre class="programlisting">
+struct video_event {
+	__s32 type;
+#define VIDEO_EVENT_SIZE_CHANGED	1
+#define VIDEO_EVENT_FRAME_RATE_CHANGED	2
+#define VIDEO_EVENT_DECODER_STOPPED 	3
+#define VIDEO_EVENT_VSYNC 		4
+	__kernel_time_t timestamp;
+	union {
+		video_size_t size;
+		unsigned int frame_rate;	/&#8902; in frames per 1000sec &#8902;/
+		unsigned char vsync_field;	/&#8902; unknown/odd/even/progressive &#8902;/
+	} u;
+};
+</pre></div><div class="section" title="struct video_status"><div class="titlepage"><div><div><h3 class="title"><a id="video-status"></a>struct video_status</h3></div></div></div><p>The VIDEO_GET_STATUS call returns the following structure informing about various
+states of the playback operation.
+</p><pre class="programlisting">
+struct video_status {
+	int                   video_blank;   /&#8902; blank video on freeze? &#8902;/
+	video_play_state_t    play_state;    /&#8902; current state of playback &#8902;/
+	video_stream_source_t stream_source; /&#8902; current source (demux/memory) &#8902;/
+	video_format_t        video_format;  /&#8902; current aspect ratio of stream &#8902;/
+	video_displayformat_t display_format;/&#8902; selected cropping mode &#8902;/
+};
+</pre><p>If video_blank is set video will be blanked out if the channel is changed or if playback is
+stopped. Otherwise, the last picture will be displayed. play_state indicates if the video is
+currently frozen, stopped, or being played back. The stream_source corresponds to the seleted
+source for the video stream. It can come either from the demultiplexer or from memory.
+The video_format indicates the aspect ratio (one of 4:3 or 16:9) of the currently
+played video stream. Finally, display_format corresponds to the selected cropping
+mode in case the source video format is not the same as the format of the output
+device.
+</p></div><div class="section" title="struct video_still_picture"><div class="titlepage"><div><div><h3 class="title"><a id="video-still-picture"></a>struct video_still_picture</h3></div></div></div><p>An I-frame displayed via the VIDEO_STILLPICTURE call is passed on within the
+following structure.
+</p><pre class="programlisting">
+/&#8902; pointer to and size of a single iframe in memory &#8902;/
+struct video_still_picture {
+	char &#8902;iFrame;        /&#8902; pointer to a single iframe in memory &#8902;/
+	int32_t size;
+};
+</pre></div><div class="section" title="video capabilities"><div class="titlepage"><div><div><h3 class="title"><a id="video_caps"></a>video capabilities</h3></div></div></div><p>A call to VIDEO_GET_CAPABILITIES returns an unsigned integer with the following
+bits set according to the hardwares capabilities.
+</p><pre class="programlisting">
+ /&#8902; bit definitions for capabilities: &#8902;/
+ /&#8902; can the hardware decode MPEG1 and/or MPEG2? &#8902;/
+ #define VIDEO_CAP_MPEG1   1
+ #define VIDEO_CAP_MPEG2   2
+ /&#8902; can you send a system and/or program stream to video device?
+    (you still have to open the video and the audio device but only
+     send the stream to the video device) &#8902;/
+ #define VIDEO_CAP_SYS     4
+ #define VIDEO_CAP_PROG    8
+ /&#8902; can the driver also handle SPU, NAVI and CSS encoded data?
+    (CSS API is not present yet) &#8902;/
+ #define VIDEO_CAP_SPU    16
+ #define VIDEO_CAP_NAVI   32
+ #define VIDEO_CAP_CSS    64
+</pre></div><div class="section" title="video_system_t"><div class="titlepage"><div><div><h3 class="title"><a id="video-system"></a>video_system_t</h3></div></div></div><p>A call to VIDEO_SET_SYSTEM sets the desired video system for TV output. The
+following system types can be set:
+</p><pre class="programlisting">
+typedef enum {
+	 VIDEO_SYSTEM_PAL,
+	 VIDEO_SYSTEM_NTSC,
+	 VIDEO_SYSTEM_PALN,
+	 VIDEO_SYSTEM_PALNc,
+	 VIDEO_SYSTEM_PALM,
+	 VIDEO_SYSTEM_NTSC60,
+	 VIDEO_SYSTEM_PAL60,
+	 VIDEO_SYSTEM_PALM60
+} video_system_t;
+</pre></div><div class="section" title="struct video_highlight"><div class="titlepage"><div><div><h3 class="title"><a id="video-highlight"></a>struct video_highlight</h3></div></div></div><p>Calling the ioctl VIDEO_SET_HIGHLIGHTS posts the SPU highlight information. The
+call expects the following format for that information:
+</p><pre class="programlisting">
+ typedef
+ struct video_highlight {
+	 boolean active;      /&#8902;    1=show highlight, 0=hide highlight &#8902;/
+	 uint8_t contrast1;   /&#8902;    7- 4  Pattern pixel contrast &#8902;/
+			      /&#8902;    3- 0  Background pixel contrast &#8902;/
+	 uint8_t contrast2;   /&#8902;    7- 4  Emphasis pixel-2 contrast &#8902;/
+			      /&#8902;    3- 0  Emphasis pixel-1 contrast &#8902;/
+	 uint8_t color1;      /&#8902;    7- 4  Pattern pixel color &#8902;/
+			      /&#8902;    3- 0  Background pixel color &#8902;/
+	 uint8_t color2;      /&#8902;    7- 4  Emphasis pixel-2 color &#8902;/
+			      /&#8902;    3- 0  Emphasis pixel-1 color &#8902;/
+	 uint32_t ypos;       /&#8902;   23-22  auto action mode &#8902;/
+			      /&#8902;   21-12  start y &#8902;/
+			      /&#8902;    9- 0  end y &#8902;/
+	 uint32_t xpos;       /&#8902;   23-22  button color number &#8902;/
+			      /&#8902;   21-12  start x &#8902;/
+			      /&#8902;    9- 0  end x &#8902;/
+ } video_highlight_t;
+</pre></div><div class="section" title="struct video_spu"><div class="titlepage"><div><div><h3 class="title"><a id="video-spu"></a>struct video_spu</h3></div></div></div><p>Calling VIDEO_SET_SPU deactivates or activates SPU decoding, according to the
+following format:
+</p><pre class="programlisting">
+ typedef
+ struct video_spu {
+	 boolean active;
+	 int stream_id;
+ } video_spu_t;
+</pre></div><div class="section" title="struct video_spu_palette"><div class="titlepage"><div><div><h3 class="title"><a id="video-spu-palette"></a>struct video_spu_palette</h3></div></div></div><p>The following structure is used to set the SPU palette by calling VIDEO_SPU_PALETTE:
+</p><pre class="programlisting">
+ typedef
+ struct video_spu_palette {
+	 int length;
+	 uint8_t &#8902;palette;
+ } video_spu_palette_t;
+</pre></div><div class="section" title="struct video_navi_pack"><div class="titlepage"><div><div><h3 class="title"><a id="video-navi-pack"></a>struct video_navi_pack</h3></div></div></div><p>In order to get the navigational data the following structure has to be passed to the ioctl
+VIDEO_GET_NAVI:
+</p><pre class="programlisting">
+ typedef
+ struct video_navi_pack {
+	 int length;         /&#8902; 0 ... 1024 &#8902;/
+	 uint8_t data[1024];
+ } video_navi_pack_t;
+</pre></div><div class="section" title="video_attributes_t"><div class="titlepage"><div><div><h3 class="title"><a id="video-attributes-t"></a>video_attributes_t</h3></div></div></div><p>The following attributes can be set by a call to VIDEO_SET_ATTRIBUTES:
+</p><pre class="programlisting">
+ typedef uint16_t video_attributes_t;
+ /&#8902;   bits: descr. &#8902;/
+ /&#8902;   15-14 Video compression mode (0=MPEG-1, 1=MPEG-2) &#8902;/
+ /&#8902;   13-12 TV system (0=525/60, 1=625/50) &#8902;/
+ /&#8902;   11-10 Aspect ratio (0=4:3, 3=16:9) &#8902;/
+ /&#8902;    9- 8 permitted display mode on 4:3 monitor (0=both, 1=only pan-sca &#8902;/
+ /&#8902;    7    line 21-1 data present in GOP (1=yes, 0=no) &#8902;/
+ /&#8902;    6    line 21-2 data present in GOP (1=yes, 0=no) &#8902;/
+ /&#8902;    5- 3 source resolution (0=720x480/576, 1=704x480/576, 2=352x480/57 &#8902;/
+ /&#8902;    2    source letterboxed (1=yes, 0=no) &#8902;/
+ /&#8902;    0    film/camera mode (0=camera, 1=film (625/50 only)) &#8902;/
+</pre></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dmx_fcalls.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvbapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="video_function_calls.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Demux Function Calls&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Video Function Calls</td></tr></table></div></body></html>

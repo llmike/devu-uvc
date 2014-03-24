@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Appendix&#160;G.&#160;DVB Conditional Access Header File</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvbapi.html" title="Part&#160;II.&#160;LINUX DVB API" /><link rel="prev" href="audio_h.html" title="Appendix&#160;F.&#160;DVB Audio Header File" /><link rel="next" href="dmx_h.html" title="Appendix&#160;H.&#160;DVB Demux Header File" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Appendix&#160;G.&#160;DVB Conditional Access Header File</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="audio_h.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;II.&#160;LINUX DVB API</th><td width="20%" align="right">&#160;<a accesskey="n" href="dmx_h.html">Next</a></td></tr></table><hr /></div><div class="appendix" title="Appendix&#160;G.&#160;DVB Conditional Access Header File"><div class="titlepage"><div><div><h2 class="title"><a id="ca_h"></a>Appendix&#160;G.&#160;DVB Conditional Access Header File</h2></div></div></div><pre class="programlisting">
+/*
+ * ca.h
+ *
+ * Copyright (C) 2000 Ralph  Metzler &lt;ralph@convergence.de&gt;
+ *                  &amp; Marcus Metzler &lt;marcus@convergence.de&gt;
+ *                    for convergence integrated media GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Lesser Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+#ifndef _DVBCA_H_
+#define _DVBCA_H_
+
+/* slot interface types and info */
+
+typedef struct <a class="link" href="dvb_ca.html#ca-slot-info" title="ca_slot_info_t">ca_slot_info</a> {
+        int num;               /* slot number */
+
+        int type;              /* CA interface this slot supports */
+#define CA_CI            1     /* CI high level interface */
+#define CA_CI_LINK       2     /* CI link layer level interface */
+#define CA_CI_PHYS       4     /* CI physical layer level interface */
+#define CA_DESCR         8     /* built-in descrambler */
+#define CA_SC          128     /* simple smart card interface */
+
+        unsigned int flags;
+#define CA_CI_MODULE_PRESENT 1 /* module (or card) inserted */
+#define CA_CI_MODULE_READY   2
+} <a class="link" href="dvb_ca.html#ca-slot-info" title="ca_slot_info_t">ca_slot_info_t</a>;
+
+
+/* descrambler types and info */
+
+typedef struct <a class="link" href="dvb_ca.html#ca-descr-info" title="ca_descr_info_t">ca_descr_info</a> {
+        unsigned int num;          /* number of available descramblers (keys) */
+        unsigned int type;         /* type of supported scrambling system */
+#define CA_ECD           1
+#define CA_NDS           2
+#define CA_DSS           4
+} <a class="link" href="dvb_ca.html#ca-descr-info" title="ca_descr_info_t">ca_descr_info_t</a>;
+
+typedef struct <a class="link" href="dvb_ca.html#ca-caps" title="ca_caps_t">ca_caps</a> {
+        unsigned int slot_num;     /* total number of CA card and module slots */
+        unsigned int slot_type;    /* OR of all supported types */
+        unsigned int descr_num;    /* total number of descrambler slots (keys) */
+        unsigned int descr_type;   /* OR of all supported types */
+} <a class="link" href="dvb_ca.html#ca-caps" title="ca_caps_t">ca_caps_t</a>;
+
+/* a message to/from a CI-CAM */
+typedef struct <a class="link" href="dvb_ca.html#ca-msg" title="ca_msg_t">ca_msg</a> {
+        unsigned int index;
+        unsigned int type;
+        unsigned int length;
+        unsigned char msg[256];
+} <a class="link" href="dvb_ca.html#ca-msg" title="ca_msg_t">ca_msg_t</a>;
+
+typedef struct <a class="link" href="dvb_ca.html#ca-descr" title="ca_descr_t">ca_descr</a> {
+        unsigned int index;
+        unsigned int parity;    /* 0 == even, 1 == odd */
+        unsigned char cw[8];
+} <a class="link" href="dvb_ca.html#ca-descr" title="ca_descr_t">ca_descr_t</a>;
+
+typedef struct <a class="link" href="dvb_ca.html#ca-pid" title="ca-pid">ca_pid</a> {
+        unsigned int pid;
+        int index;              /* -1 == disable*/
+} <a class="link" href="dvb_ca.html#ca-pid" title="ca-pid">ca_pid_t</a>;
+
+#define <a class="link" href="ca_function_calls.html#CA_RESET" title="CA_RESET">CA_RESET</a>          _IO('o', 128)
+#define <a class="link" href="ca_function_calls.html#CA_GET_CAP" title="CA_GET_CAP">CA_GET_CAP</a>        _IOR('o', 129, ca_caps_t)
+#define <a class="link" href="ca_function_calls.html#CA_GET_SLOT_INFO" title="CA_GET_SLOT_INFO">CA_GET_SLOT_INFO</a>  _IOR('o', 130, ca_slot_info_t)
+#define <a class="link" href="ca_function_calls.html#CA_GET_DESCR_INFO" title="CA_GET_DESCR_INFO">CA_GET_DESCR_INFO</a> _IOR('o', 131, ca_descr_info_t)
+#define <a class="link" href="ca_function_calls.html#CA_GET_MSG" title="CA_GET_MSG">CA_GET_MSG</a>        _IOR('o', 132, ca_msg_t)
+#define <a class="link" href="ca_function_calls.html#CA_SEND_MSG" title="CA_SEND_MSG">CA_SEND_MSG</a>       _IOW('o', 133, ca_msg_t)
+#define <a class="link" href="ca_function_calls.html#CA_SET_DESCR" title="CA_SET_DESCR">CA_SET_DESCR</a>      _IOW('o', 134, ca_descr_t)
+#define <a class="link" href="ca_function_calls.html#CA_SET_PID" title="CA_SET_PID">CA_SET_PID</a>        _IOW('o', 135, ca_pid_t)
+
+#endif
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="audio_h.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvbapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="dmx_h.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Appendix&#160;F.&#160;DVB Audio Header File&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Appendix&#160;H.&#160;DVB Demux Header File</td></tr></table></div></body></html>

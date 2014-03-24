@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>V4L2 poll()</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="user-func.html" title="Appendix&#160;A.&#160;Function Reference" /><link rel="prev" href="func-open.html" title="V4L2 open()" /><link rel="next" href="func-read.html" title="V4L2 read()" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">V4L2 poll()</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="func-open.html">Prev</a>&#160;</td><th width="60%" align="center">Appendix&#160;A.&#160;Function Reference</th><td width="20%" align="right">&#160;<a accesskey="n" href="func-read.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="V4L2 poll()"><a id="func-poll"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>v4l2-poll &#8212; Wait for some event on a file descriptor</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;sys/poll.h&gt;</pre><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">poll</b>(</code></td><td>struct pollfd *<var class="pdparam">ufds</var>, </td></tr><tr><td>&#160;</td><td>unsigned int <var class="pdparam">nfds</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">timeout</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div></div><div class="refsect1" title="Description"><a id="idp36957256"></a><h2>Description</h2><p>With the <code class="function">poll()</code> function applications
+can suspend execution until the driver has captured data or is ready
+to accept data for output.</p><p>When streaming I/O has been negotiated this function waits
+until a buffer has been filled or displayed and can be dequeued with
+the <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF"><code class="constant">VIDIOC_DQBUF</code></a> ioctl. When buffers are already in the outgoing
+queue of the driver the function returns immediately.</p><p>On success <code class="function">poll()</code> returns the number of
+file descriptors that have been selected (that is, file descriptors
+for which the <em class="structfield"><code>revents</code></em> field of the
+respective <span class="structname">pollfd</span> structure is non-zero).
+Capture devices set the <code class="constant">POLLIN</code> and
+<code class="constant">POLLRDNORM</code> flags in the
+<em class="structfield"><code>revents</code></em> field, output devices the
+<code class="constant">POLLOUT</code> and <code class="constant">POLLWRNORM</code>
+flags. When the function timed out it returns a value of zero, on
+failure it returns <span class="returnvalue">-1</span> and the
+<code class="varname">errno</code> variable is set appropriately. When the
+application did not call <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF"><code class="constant">VIDIOC_QBUF</code></a> or <a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMON</code></a> yet the
+<code class="function">poll()</code> function succeeds, but sets the
+<code class="constant">POLLERR</code> flag in the
+<em class="structfield"><code>revents</code></em> field.</p><p>When use of the <code class="function">read()</code> function has
+been negotiated and the driver does not capture yet, the
+<code class="function">poll</code> function starts capturing. When that fails
+it returns a <code class="constant">POLLERR</code> as above. Otherwise it waits
+until data has been captured and can be read. When the driver captures
+continuously (as opposed to, for example, still images) the function
+may return immediately.</p><p>When use of the <code class="function">write()</code> function has
+been negotiated the <code class="function">poll</code> function just waits
+until the driver is ready for a non-blocking
+<code class="function">write()</code> call.</p><p>All drivers implementing the <code class="function">read()</code> or
+<code class="function">write()</code> function or streaming I/O must also
+support the <code class="function">poll()</code> function.</p><p>For more details see the
+<code class="function">poll()</code> manual page.</p></div><div class="refsect1" title="Return Value"><a id="idp37012544"></a><h2>Return Value</h2><p>On success, <code class="function">poll()</code> returns the number
+structures which have non-zero <em class="structfield"><code>revents</code></em>
+fields, or zero if the call timed out. On error
+<span class="returnvalue">-1</span> is returned, and the
+<code class="varname">errno</code> variable is set appropriately:</p><div class="variablelist"><dl><dt><span class="term"><span class="errorcode">EBADF</span></span></dt><dd><p>One or more of the <em class="parameter"><code>ufds</code></em> members
+specify an invalid file descriptor.</p></dd><dt><span class="term"><span class="errorcode">EBUSY</span></span></dt><dd><p>The driver does not support multiple read or write
+streams and the device is already in use.</p></dd><dt><span class="term"><span class="errorcode">EFAULT</span></span></dt><dd><p><em class="parameter"><code>ufds</code></em> references an inaccessible
+memory area.</p></dd><dt><span class="term"><span class="errorcode">EINTR</span></span></dt><dd><p>The call was interrupted by a signal.</p></dd><dt><span class="term"><span class="errorcode">EINVAL</span></span></dt><dd><p>The <em class="parameter"><code>nfds</code></em> argument is greater
+than <code class="constant">OPEN_MAX</code>.</p></dd></dl></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="func-open.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="user-func.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="func-read.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">V4L2 open()&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;V4L2 read()</td></tr></table></div></body></html>

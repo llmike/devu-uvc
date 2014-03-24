@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;6.&#160;Libv4l Userspace Library</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="v4l2spec.html" title="Part&#160;I.&#160;Video for Linux Two API Specification" /><link rel="prev" href="driver.html" title="Chapter&#160;5.&#160;V4L2 Driver Programming" /><link rel="next" href="compat.html" title="Chapter&#160;7.&#160;Changes" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;6.&#160;Libv4l Userspace Library</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="driver.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;I.&#160;Video for Linux Two API Specification</th><td width="20%" align="right">&#160;<a accesskey="n" href="compat.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;6.&#160;Libv4l Userspace Library"><div class="titlepage"><div><div><h2 class="title"><a id="libv4l"></a>Chapter&#160;6.&#160;Libv4l Userspace Library</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="libv4l.html#libv4l-introduction">Introduction</a></span></dt><dd><dl><dt><span class="section"><a href="libv4l.html#idp30793216">libv4lconvert</a></span></dt><dt><span class="section"><a href="libv4l.html#idp30822776">libv4l1</a></span></dt><dt><span class="section"><a href="libv4l.html#idp30823984">libv4l2</a></span></dt><dt><span class="section"><a href="libv4l.html#idp30839512">v4l1compat.so wrapper library</a></span></dt></dl></dd></dl></div><div class="section" title="Introduction"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="libv4l-introduction"></a>Introduction</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="libv4l.html#idp30793216">libv4lconvert</a></span></dt><dt><span class="section"><a href="libv4l.html#idp30822776">libv4l1</a></span></dt><dt><span class="section"><a href="libv4l.html#idp30823984">libv4l2</a></span></dt><dt><span class="section"><a href="libv4l.html#idp30839512">v4l1compat.so wrapper library</a></span></dt></dl></div><p>libv4l is a collection of libraries which adds a thin abstraction
+layer on top of video4linux2 devices. The purpose of this (thin) layer
+is to make it easy for application writers to support a wide variety of
+devices without having to write separate code for different devices in the
+same class.</p><p>An example of using libv4l is provided by
+<a class="link" href="v4l2grab-example.html" title="Appendix&#160;E.&#160;Video Grabber example using libv4l">v4l2grab</a>.
+</p><p>libv4l consists of 3 different libraries:</p><div class="section" title="libv4lconvert"><div class="titlepage"><div><div><h3 class="title"><a id="idp30793216"></a>libv4lconvert</h3></div></div></div><p>libv4lconvert is a library that converts several
+different pixelformats found in V4L2 drivers into a few common RGB and
+YUY formats.</p><p>It currently accepts the following V4L2 driver formats:
+<a class="link" href="packed-rgb.html#V4L2-PIX-FMT-BGR24"><code class="constant">V4L2_PIX_FMT_BGR24</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-HM12"><code class="constant">V4L2_PIX_FMT_HM12</code></a>,
+<a class="link" href="ch02s08.html#V4L2-PIX-FMT-JPEG"><code class="constant">V4L2_PIX_FMT_JPEG</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-MJPEG"><code class="constant">V4L2_PIX_FMT_MJPEG</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-MR97310A"><code class="constant">V4L2_PIX_FMT_MR97310A</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-OV511"><code class="constant">V4L2_PIX_FMT_OV511</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-OV518"><code class="constant">V4L2_PIX_FMT_OV518</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-PAC207"><code class="constant">V4L2_PIX_FMT_PAC207</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-PJPG"><code class="constant">V4L2_PIX_FMT_PJPG</code></a>,
+<a class="link" href="packed-rgb.html#V4L2-PIX-FMT-RGB24"><code class="constant">V4L2_PIX_FMT_RGB24</code></a>,
+<a class="link" href="V4L2-PIX-FMT-SBGGR8.html" title="V4L2_PIX_FMT_SBGGR8 ('BA81')"><code class="constant">V4L2_PIX_FMT_SBGGR8</code></a>,
+<a class="link" href="V4L2-PIX-FMT-SGBRG8.html" title="V4L2_PIX_FMT_SGBRG8 ('GBRG')"><code class="constant">V4L2_PIX_FMT_SGBRG8</code></a>,
+<a class="link" href="V4L2-PIX-FMT-SGRBG8.html" title="V4L2_PIX_FMT_SGRBG8 ('GRBG')"><code class="constant">V4L2_PIX_FMT_SGRBG8</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-SN9C10X"><code class="constant">V4L2_PIX_FMT_SN9C10X</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-SN9C20X-I420"><code class="constant">V4L2_PIX_FMT_SN9C20X_I420</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-SPCA501"><code class="constant">V4L2_PIX_FMT_SPCA501</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-SPCA505"><code class="constant">V4L2_PIX_FMT_SPCA505</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-SPCA508"><code class="constant">V4L2_PIX_FMT_SPCA508</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-SPCA561"><code class="constant">V4L2_PIX_FMT_SPCA561</code></a>,
+<a class="link" href="pixfmt-reserved.html#V4L2-PIX-FMT-SQ905C"><code class="constant">V4L2_PIX_FMT_SQ905C</code></a>,
+<code class="constant">V4L2_PIX_FMT_SRGGB8</code>,
+<a class="link" href="V4L2-PIX-FMT-UYVY.html" title="V4L2_PIX_FMT_UYVY ('UYVY')"><code class="constant">V4L2_PIX_FMT_UYVY</code></a>,
+<a class="link" href="re23.html#V4L2-PIX-FMT-YUV420"><code class="constant">V4L2_PIX_FMT_YUV420</code></a>,
+<a class="link" href="V4L2-PIX-FMT-YUYV.html" title="V4L2_PIX_FMT_YUYV ('YUYV')"><code class="constant">V4L2_PIX_FMT_YUYV</code></a>,
+<a class="link" href="re23.html#V4L2-PIX-FMT-YVU420"><code class="constant">V4L2_PIX_FMT_YVU420</code></a>,
+and <a class="link" href="V4L2-PIX-FMT-YVYU.html" title="V4L2_PIX_FMT_YVYU ('YVYU')"><code class="constant">V4L2_PIX_FMT_YVYU</code></a>.
+</p><p>Later on libv4lconvert was expanded to also be able to do
+various	video processing functions to improve webcam video quality.
+The video processing is split in to 2 parts: libv4lconvert/control and
+libv4lconvert/processing.</p><p>The control part is used to offer video controls which can
+be used	to control the video processing functions made available by
+	libv4lconvert/processing. These controls are stored application wide
+(until reboot) by using a persistent shared memory object.</p><p>libv4lconvert/processing offers the actual video
+processing functionality.</p></div><div class="section" title="libv4l1"><div class="titlepage"><div><div><h3 class="title"><a id="idp30822776"></a>libv4l1</h3></div></div></div><p>This library offers functions that can be used to quickly
+make v4l1 applications work with v4l2 devices. These functions work exactly
+like the normal open/close/etc, except that libv4l1 does full emulation of
+the v4l1 api on top of v4l2 drivers, in case of v4l1 drivers it
+will just pass calls through.</p><p>Since those functions are emulations of the old V4L1 API,
+it shouldn't be used for new applications.</p></div><div class="section" title="libv4l2"><div class="titlepage"><div><div><h3 class="title"><a id="idp30823984"></a>libv4l2</h3></div></div></div><div class="toc"><dl><dt><span class="section"><a href="libv4l.html#libv4l-ops">Libv4l device control functions</a></span></dt></dl></div><p>This library should be used for all modern V4L2
+applications.</p><p>It provides handles to call V4L2 open/ioctl/close/poll
+methods. Instead of just providing the raw output of the device, it enhances
+the calls in the sense that it will use libv4lconvert to provide more video
+formats and to enhance the image quality.</p><p>In most cases, libv4l2 just passes the calls directly
+through to the v4l2 driver, intercepting the calls to
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_TRY_FMT</code></a>,
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_G_FMT</code></a>
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a>
+<a class="link" href="vidioc-enum-framesizes.html" title="ioctl VIDIOC_ENUM_FRAMESIZES"><code class="constant">VIDIOC_ENUM_FRAMESIZES</code></a>
+and <a class="link" href="vidioc-enum-frameintervals.html" title="ioctl VIDIOC_ENUM_FRAMEINTERVALS"><code class="constant">VIDIOC_ENUM_FRAMEINTERVALS</code></a>
+in order to emulate the formats
+<a class="link" href="packed-rgb.html#V4L2-PIX-FMT-BGR24"><code class="constant">V4L2_PIX_FMT_BGR24</code></a>,
+<a class="link" href="packed-rgb.html#V4L2-PIX-FMT-RGB24"><code class="constant">V4L2_PIX_FMT_RGB24</code></a>,
+<a class="link" href="re23.html#V4L2-PIX-FMT-YUV420"><code class="constant">V4L2_PIX_FMT_YUV420</code></a>,
+and <a class="link" href="re23.html#V4L2-PIX-FMT-YVU420"><code class="constant">V4L2_PIX_FMT_YVU420</code></a>,
+if they aren't available in the driver.
+<a class="link" href="vidioc-enum-fmt.html" title="ioctl VIDIOC_ENUM_FMT"><code class="constant">VIDIOC_ENUM_FMT</code></a>
+keeps enumerating the hardware supported formats, plus the emulated formats
+offered by libv4l at the end.
+</p><div class="section" title="Libv4l device control functions"><div class="titlepage"><div><div><h4 class="title"><a id="libv4l-ops"></a>Libv4l device control functions</h4></div></div></div><p>The common file operation methods are provided by
+libv4l.</p><p>Those functions operate just like glibc
+open/close/dup/ioctl/read/mmap/munmap:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>int v4l2_open(const char *file, int oflag,
+...) -
+operates like the standard <a class="link" href="func-open.html" title="V4L2 open()">open()</a> function.
+</p></li><li class="listitem"><p>int v4l2_close(int fd) -
+operates like the standard <a class="link" href="func-close.html" title="V4L2 close()">close()</a> function.
+</p></li><li class="listitem"><p>int v4l2_dup(int fd) -
+operates like the standard dup() function, duplicating a file handler.
+</p></li><li class="listitem"><p>int v4l2_ioctl (int fd, unsigned long int request, ...) -
+operates like the standard <a class="link" href="func-ioctl.html" title="V4L2 ioctl()">ioctl()</a> function.
+</p></li><li class="listitem"><p>int v4l2_read (int fd, void* buffer, size_t n) -
+operates like the standard <a class="link" href="func-read.html" title="V4L2 read()">read()</a> function.
+</p></li><li class="listitem"><p>void v4l2_mmap(void *start, size_t length, int prot, int flags, int fd, int64_t offset); -
+operates like the standard <a class="link" href="func-mmap.html" title="V4L2 mmap()">mmap()</a> function.
+</p></li><li class="listitem"><p>int v4l2_munmap(void *_start, size_t length); -
+operates like the standard <a class="link" href="func-munmap.html" title="V4L2 munmap()">munmap()</a> function.
+</p></li></ul></div><p>Those functions provide additional control:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>int v4l2_fd_open(int fd, int v4l2_flags) -
+opens an already opened fd for further use through v4l2lib and possibly
+modify libv4l2's default behavior through the v4l2_flags argument.
+Currently, v4l2_flags can be <code class="constant">V4L2_DISABLE_CONVERSION</code>,
+to disable format conversion.
+</p></li><li class="listitem"><p>int v4l2_set_control(int fd, int cid, int value) -
+This function takes a value of 0 - 65535, and then scales that range to
+the actual range of the given v4l control id, and then if the cid exists
+and is not locked sets the cid to the scaled value.
+</p></li><li class="listitem"><p>int v4l2_get_control(int fd, int cid) -
+This function returns a value of 0 - 65535, scaled to from the actual range
+of the given v4l control id. when the cid does not exist, could not be
+accessed for some reason, or some error occurred 0 is returned.
+</p></li></ul></div></div></div><div class="section" title="v4l1compat.so wrapper library"><div class="titlepage"><div><div><h3 class="title"><a id="idp30839512"></a>v4l1compat.so wrapper library</h3></div></div></div><p>This library intercepts calls to
+open/close/ioctl/mmap/mmunmap operations and redirects them to the libv4l
+counterparts, by using LD_PRELOAD=/usr/lib/v4l1compat.so. It also
+emulates V4L1 calls via V4L2 API.</p><p>It allows usage of binary legacy applications that
+still don't use libv4l.</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="driver.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="v4l2spec.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="compat.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&#160;5.&#160;V4L2 Driver Programming&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Chapter&#160;7.&#160;Changes</td></tr></table></div></body></html>

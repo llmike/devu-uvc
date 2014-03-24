@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Colorspaces</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="pixfmt.html" title="Chapter&#160;2.&#160;Image Formats" /><link rel="prev" href="ch02s03.html" title="Standard Image Formats" /><link rel="next" href="pixfmt-indexed.html" title="Indexed Format" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Colorspaces</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s03.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;2.&#160;Image Formats</th><td width="20%" align="right">&#160;<a accesskey="n" href="pixfmt-indexed.html">Next</a></td></tr></table><hr /></div><div class="section" title="Colorspaces"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="colorspaces"></a>Colorspaces</h2></div></div></div><p>[intro]</p><p>
+      </p><div class="variablelist"><dl><dt><span class="term">Gamma Correction</span></dt><dd><p>[to do]</p><p>E'<sub>R</sub> = f(R)</p><p>E'<sub>G</sub> = f(G)</p><p>E'<sub>B</sub> = f(B)</p></dd><dt><span class="term">Construction of luminance and color-difference
+signals</span></dt><dd><p>[to do]</p><p>E'<sub>Y</sub> =
+Coeff<sub>R</sub> E'<sub>R</sub>
++ Coeff<sub>G</sub> E'<sub>G</sub>
++ Coeff<sub>B</sub> E'<sub>B</sub></p><p>(E'<sub>R</sub> - E'<sub>Y</sub>) = E'<sub>R</sub>
+- Coeff<sub>R</sub> E'<sub>R</sub>
+- Coeff<sub>G</sub> E'<sub>G</sub>
+- Coeff<sub>B</sub> E'<sub>B</sub></p><p>(E'<sub>B</sub> - E'<sub>Y</sub>) = E'<sub>B</sub>
+- Coeff<sub>R</sub> E'<sub>R</sub>
+- Coeff<sub>G</sub> E'<sub>G</sub>
+- Coeff<sub>B</sub> E'<sub>B</sub></p></dd><dt><span class="term">Re-normalized color-difference signals</span></dt><dd><p>The color-difference signals are scaled back to unity
+range [-0.5;+0.5]:</p><p>K<sub>B</sub> = 0.5 / (1 - Coeff<sub>B</sub>)</p><p>K<sub>R</sub> = 0.5 / (1 - Coeff<sub>R</sub>)</p><p>P<sub>B</sub> =
+K<sub>B</sub> (E'<sub>B</sub> - E'<sub>Y</sub>) =
+  0.5 (Coeff<sub>R</sub> / Coeff<sub>B</sub>) E'<sub>R</sub>
++ 0.5 (Coeff<sub>G</sub> / Coeff<sub>B</sub>) E'<sub>G</sub>
++ 0.5 E'<sub>B</sub></p><p>P<sub>R</sub> =
+K<sub>R</sub> (E'<sub>R</sub> - E'<sub>Y</sub>) =
+  0.5 E'<sub>R</sub>
++ 0.5 (Coeff<sub>G</sub> / Coeff<sub>R</sub>) E'<sub>G</sub>
++ 0.5 (Coeff<sub>B</sub> / Coeff<sub>R</sub>) E'<sub>B</sub></p></dd><dt><span class="term">Quantization</span></dt><dd><p>[to do]</p><p>Y' = (Lum. Levels - 1) &#183; E'<sub>Y</sub> + Lum. Offset</p><p>C<sub>B</sub> = (Chrom. Levels - 1)
+&#183; P<sub>B</sub> + Chrom. Offset</p><p>C<sub>R</sub> = (Chrom. Levels - 1)
+&#183; P<sub>R</sub> + Chrom. Offset</p><p>Rounding to the nearest integer and clamping to the range
+[0;255] finally yields the digital color components Y'CbCr
+stored in YUV images.</p></dd></dl></div><p>
+    </p><div class="example"><a id="idp22509192"></a><p class="title"><b>Example&#160;2.1.&#160;ITU-R Rec. BT.601 color conversion</b></p><div class="example-contents"><p>Forward Transformation</p><pre class="programlisting">
+int ER, EG, EB;         /* gamma corrected RGB input [0;255] */
+int Y1, Cb, Cr;         /* output [0;255] */
+
+double r, g, b;         /* temporaries */
+double y1, pb, pr;
+
+int
+clamp (double x)
+{
+	int r = x;      /* round to nearest */
+
+	if (r &lt; 0)         return 0;
+	else if (r &gt; 255)  return 255;
+	else               return r;
+}
+
+r = ER / 255.0;
+g = EG / 255.0;
+b = EB / 255.0;
+
+y1  =  0.299  * r + 0.587 * g + 0.114  * b;
+pb  = -0.169  * r - 0.331 * g + 0.5    * b;
+pr  =  0.5    * r - 0.419 * g - 0.081  * b;
+
+Y1 = clamp (219 * y1 + 16);
+Cb = clamp (224 * pb + 128);
+Cr = clamp (224 * pr + 128);
+
+/* or shorter */
+
+y1 = 0.299 * ER + 0.587 * EG + 0.114 * EB;
+
+Y1 = clamp ( (219 / 255.0)                    *       y1  + 16);
+Cb = clamp (((224 / 255.0) / (2 - 2 * 0.114)) * (EB - y1) + 128);
+Cr = clamp (((224 / 255.0) / (2 - 2 * 0.299)) * (ER - y1) + 128);
+      </pre><p>Inverse Transformation</p><pre class="programlisting">
+int Y1, Cb, Cr;         /* gamma pre-corrected input [0;255] */
+int ER, EG, EB;         /* output [0;255] */
+
+double r, g, b;         /* temporaries */
+double y1, pb, pr;
+
+int
+clamp (double x)
+{
+	int r = x;      /* round to nearest */
+
+	if (r &lt; 0)         return 0;
+	else if (r &gt; 255)  return 255;
+	else               return r;
+}
+
+y1 = (Y1 - 16) / 219.0;
+pb = (Cb - 128) / 224.0;
+pr = (Cr - 128) / 224.0;
+
+r = 1.0 * y1 + 0     * pb + 1.402 * pr;
+g = 1.0 * y1 - 0.344 * pb - 0.714 * pr;
+b = 1.0 * y1 + 1.772 * pb + 0     * pr;
+
+ER = clamp (r * 255); /* [ok? one should prob. limit y1,pb,pr] */
+EG = clamp (g * 255);
+EB = clamp (b * 255);
+      </pre></div></div><br class="example-break" /><div class="table"><a id="v4l2-colorspace"></a><p class="title"><b>Table&#160;2.4.&#160;enum v4l2_colorspace</b></p><div class="table-contents"><table summary="enum v4l2_colorspace" width="100%" border="1"><colgroup><col align="left" /><col align="center" /><col align="left" /><col align="center" /><col align="center" /><col align="center" /><col align="center" /><col align="center" /><col align="center" /><col align="center" /><col align="center" /></colgroup><thead><tr><th rowspan="2" align="left">Identifier</th><th rowspan="2" align="center">Value</th><th rowspan="2" align="left">Description</th><th colspan="3" align="center">Chromaticities<sup>[<a id="idp22522056" href="#ftn.idp22522056" class="footnote">a</a>]</sup></th><th rowspan="2" align="center">White Point</th><th rowspan="2" align="center">Gamma Correction</th><th rowspan="2" align="center">Luminance E'<sub>Y</sub></th><th colspan="2" align="center">Quantization</th></tr><tr><th align="center">Red</th><th align="center">Green</th><th align="center">Blue</th><th align="center">Y'</th><th align="center">Cb, Cr</th></tr></thead><tbody valign="top"><tr><td align="left" valign="top"><code class="constant">V4L2_COLORSPACE_SMPTE170M</code></td><td align="center" valign="top">1</td><td align="left" valign="top">NTSC/PAL according to <a class="xref" href="bi01.html#smpte170m" title="SMPTE 170M-1999 &quot;Television - Composite Analog Video Signal - NTSC for Studio Applications&quot;">[<abbr class="abbrev">SMPTE&#160;170M</abbr>]</a>,
+<a class="xref" href="bi01.html#itu601" title="ITU-R Recommendation BT.601-5 &quot;Studio Encoding Parameters of Digital Television for Standard 4:3 and Wide-Screen 16:9 Aspect Ratios&quot;">[<abbr class="abbrev">ITU&#160;BT.601</abbr>]</a></td><td align="center" valign="top">x&#160;=&#160;0.630, y&#160;=&#160;0.340</td><td align="center" valign="top">x&#160;=&#160;0.310, y&#160;=&#160;0.595</td><td align="center" valign="top">x&#160;=&#160;0.155, y&#160;=&#160;0.070</td><td align="center" valign="top">x&#160;=&#160;0.3127, y&#160;=&#160;0.3290,
+	    Illuminant D<sub>65</sub></td><td align="center" valign="top">E' = 4.5&#160;I&#160;for&#160;I&#160;&#8804;0.018,
+1.099&#160;I<sup>0.45</sup>&#160;-&#160;0.099&#160;for&#160;0.018&#160;&lt;&#160;I</td><td align="center" valign="top">0.299&#160;E'<sub>R</sub>
++&#160;0.587&#160;E'<sub>G</sub>
++&#160;0.114&#160;E'<sub>B</sub></td><td align="center" valign="top">219&#160;E'<sub>Y</sub>&#160;+&#160;16</td><td align="center" valign="top">224&#160;P<sub>B,R</sub>&#160;+&#160;128</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_COLORSPACE_SMPTE240M</code></td><td align="center" valign="top">2</td><td align="left" valign="top">1125-Line (US) HDTV, see <a class="xref" href="bi01.html#smpte240m" title="SMPTE 240M-1999 &quot;Television - Signal Parameters - 1125-Line High-Definition Production&quot;">[<abbr class="abbrev">SMPTE&#160;240M</abbr>]</a></td><td align="center" valign="top">x&#160;=&#160;0.630, y&#160;=&#160;0.340</td><td align="center" valign="top">x&#160;=&#160;0.310, y&#160;=&#160;0.595</td><td align="center" valign="top">x&#160;=&#160;0.155, y&#160;=&#160;0.070</td><td align="center" valign="top">x&#160;=&#160;0.3127, y&#160;=&#160;0.3290,
+	    Illuminant D<sub>65</sub></td><td align="center" valign="top">E' = 4&#160;I&#160;for&#160;I&#160;&#8804;0.0228,
+1.1115&#160;I<sup>0.45</sup>&#160;-&#160;0.1115&#160;for&#160;0.0228&#160;&lt;&#160;I</td><td align="center" valign="top">0.212&#160;E'<sub>R</sub>
++&#160;0.701&#160;E'<sub>G</sub>
++&#160;0.087&#160;E'<sub>B</sub></td><td align="center" valign="top">219&#160;E'<sub>Y</sub>&#160;+&#160;16</td><td align="center" valign="top">224&#160;P<sub>B,R</sub>&#160;+&#160;128</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_COLORSPACE_REC709</code></td><td align="center" valign="top">3</td><td align="left" valign="top">HDTV and modern devices, see <a class="xref" href="bi01.html#itu709" title="ITU-R Recommendation BT.709-5 &quot;Parameter values for the HDTV standards for production and international programme exchange&quot;">[<abbr class="abbrev">ITU&#160;BT.709</abbr>]</a></td><td align="center" valign="top">x&#160;=&#160;0.640, y&#160;=&#160;0.330</td><td align="center" valign="top">x&#160;=&#160;0.300, y&#160;=&#160;0.600</td><td align="center" valign="top">x&#160;=&#160;0.150, y&#160;=&#160;0.060</td><td align="center" valign="top">x&#160;=&#160;0.3127, y&#160;=&#160;0.3290,
+	    Illuminant D<sub>65</sub></td><td align="center" valign="top">E' = 4.5&#160;I&#160;for&#160;I&#160;&#8804;0.018,
+1.099&#160;I<sup>0.45</sup>&#160;-&#160;0.099&#160;for&#160;0.018&#160;&lt;&#160;I</td><td align="center" valign="top">0.2125&#160;E'<sub>R</sub>
++&#160;0.7154&#160;E'<sub>G</sub>
++&#160;0.0721&#160;E'<sub>B</sub></td><td align="center" valign="top">219&#160;E'<sub>Y</sub>&#160;+&#160;16</td><td align="center" valign="top">224&#160;P<sub>B,R</sub>&#160;+&#160;128</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_COLORSPACE_BT878</code></td><td align="center" valign="top">4</td><td align="left" valign="top">Broken Bt878 extents<sup>[<a id="idp22539984" href="#ftn.idp22539984" class="footnote">b</a>]</sup>, <a class="xref" href="bi01.html#itu601" title="ITU-R Recommendation BT.601-5 &quot;Studio Encoding Parameters of Digital Television for Standard 4:3 and Wide-Screen 16:9 Aspect Ratios&quot;">[<abbr class="abbrev">ITU&#160;BT.601</abbr>]</a></td><td align="center" valign="top">?</td><td align="center" valign="top">?</td><td align="center" valign="top">?</td><td align="center" valign="top">?</td><td align="center" valign="top">?</td><td align="center" valign="top">0.299&#160;E'<sub>R</sub>
++&#160;0.587&#160;E'<sub>G</sub>
++&#160;0.114&#160;E'<sub>B</sub></td><td align="center" valign="top"><span class="emphasis"><em>237</em></span>&#160;E'<sub>Y</sub>&#160;+&#160;16</td><td align="center" valign="top">224&#160;P<sub>B,R</sub>&#160;+&#160;128 (probably)</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_COLORSPACE_470_SYSTEM_M</code></td><td align="center" valign="top">5</td><td align="left" valign="top">M/NTSC<sup>[<a id="idp22544720" href="#ftn.idp22544720" class="footnote">c</a>]</sup> according to <a class="xref" href="bi01.html#itu470" title="ITU-R Recommendation BT.470-6 &quot;Conventional Television Systems&quot;">[<abbr class="abbrev">ITU&#160;BT.470</abbr>]</a>, <a class="xref" href="bi01.html#itu601" title="ITU-R Recommendation BT.601-5 &quot;Studio Encoding Parameters of Digital Television for Standard 4:3 and Wide-Screen 16:9 Aspect Ratios&quot;">[<abbr class="abbrev">ITU&#160;BT.601</abbr>]</a></td><td align="center" valign="top">x&#160;=&#160;0.67, y&#160;=&#160;0.33</td><td align="center" valign="top">x&#160;=&#160;0.21, y&#160;=&#160;0.71</td><td align="center" valign="top">x&#160;=&#160;0.14, y&#160;=&#160;0.08</td><td align="center" valign="top">x&#160;=&#160;0.310, y&#160;=&#160;0.316, Illuminant C</td><td align="center" valign="top">?</td><td align="center" valign="top">0.299&#160;E'<sub>R</sub>
++&#160;0.587&#160;E'<sub>G</sub>
++&#160;0.114&#160;E'<sub>B</sub></td><td align="center" valign="top">219&#160;E'<sub>Y</sub>&#160;+&#160;16</td><td align="center" valign="top">224&#160;P<sub>B,R</sub>&#160;+&#160;128</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_COLORSPACE_470_SYSTEM_BG</code></td><td align="center" valign="top">6</td><td align="left" valign="top">625-line PAL and SECAM systems according to <a class="xref" href="bi01.html#itu470" title="ITU-R Recommendation BT.470-6 &quot;Conventional Television Systems&quot;">[<abbr class="abbrev">ITU&#160;BT.470</abbr>]</a>, <a class="xref" href="bi01.html#itu601" title="ITU-R Recommendation BT.601-5 &quot;Studio Encoding Parameters of Digital Television for Standard 4:3 and Wide-Screen 16:9 Aspect Ratios&quot;">[<abbr class="abbrev">ITU&#160;BT.601</abbr>]</a></td><td align="center" valign="top">x&#160;=&#160;0.64, y&#160;=&#160;0.33</td><td align="center" valign="top">x&#160;=&#160;0.29, y&#160;=&#160;0.60</td><td align="center" valign="top">x&#160;=&#160;0.15, y&#160;=&#160;0.06</td><td align="center" valign="top">x&#160;=&#160;0.313, y&#160;=&#160;0.329,
+Illuminant D<sub>65</sub></td><td align="center" valign="top">?</td><td align="center" valign="top">0.299&#160;E'<sub>R</sub>
++&#160;0.587&#160;E'<sub>G</sub>
++&#160;0.114&#160;E'<sub>B</sub></td><td align="center" valign="top">219&#160;E'<sub>Y</sub>&#160;+&#160;16</td><td align="center" valign="top">224&#160;P<sub>B,R</sub>&#160;+&#160;128</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_COLORSPACE_JPEG</code></td><td align="center" valign="top">7</td><td align="left" valign="top">JPEG Y'CbCr, see <a class="xref" href="bi01.html#jfif" title="JPEG File Interchange Format">[<abbr class="abbrev">JFIF</abbr>]</a>, <a class="xref" href="bi01.html#itu601" title="ITU-R Recommendation BT.601-5 &quot;Studio Encoding Parameters of Digital Television for Standard 4:3 and Wide-Screen 16:9 Aspect Ratios&quot;">[<abbr class="abbrev">ITU&#160;BT.601</abbr>]</a></td><td align="center" valign="top">?</td><td align="center" valign="top">?</td><td align="center" valign="top">?</td><td align="center" valign="top">?</td><td align="center" valign="top">?</td><td align="center" valign="top">0.299&#160;E'<sub>R</sub>
++&#160;0.587&#160;E'<sub>G</sub>
++&#160;0.114&#160;E'<sub>B</sub></td><td align="center" valign="top">256&#160;E'<sub>Y</sub>&#160;+&#160;16<sup>[<a id="idp22556536" href="#ftn.idp22556536" class="footnote">d</a>]</sup></td><td align="center" valign="top">256&#160;P<sub>B,R</sub>&#160;+&#160;128</td></tr><tr><td align="left" valign="top"><code class="constant">V4L2_COLORSPACE_SRGB</code></td><td align="center" valign="top">8</td><td align="left" valign="top">[?]</td><td align="center" valign="top">x&#160;=&#160;0.640, y&#160;=&#160;0.330</td><td align="center" valign="top">x&#160;=&#160;0.300, y&#160;=&#160;0.600</td><td align="center" valign="top">x&#160;=&#160;0.150, y&#160;=&#160;0.060</td><td align="center" valign="top">x&#160;=&#160;0.3127, y&#160;=&#160;0.3290,
+	    Illuminant D<sub>65</sub></td><td align="center" valign="top">E' = 4.5&#160;I&#160;for&#160;I&#160;&#8804;0.018,
+1.099&#160;I<sup>0.45</sup>&#160;-&#160;0.099&#160;for&#160;0.018&#160;&lt;&#160;I</td><td colspan="3" align="center" valign="top">n/a</td></tr></tbody><tbody class="footnotes"><tr><td colspan="11"><div class="footnote"><p><sup>[<a id="ftn.idp22522056" href="#idp22522056" class="para">a</a>] </sup>The coordinates of the color primaries are
+given in the CIE system (1931)</p></div><div class="footnote"><p><sup>[<a id="ftn.idp22539984" href="#idp22539984" class="para">b</a>] </sup>The ubiquitous Bt878 video capture chip
+quantizes E'<sub>Y</sub> to 238 levels, yielding a range
+of Y' = 16 &#8230; 253, unlike Rec. 601 Y' = 16 &#8230;
+235. This is not a typo in the Bt878 documentation, it has been
+implemented in silicon. The chroma extents are unclear.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp22544720" href="#idp22544720" class="para">c</a>] </sup>No identifier exists for M/PAL which uses
+the chromaticities of M/NTSC, the remaining parameters are equal to B and
+G/PAL.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp22556536" href="#idp22556536" class="para">d</a>] </sup>Note JFIF quantizes
+Y'P<sub>B</sub>P<sub>R</sub> in range [0;+1] and
+[-0.5;+0.5] to <span class="emphasis"><em>257</em></span> levels, however Y'CbCr signals
+are still clamped to [0;255].</p></div></td></tr></tbody></table></div></div><br class="table-break" /></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s03.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="pixfmt.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="pixfmt-indexed.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Standard Image Formats&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Indexed Format</td></tr></table></div></body></html>

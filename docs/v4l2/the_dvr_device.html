@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>The DVR device</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_examples.html" title="Chapter&#160;16.&#160;Examples" /><link rel="prev" href="dvb_examples.html" title="Chapter&#160;16.&#160;Examples" /><link rel="next" href="audio_h.html" title="Appendix&#160;F.&#160;DVB Audio Header File" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">The DVR device</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="dvb_examples.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;16.&#160;Examples</th><td width="20%" align="right">&#160;<a accesskey="n" href="audio_h.html">Next</a></td></tr></table><hr /></div><div class="section" title="The DVR device"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="the_dvr_device"></a>The DVR device</h2></div></div></div><p>The following program code shows how to use the DVR device for recording.
+</p><pre class="programlisting">
+ #include &lt;sys/ioctl.h&gt;
+ #include &lt;stdio.h&gt;
+ #include &lt;stdint.h&gt;
+ #include &lt;sys/types.h&gt;
+ #include &lt;sys/stat.h&gt;
+ #include &lt;fcntl.h&gt;
+ #include &lt;time.h&gt;
+ #include &lt;unistd.h&gt;
+
+ #include &lt;linux/dvb/dmx.h&gt;
+ #include &lt;linux/dvb/video.h&gt;
+ #include &lt;sys/poll.h&gt;
+ #define DVR "/dev/dvb/adapter0/dvr1"
+ #define AUDIO "/dev/dvb/adapter0/audio1"
+ #define VIDEO "/dev/dvb/adapter0/video1"
+
+ #define BUFFY (188&#8902;20)
+ #define MAX_LENGTH (1024&#8902;1024&#8902;5) /&#8902; record 5MB &#8902;/
+
+
+ /&#8902; switch the demuxes to recording, assuming the transponder is tuned &#8902;/
+
+ /&#8902; demux1, demux2: file descriptor of video and audio filters &#8902;/
+ /&#8902; vpid, apid:     PIDs of video and audio channels           &#8902;/
+
+ int switch_to_record(int demux1, int demux2, uint16_t vpid, uint16_t apid)
+ {
+	 struct dmx_pes_filter_params pesFilterParams;
+
+	 if (demux1 &lt; 0){
+		 if ((demux1=open(DMX, O_RDWR|O_NONBLOCK))
+		     &lt; 0){
+			 perror("DEMUX DEVICE: ");
+			 return -1;
+		 }
+	 }
+
+	 if (demux2 &lt; 0){
+		 if ((demux2=open(DMX, O_RDWR|O_NONBLOCK))
+		     &lt; 0){
+			 perror("DEMUX DEVICE: ");
+			 return -1;
+		 }
+	 }
+
+	 pesFilterParams.pid = vpid;
+	 pesFilterParams.input = DMX_IN_FRONTEND;
+	 pesFilterParams.output = DMX_OUT_TS_TAP;
+	 pesFilterParams.pes_type = DMX_PES_VIDEO;
+	 pesFilterParams.flags = DMX_IMMEDIATE_START;
+	 if (ioctl(demux1, DMX_SET_PES_FILTER, &amp;pesFilterParams) &lt; 0){
+		 perror("DEMUX DEVICE");
+		 return -1;
+	 }
+	 pesFilterParams.pid = apid;
+	 pesFilterParams.input = DMX_IN_FRONTEND;
+	 pesFilterParams.output = DMX_OUT_TS_TAP;
+	 pesFilterParams.pes_type = DMX_PES_AUDIO;
+	 pesFilterParams.flags = DMX_IMMEDIATE_START;
+	 if (ioctl(demux2, DMX_SET_PES_FILTER, &amp;pesFilterParams) &lt; 0){
+		 perror("DEMUX DEVICE");
+		 return -1;
+	 }
+	 return 0;
+ }
+
+ /&#8902; start recording MAX_LENGTH , assuming the transponder is tuned &#8902;/
+
+ /&#8902; demux1, demux2: file descriptor of video and audio filters &#8902;/
+ /&#8902; vpid, apid:     PIDs of video and audio channels           &#8902;/
+ int record_dvr(int demux1, int demux2, uint16_t vpid, uint16_t apid)
+ {
+	 int i;
+	 int len;
+	 int written;
+	 uint8_t buf[BUFFY];
+	 uint64_t length;
+	 struct pollfd pfd[1];
+	 int dvr, dvr_out;
+
+	 /&#8902; open dvr device &#8902;/
+	 if ((dvr = open(DVR, O_RDONLY|O_NONBLOCK)) &lt; 0){
+			 perror("DVR DEVICE");
+			 return -1;
+	 }
+
+	 /&#8902; switch video and audio demuxes to dvr &#8902;/
+	 printf ("Switching dvr on\n");
+	 i = switch_to_record(demux1, demux2, vpid, apid);
+	 printf("finished: ");
+
+	 printf("Recording %2.0f MB of test file in TS format\n",
+		MAX_LENGTH/(1024.0&#8902;1024.0));
+	 length = 0;
+
+	 /&#8902; open output file &#8902;/
+	 if ((dvr_out = open(DVR_FILE,O_WRONLY|O_CREAT
+				  |O_TRUNC, S_IRUSR|S_IWUSR
+				  |S_IRGRP|S_IWGRP|S_IROTH|
+				  S_IWOTH)) &lt; 0){
+		 perror("Can't open file for dvr test");
+		 return -1;
+	 }
+
+	 pfd[0].fd = dvr;
+	 pfd[0].events = POLLIN;
+
+	 /&#8902; poll for dvr data and write to file &#8902;/
+	 while (length &lt; MAX_LENGTH ) {
+		 if (poll(pfd,1,1)){
+			 if (pfd[0].revents &amp; POLLIN){
+				 len = read(dvr, buf, BUFFY);
+				 if (len &lt; 0){
+					 perror("recording");
+					 return -1;
+				 }
+				 if (len &gt; 0){
+					 written = 0;
+					 while (written &lt; len)
+						 written +=
+							 write (dvr_out,
+								buf, len);
+					 length += len;
+					 printf("written %2.0f MB\r",
+						length/1024./1024.);
+				 }
+			 }
+		 }
+	 }
+	 return 0;
+ }
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dvb_examples.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_examples.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="audio_h.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&#160;16.&#160;Examples&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Appendix&#160;F.&#160;DVB Audio Header File</td></tr></table></div></body></html>

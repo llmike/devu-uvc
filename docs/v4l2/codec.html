@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Codec Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="devices.html" title="Chapter&#160;4.&#160;Interfaces" /><link rel="prev" href="osd.html" title="Video Output Overlay Interface" /><link rel="next" href="effect.html" title="Effect Devices Interface" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Codec Interface</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="osd.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;4.&#160;Interfaces</th><td width="20%" align="right">&#160;<a accesskey="n" href="effect.html">Next</a></td></tr></table><hr /></div><div class="section" title="Codec Interface"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="codec"></a>Codec Interface</h2></div></div></div><p>A V4L2 codec can compress, decompress, transform, or otherwise
+convert video data from one format into another format, in memory. Typically
+such devices are memory-to-memory devices (i.e. devices with the
+<code class="constant">V4L2_CAP_VIDEO_M2M</code> or <code class="constant">V4L2_CAP_VIDEO_M2M_MPLANE</code>
+capability set).
+</p><p>A memory-to-memory video node acts just like a normal video node, but it
+supports both output (sending frames from memory to the codec hardware) and
+capture (receiving the processed frames from the codec hardware into memory)
+stream I/O. An application will have to setup the stream
+I/O for both sides and finally call <a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMON</code></a> for both capture and output
+to start the codec.</p><p>Video compression codecs use the MPEG controls to setup their codec parameters
+(note that the MPEG controls actually support many more codecs than just MPEG).
+See <a class="xref" href="extended-controls.html#mpeg-controls" title="Codec Control Reference">the section called &#8220;Codec Control Reference&#8221;</a>.</p><p>Memory-to-memory devices can often be used as a shared resource: you can
+open the video node multiple times, each application setting up their own codec properties
+that are local to the file handle, and each can use it independently from the others.
+The driver will arbitrate access to the codec and reprogram it whenever another file
+handler gets access. This is different from the usual video node behavior where the video properties
+are global to the device (i.e. changing something through one file handle is visible
+through another file handle).</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="osd.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="devices.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="effect.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Video Output Overlay Interface&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Effect Devices Interface</td></tr></table></div></body></html>

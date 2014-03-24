@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>ioctl VIDIOC_QBUF, VIDIOC_DQBUF</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="user-func.html" title="Appendix&#160;A.&#160;Function Reference" /><link rel="prev" href="vidioc-prepare-buf.html" title="ioctl VIDIOC_PREPARE_BUF" /><link rel="next" href="vidioc-querybuf.html" title="ioctl VIDIOC_QUERYBUF" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">ioctl VIDIOC_QBUF, VIDIOC_DQBUF</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="vidioc-prepare-buf.html">Prev</a>&#160;</td><th width="60%" align="center">Appendix&#160;A.&#160;Function Reference</th><td width="20%" align="right">&#160;<a accesskey="n" href="vidioc-querybuf.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF"><a id="vidioc-qbuf"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>VIDIOC_QBUF, VIDIOC_DQBUF &#8212; Exchange a buffer with the driver</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>struct v4l2_buffer *<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div></div><div class="refsect1" title="Arguments"><a id="idp35520104"></a><h2>Arguments</h2><div class="variablelist"><dl><dt><span class="term"><em class="parameter"><code>fd</code></em></span></dt><dd><p>File descriptor returned by <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>.</p></dd><dt><span class="term"><em class="parameter"><code>request</code></em></span></dt><dd><p>VIDIOC_QBUF, VIDIOC_DQBUF</p></dd><dt><span class="term"><em class="parameter"><code>argp</code></em></span></dt><dd><p></p></dd></dl></div></div><div class="refsect1" title="Description"><a id="idp35556368"></a><h2>Description</h2><p>Applications call the <code class="constant">VIDIOC_QBUF</code> ioctl
+to enqueue an empty (capturing) or filled (output) buffer in the
+driver's incoming queue. The semantics depend on the selected I/O
+method.</p><p>To enqueue a buffer applications set the <em class="structfield"><code>type</code></em>
+field of a struct&#160;<a class="link" href="buffer.html#v4l2-buffer" title="Table&#160;3.1.&#160;struct v4l2_buffer">v4l2_buffer</a> to the same buffer type as was previously used
+with struct&#160;<a class="link" href="vidioc-g-fmt.html#v4l2-format" title="Table&#160;A.67.&#160;struct v4l2_format">v4l2_format</a> <em class="structfield"><code>type</code></em> and struct&#160;<a class="link" href="vidioc-reqbufs.html#v4l2-requestbuffers" title="Table&#160;A.94.&#160;struct v4l2_requestbuffers">v4l2_requestbuffers</a>
+<em class="structfield"><code>type</code></em>. Applications must also set the
+<em class="structfield"><code>index</code></em> field. Valid index numbers range from
+zero to the number of buffers allocated with <a class="link" href="vidioc-reqbufs.html" title="ioctl VIDIOC_REQBUFS"><code class="constant">VIDIOC_REQBUFS</code></a>
+(struct&#160;<a class="link" href="vidioc-reqbufs.html#v4l2-requestbuffers" title="Table&#160;A.94.&#160;struct v4l2_requestbuffers">v4l2_requestbuffers</a> <em class="structfield"><code>count</code></em>) minus one. The
+contents of the struct <span class="structname">v4l2_buffer</span> returned
+by a <a class="link" href="vidioc-querybuf.html" title="ioctl VIDIOC_QUERYBUF"><code class="constant">VIDIOC_QUERYBUF</code></a> ioctl will do as well. When the buffer is
+intended for output (<em class="structfield"><code>type</code></em> is
+<code class="constant">V4L2_BUF_TYPE_VIDEO_OUTPUT</code>,
+<code class="constant">V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE</code>, or
+<code class="constant">V4L2_BUF_TYPE_VBI_OUTPUT</code>) applications must also
+initialize the <em class="structfield"><code>bytesused</code></em>,
+<em class="structfield"><code>field</code></em> and
+<em class="structfield"><code>timestamp</code></em> fields, see <a class="xref" href="buffer.html" title="Buffers">the section called &#8220;Buffers&#8221;</a> for details.
+Applications must also set <em class="structfield"><code>flags</code></em> to 0.
+The <em class="structfield"><code>reserved2</code></em> and
+<em class="structfield"><code>reserved</code></em> fields must be set to 0. When using
+the <a class="link" href="planar-apis.html" title="Single- and multi-planar APIs">multi-planar API</a>, the
+<em class="structfield"><code>m.planes</code></em> field must contain a userspace pointer
+to a filled-in array of struct&#160;<a class="link" href="buffer.html#v4l2-plane" title="Table&#160;3.2.&#160;struct v4l2_plane">v4l2_plane</a> and the <em class="structfield"><code>length</code></em>
+field must be set to the number of elements in that array.
+</p><p>To enqueue a <a class="link" href="mmap.html" title="Streaming I/O (Memory Mapping)">memory mapped</a>
+buffer applications set the <em class="structfield"><code>memory</code></em>
+field to <code class="constant">V4L2_MEMORY_MMAP</code>. When
+<code class="constant">VIDIOC_QBUF</code> is called with a pointer to this
+structure the driver sets the
+<code class="constant">V4L2_BUF_FLAG_MAPPED</code> and
+<code class="constant">V4L2_BUF_FLAG_QUEUED</code> flags and clears the
+<code class="constant">V4L2_BUF_FLAG_DONE</code> flag in the
+<em class="structfield"><code>flags</code></em> field, or it returns an
+<span class="errorcode">EINVAL</span> error code.</p><p>To enqueue a <a class="link" href="userp.html" title="Streaming I/O (User Pointers)">user pointer</a>
+buffer applications set the <em class="structfield"><code>memory</code></em>
+field to <code class="constant">V4L2_MEMORY_USERPTR</code>, the
+<em class="structfield"><code>m.userptr</code></em> field to the address of the
+buffer and <em class="structfield"><code>length</code></em> to its size. When the multi-planar
+API is used, <em class="structfield"><code>m.userptr</code></em> and
+<em class="structfield"><code>length</code></em> members of the passed array of struct&#160;<a class="link" href="buffer.html#v4l2-plane" title="Table&#160;3.2.&#160;struct v4l2_plane">v4l2_plane</a>
+have to be used instead. When <code class="constant">VIDIOC_QBUF</code> is called with
+a pointer to this structure the driver sets the
+<code class="constant">V4L2_BUF_FLAG_QUEUED</code> flag and clears the
+<code class="constant">V4L2_BUF_FLAG_MAPPED</code> and
+<code class="constant">V4L2_BUF_FLAG_DONE</code> flags in the
+<em class="structfield"><code>flags</code></em> field, or it returns an error code.
+This ioctl locks the memory pages of the buffer in physical memory,
+they cannot be swapped out to disk. Buffers remain locked until
+dequeued, until the <a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMOFF</code></a> or <a class="link" href="vidioc-reqbufs.html" title="ioctl VIDIOC_REQBUFS"><code class="constant">VIDIOC_REQBUFS</code></a> ioctl is
+called, or until the device is closed.</p><p>To enqueue a <a class="link" href="dmabuf.html" title="Streaming I/O (DMA buffer importing)">DMABUF</a> buffer applications
+set the <em class="structfield"><code>memory</code></em> field to
+<code class="constant">V4L2_MEMORY_DMABUF</code> and the <em class="structfield"><code>m.fd</code></em>
+field to a file descriptor associated with a DMABUF buffer. When the
+multi-planar API is used the <em class="structfield"><code>m.fd</code></em> fields of the
+passed array of struct&#160;<a class="link" href="buffer.html#v4l2-plane" title="Table&#160;3.2.&#160;struct v4l2_plane">v4l2_plane</a> have to be used instead. When
+<code class="constant">VIDIOC_QBUF</code> is called with a pointer to this structure the
+driver sets the <code class="constant">V4L2_BUF_FLAG_QUEUED</code> flag and clears the
+<code class="constant">V4L2_BUF_FLAG_MAPPED</code> and
+<code class="constant">V4L2_BUF_FLAG_DONE</code> flags in the
+<em class="structfield"><code>flags</code></em> field, or it returns an error code.  This
+ioctl locks the buffer. Locking a buffer means passing it to a driver for a
+hardware access (usually DMA).  If an application accesses (reads/writes) a
+locked buffer then the result is undefined.  Buffers remain locked until
+dequeued, until the <a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMOFF</code></a> or <a class="link" href="vidioc-reqbufs.html" title="ioctl VIDIOC_REQBUFS"><code class="constant">VIDIOC_REQBUFS</code></a> ioctl is called, or
+until the device is closed.</p><p>Applications call the <code class="constant">VIDIOC_DQBUF</code>
+ioctl to dequeue a filled (capturing) or displayed (output) buffer
+from the driver's outgoing queue. They just set the
+<em class="structfield"><code>type</code></em>, <em class="structfield"><code>memory</code></em>
+and <em class="structfield"><code>reserved</code></em>
+fields of a struct&#160;<a class="link" href="buffer.html#v4l2-buffer" title="Table&#160;3.1.&#160;struct v4l2_buffer">v4l2_buffer</a> as above, when <code class="constant">VIDIOC_DQBUF</code>
+is called with a pointer to this structure the driver fills the
+remaining fields or returns an error code. The driver may also set
+<code class="constant">V4L2_BUF_FLAG_ERROR</code> in the <em class="structfield"><code>flags</code></em>
+field. It indicates a non-critical (recoverable) streaming error. In such case
+the application may continue as normal, but should be aware that data in the
+dequeued buffer might be corrupted. When using the multi-planar API, the
+planes array must be passed in as well.</p><p>By default <code class="constant">VIDIOC_DQBUF</code> blocks when no
+buffer is in the outgoing queue. When the
+<code class="constant">O_NONBLOCK</code> flag was given to the <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>
+function, <code class="constant">VIDIOC_DQBUF</code> returns immediately
+with an <span class="errorcode">EAGAIN</span> error code when no buffer is available.</p><p>The <span class="structname">v4l2_buffer</span> structure is
+specified in <a class="xref" href="buffer.html" title="Buffers">the section called &#8220;Buffers&#8221;</a>.</p></div><div class="refsect1" title="Return Value"><a id="idp35583792"></a><h2>Return Value</h2><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="variablelist"><dl><dt><span class="term"><span class="errorcode">EAGAIN</span></span></dt><dd><p>Non-blocking I/O has been selected using
+<code class="constant">O_NONBLOCK</code> and no buffer was in the outgoing
+queue.</p></dd><dt><span class="term"><span class="errorcode">EINVAL</span></span></dt><dd><p>The buffer <em class="structfield"><code>type</code></em> is not
+supported, or the <em class="structfield"><code>index</code></em> is out of bounds,
+or no buffers have been allocated yet, or the
+<em class="structfield"><code>userptr</code></em> or
+<em class="structfield"><code>length</code></em> are invalid.</p></dd><dt><span class="term"><span class="errorcode">EIO</span></span></dt><dd><p><code class="constant">VIDIOC_DQBUF</code> failed due to an
+internal error. Can also indicate temporary problems like signal
+loss. Note the driver might dequeue an (empty) buffer despite
+returning an error, or even stop capturing. Reusing such buffer may be unsafe
+though and its details (e.g. <em class="structfield"><code>index</code></em>) may not be
+returned either. It is recommended that drivers indicate recoverable errors
+by setting the <code class="constant">V4L2_BUF_FLAG_ERROR</code> and returning 0 instead.
+In that case the application should be able to safely reuse the buffer and
+continue streaming.
+	</p></dd></dl></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="vidioc-prepare-buf.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="user-func.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="vidioc-querybuf.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ioctl VIDIOC_PREPARE_BUF&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;ioctl VIDIOC_QUERYBUF</td></tr></table></div></body></html>

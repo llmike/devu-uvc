@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Appendix&#160;F.&#160;DVB Audio Header File</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvbapi.html" title="Part&#160;II.&#160;LINUX DVB API" /><link rel="prev" href="the_dvr_device.html" title="The DVR device" /><link rel="next" href="ca_h.html" title="Appendix&#160;G.&#160;DVB Conditional Access Header File" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Appendix&#160;F.&#160;DVB Audio Header File</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="the_dvr_device.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;II.&#160;LINUX DVB API</th><td width="20%" align="right">&#160;<a accesskey="n" href="ca_h.html">Next</a></td></tr></table><hr /></div><div class="appendix" title="Appendix&#160;F.&#160;DVB Audio Header File"><div class="titlepage"><div><div><h2 class="title"><a id="audio_h"></a>Appendix&#160;F.&#160;DVB Audio Header File</h2></div></div></div><pre class="programlisting">
+/*
+ * audio.h
+ *
+ * Copyright (C) 2000 Ralph  Metzler &lt;ralph@convergence.de&gt;
+ *                  &amp; Marcus Metzler &lt;marcus@convergence.de&gt;
+ *                    for convergence integrated media GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Lesser Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+#ifndef _DVBAUDIO_H_
+#define _DVBAUDIO_H_
+
+#include &lt;linux/types.h&gt;
+
+typedef enum {
+        AUDIO_SOURCE_DEMUX, /* Select the demux as the main source */
+        AUDIO_SOURCE_MEMORY /* Select internal memory as the main source */
+} <a class="link" href="dvb_audio.html#audio-stream-source-t" title="audio_stream_source_t">audio_stream_source_t</a>;
+
+
+typedef enum {
+        AUDIO_STOPPED,      /* Device is stopped */
+        AUDIO_PLAYING,      /* Device is currently playing */
+        AUDIO_PAUSED        /* Device is paused */
+} <a class="link" href="dvb_audio.html#audio-play-state-t" title="audio_play_state_t">audio_play_state_t</a>;
+
+
+typedef enum {
+        AUDIO_STEREO,
+        AUDIO_MONO_LEFT,
+        AUDIO_MONO_RIGHT,
+        AUDIO_MONO,
+        AUDIO_STEREO_SWAPPED
+} <a class="link" href="dvb_audio.html#audio-channel-select-t" title="audio_channel_select_t">audio_channel_select_t</a>;
+
+
+typedef struct <a class="link" href="dvb_audio.html#audio-mixer" title="struct audio_mixer">audio_mixer</a> {
+        unsigned int volume_left;
+        unsigned int volume_right;
+  // what else do we need? bass, pass-through, ...
+} <a class="link" href="dvb_audio.html#audio-mixer" title="struct audio_mixer">audio_mixer_t</a>;
+
+
+typedef struct <a class="link" href="dvb_audio.html#audio-status" title="struct audio_status">audio_status</a> {
+        int                    AV_sync_state;  /* sync audio and video? */
+        int                    mute_state;     /* audio is muted */
+        audio_play_state_t     play_state;     /* current playback state */
+        audio_stream_source_t  stream_source;  /* current stream source */
+        audio_channel_select_t channel_select; /* currently selected channel */
+        int                    bypass_mode;    /* pass on audio data to */
+        audio_mixer_t          mixer_state;    /* current mixer state */
+} <a class="link" href="dvb_audio.html#audio-status" title="struct audio_status">audio_status_t</a>;                              /* separate decoder hardware */
+
+
+typedef
+struct <a class="link" href="dvb_audio.html#audio-karaoke" title="struct audio_karaoke">audio_karaoke</a> {  /* if Vocal1 or Vocal2 are non-zero, they get mixed  */
+        int vocal1;    /* into left and right t at 70% each */
+        int vocal2;    /* if both, Vocal1 and Vocal2 are non-zero, Vocal1 gets*/
+        int melody;    /* mixed into the left channel and */
+                       /* Vocal2 into the right channel at 100% each. */
+                       /* if Melody is non-zero, the melody channel gets mixed*/
+} <a class="link" href="dvb_audio.html#audio-karaoke" title="struct audio_karaoke">audio_karaoke_t</a>;     /* into left and right  */
+
+
+typedef __u16 audio_attributes_t;
+/*   bits: descr. */
+/*   15-13 audio coding mode (0=ac3, 2=mpeg1, 3=mpeg2ext, 4=LPCM, 6=DTS, */
+/*   12    multichannel extension */
+/*   11-10 audio type (0=not spec, 1=language included) */
+/*    9- 8 audio application mode (0=not spec, 1=karaoke, 2=surround) */
+/*    7- 6 Quantization / DRC (mpeg audio: 1=DRC exists)(lpcm: 0=16bit,  */
+/*    5- 4 Sample frequency fs (0=48kHz, 1=96kHz) */
+/*    2- 0 number of audio channels (n+1 channels) */
+
+
+/* for GET_CAPABILITIES and SET_FORMAT, the latter should only set one bit */
+#define AUDIO_CAP_DTS    1
+#define AUDIO_CAP_LPCM   2
+#define AUDIO_CAP_MP1    4
+#define AUDIO_CAP_MP2    8
+#define AUDIO_CAP_MP3   16
+#define AUDIO_CAP_AAC   32
+#define AUDIO_CAP_OGG   64
+#define AUDIO_CAP_SDDS 128
+#define AUDIO_CAP_AC3  256
+
+#define <a class="link" href="audio_function_calls.html#AUDIO_STOP" title="AUDIO_STOP">AUDIO_STOP</a>                 _IO('o', 1)
+#define <a class="link" href="audio_function_calls.html#AUDIO_PLAY" title="AUDIO_PLAY">AUDIO_PLAY</a>                 _IO('o', 2)
+#define <a class="link" href="audio_function_calls.html#AUDIO_PAUSE" title="AUDIO_PAUSE">AUDIO_PAUSE</a>                _IO('o', 3)
+#define <a class="link" href="audio_function_calls.html#AUDIO_CONTINUE" title="AUDIO_CONTINUE">AUDIO_CONTINUE</a>             _IO('o', 4)
+#define <a class="link" href="audio_function_calls.html#AUDIO_SELECT_SOURCE" title="AUDIO_SELECT_SOURCE">AUDIO_SELECT_SOURCE</a>        _IO('o', 5)
+#define <a class="link" href="audio_function_calls.html#AUDIO_SET_MUTE" title="AUDIO_SET_MUTE">AUDIO_SET_MUTE</a>             _IO('o', 6)
+#define <a class="link" href="audio_function_calls.html#AUDIO_SET_AV_SYNC" title="AUDIO_SET_AV_SYNC">AUDIO_SET_AV_SYNC</a>          _IO('o', 7)
+#define <a class="link" href="audio_function_calls.html#AUDIO_SET_BYPASS_MODE" title="AUDIO_SET_BYPASS_MODE">AUDIO_SET_BYPASS_MODE</a>      _IO('o', 8)
+#define <a class="link" href="audio_function_calls.html#AUDIO_CHANNEL_SELECT" title="AUDIO_CHANNEL_SELECT">AUDIO_CHANNEL_SELECT</a>       _IO('o', 9)
+#define <a class="link" href="audio_function_calls.html#AUDIO_GET_STATUS" title="AUDIO_GET_STATUS">AUDIO_GET_STATUS</a>           _IOR('o', 10, audio_status_t)
+
+#define <a class="link" href="audio_function_calls.html#AUDIO_GET_CAPABILITIES" title="AUDIO_GET_CAPABILITIES">AUDIO_GET_CAPABILITIES</a>     _IOR('o', 11, unsigned int)
+#define <a class="link" href="audio_function_calls.html#AUDIO_CLEAR_BUFFER" title="AUDIO_CLEAR_BUFFER">AUDIO_CLEAR_BUFFER</a>         _IO('o',  12)
+#define <a class="link" href="audio_function_calls.html#AUDIO_SET_ID" title="AUDIO_SET_ID">AUDIO_SET_ID</a>               _IO('o', 13)
+#define <a class="link" href="audio_function_calls.html#AUDIO_SET_MIXER" title="AUDIO_SET_MIXER">AUDIO_SET_MIXER</a>            _IOW('o', 14, audio_mixer_t)
+#define <a class="link" href="audio_function_calls.html#AUDIO_SET_STREAMTYPE" title="AUDIO_SET_STREAMTYPE">AUDIO_SET_STREAMTYPE</a>       _IO('o', 15)
+#define <a class="link" href="audio_function_calls.html#AUDIO_SET_EXT_ID" title="AUDIO_SET_EXT_ID">AUDIO_SET_EXT_ID</a>           _IO('o', 16)
+#define <a class="link" href="audio_function_calls.html#AUDIO_SET_ATTRIBUTES" title="AUDIO_SET_ATTRIBUTES">AUDIO_SET_ATTRIBUTES</a>       _IOW('o', 17, audio_attributes_t)
+#define <a class="link" href="audio_function_calls.html#AUDIO_SET_KARAOKE" title="AUDIO_SET_KARAOKE">AUDIO_SET_KARAOKE</a>          _IOW('o', 18, audio_karaoke_t)
+
+/**
+ * AUDIO_GET_PTS
+ *
+ * Read the 33 bit presentation time stamp as defined
+ * in ITU T-REC-H.222.0 / ISO/IEC 13818-1.
+ *
+ * The PTS should belong to the currently played
+ * frame if possible, but may also be a value close to it
+ * like the PTS of the last decoded frame or the last PTS
+ * extracted by the PES parser.
+ */
+#define <a class="link" href="audio_function_calls.html#AUDIO_GET_PTS" title="AUDIO_GET_PTS">AUDIO_GET_PTS</a>              _IOR('o', 19, __u64)
+#define <a class="link" href="audio_function_calls.html#AUDIO_BILINGUAL_CHANNEL_SELECT" title="AUDIO_BILINGUAL_CHANNEL_SELECT">AUDIO_BILINGUAL_CHANNEL_SELECT</a> _IO('o', 20)
+
+#endif /* _DVBAUDIO_H_ */
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="the_dvr_device.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvbapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="ca_h.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">The DVR device&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Appendix&#160;G.&#160;DVB Conditional Access Header File</td></tr></table></div></body></html>

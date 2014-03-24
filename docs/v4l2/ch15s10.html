@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>start_filtering()</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_kdapi.html" title="Chapter&#160;15.&#160;Kernel Demux API" /><link rel="prev" href="ch15s09.html" title="release_filter()" /><link rel="next" href="ch15s11.html" title="stop_filtering()" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">start_filtering()</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch15s09.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;15.&#160;Kernel Demux API</th><td width="20%" align="right">&#160;<a accesskey="n" href="ch15s11.html">Next</a></td></tr></table><hr /></div><div class="section" title="start_filtering()"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="idp49867504"></a>start_filtering()</h2></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>Starts filtering sections on this section feed, according to its settings. Sections
+ are first filtered based on their PID and then matched with the section
+ filters allocated for this feed. If the section matches the PID filter and
+ at least one section filter, it is delivered to the API client. The section
+ is delivered asynchronously using the callback function registered with
+ allocate_section_feed().</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int start_filtering ( dmx_section_feed_t&#8902; feed );</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>dmx_section_feed_t*
+ feed</p>
+</td><td align="char">
+<p>Pointer to the section feed API and instance data.</p>
+</td></tr></tbody></table></div><p>RETURNS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>0</p>
+</td><td align="char">
+<p>The function was completed without errors.</p>
+</td></tr><tr><td align="char">
+<p>-EINVAL</p>
+</td><td align="char">
+<p>Bad parameter.</p>
+</td></tr></tbody></table></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch15s09.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_kdapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="ch15s11.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">release_filter()&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;stop_filtering()</td></tr></table></div></body></html>

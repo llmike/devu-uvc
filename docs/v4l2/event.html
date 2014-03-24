@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Event Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="devices.html" title="Chapter&#160;4.&#160;Interfaces" /><link rel="prev" href="rds.html" title="RDS Interface" /><link rel="next" href="subdev.html" title="Sub-device Interface" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Event Interface</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="rds.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;4.&#160;Interfaces</th><td width="20%" align="right">&#160;<a accesskey="n" href="subdev.html">Next</a></td></tr></table><hr /></div><div class="section" title="Event Interface"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="event"></a>Event Interface</h2></div></div></div><p>The V4L2 event interface provides a means for a user to get
+  immediately notified on certain conditions taking place on a device.
+  This might include start of frame or loss of signal events, for
+  example. Changes in the value or state of a V4L2 control can also be
+  reported through events.
+  </p><p>To receive events, the events the user is interested in first must
+  be subscribed using the <a class="link" href="vidioc-subscribe-event.html" title="ioctl VIDIOC_SUBSCRIBE_EVENT, VIDIOC_UNSUBSCRIBE_EVENT"><code class="constant">VIDIOC_SUBSCRIBE_EVENT</code></a> ioctl. Once an event is
+  subscribed, the events of subscribed types are dequeueable using the
+  <a class="link" href="vidioc-dqevent.html" title="ioctl VIDIOC_DQEVENT"><code class="constant">VIDIOC_DQEVENT</code></a> ioctl. Events may be unsubscribed using
+  VIDIOC_UNSUBSCRIBE_EVENT ioctl. The special event type V4L2_EVENT_ALL may
+  be used to unsubscribe all the events the driver supports.</p><p>The event subscriptions and event queues are specific to file
+  handles. Subscribing an event on one file handle does not affect
+  other file handles.</p><p>The information on dequeueable events is obtained by using select or
+  poll system calls on video devices. The V4L2 events use POLLPRI events on
+  poll system call and exceptions on select system call.</p><p>Starting with kernel 3.1 certain guarantees can be given with
+  regards to events:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Each subscribed event has its own internal dedicated event queue.
+This means that flooding of one event type will not interfere with other
+event types.</p></li><li class="listitem"><p>If the internal event queue for a particular subscribed event
+becomes full, then the oldest event in that queue will be dropped.</p></li><li class="listitem"><p>Where applicable, certain event types can ensure that the payload
+of the oldest event that is about to be dropped will be merged with the payload
+of the next oldest event. Thus ensuring that no information is lost, but only an
+intermediate step leading up to that information. See the documentation for the
+event you want to subscribe to whether this is applicable for that event or not.</p></li></ol></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="rds.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="devices.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="subdev.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">RDS Interface&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Sub-device Interface</td></tr></table></div></body></html>

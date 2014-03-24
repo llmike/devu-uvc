@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="user-func.html" title="Appendix&#160;A.&#160;Function Reference" /><link rel="prev" href="vidioc-g-ext-ctrls.html" title="ioctl VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS, VIDIOC_TRY_EXT_CTRLS" /><link rel="next" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="vidioc-g-ext-ctrls.html">Prev</a>&#160;</td><th width="60%" align="center">Appendix&#160;A.&#160;Function Reference</th><td width="20%" align="right">&#160;<a accesskey="n" href="vidioc-g-fmt.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF"><a id="vidioc-g-fbuf"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>VIDIOC_G_FBUF, VIDIOC_S_FBUF &#8212; Get or set frame buffer overlay parameters</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>struct v4l2_framebuffer *<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>const struct v4l2_framebuffer *<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div></div><div class="refsect1" title="Arguments"><a id="idp34248344"></a><h2>Arguments</h2><div class="variablelist"><dl><dt><span class="term"><em class="parameter"><code>fd</code></em></span></dt><dd><p>File descriptor returned by <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>.</p></dd><dt><span class="term"><em class="parameter"><code>request</code></em></span></dt><dd><p>VIDIOC_G_FBUF, VIDIOC_S_FBUF</p></dd><dt><span class="term"><em class="parameter"><code>argp</code></em></span></dt><dd><p></p></dd></dl></div></div><div class="refsect1" title="Description"><a id="idp34252448"></a><h2>Description</h2><p>Applications can use the <code class="constant">VIDIOC_G_FBUF</code> and
+<code class="constant">VIDIOC_S_FBUF</code> ioctl to get and set the
+framebuffer parameters for a <a class="link" href="overlay.html" title="Video Overlay Interface">Video
+Overlay</a> or <a class="link" href="osd.html" title="Video Output Overlay Interface">Video Output Overlay</a>
+(OSD). The type of overlay is implied by the device type (capture or
+output device) and can be determined with the <a class="link" href="vidioc-querycap.html" title="ioctl VIDIOC_QUERYCAP"><code class="constant">VIDIOC_QUERYCAP</code></a> ioctl.
+One <code class="filename">/dev/videoN</code> device must not support both
+kinds of overlay.</p><p>The V4L2 API distinguishes destructive and non-destructive
+overlays. A destructive overlay copies captured video images into the
+video memory of a graphics card. A non-destructive overlay blends
+video images into a VGA signal or graphics into a video signal.
+<em class="wordasword">Video Output Overlays</em> are always
+non-destructive.</p><p>To get the current parameters applications call the
+<code class="constant">VIDIOC_G_FBUF</code> ioctl with a pointer to a
+<span class="structname">v4l2_framebuffer</span> structure. The driver fills
+all fields of the structure or returns an <span class="errorcode">EINVAL</span> error code when overlays are
+not supported.</p><p>To set the parameters for a <em class="wordasword">Video Output
+Overlay</em>, applications must initialize the
+<em class="structfield"><code>flags</code></em> field of a struct
+<span class="structname">v4l2_framebuffer</span>. Since the framebuffer is
+implemented on the TV card all other parameters are determined by the
+driver. When an application calls <code class="constant">VIDIOC_S_FBUF</code>
+with a pointer to this structure, the driver prepares for the overlay
+and returns the framebuffer parameters as
+<code class="constant">VIDIOC_G_FBUF</code> does, or it returns an error
+code.</p><p>To set the parameters for a <em class="wordasword">non-destructive
+Video Overlay</em>, applications must initialize the
+<em class="structfield"><code>flags</code></em> field, the
+<em class="structfield"><code>fmt</code></em> substructure, and call
+<code class="constant">VIDIOC_S_FBUF</code>. Again the driver prepares for the
+overlay and returns the framebuffer parameters as
+<code class="constant">VIDIOC_G_FBUF</code> does, or it returns an error
+code.</p><p>For a <em class="wordasword">destructive Video Overlay</em>
+applications must additionally provide a
+<em class="structfield"><code>base</code></em> address. Setting up a DMA to a
+random memory location can jeopardize the system security, its
+stability or even damage the hardware, therefore only the superuser
+can set the parameters for a destructive video overlay.</p><div class="table"><a id="v4l2-framebuffer"></a><p class="title"><b>Table&#160;A.64.&#160;struct <span class="structname">v4l2_framebuffer</span></b></p><div class="table-contents"><table summary="struct v4l2_framebuffer" width="100%" border="0"><colgroup><col /><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>capability</code></em></td><td valign="top">&#160;</td><td valign="top">Overlay capability flags set by the driver, see
+<a class="xref" href="vidioc-g-fbuf.html#framebuffer-cap" title="Table&#160;A.65.&#160;Frame Buffer Capability Flags">Table&#160;A.65, &#8220;Frame Buffer Capability Flags&#8221;</a>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>flags</code></em></td><td valign="top">&#160;</td><td valign="top">Overlay control flags set by application and
+driver, see <a class="xref" href="vidioc-g-fbuf.html#framebuffer-flags" title="Table&#160;A.66.&#160;Frame Buffer Flags">Table&#160;A.66, &#8220;Frame Buffer Flags&#8221;</a></td></tr><tr><td valign="top">void *</td><td valign="top"><em class="structfield"><code>base</code></em></td><td valign="top">&#160;</td><td valign="top">Physical base address of the framebuffer,
+that is the address of the pixel in the top left corner of the
+framebuffer.<sup>[<a id="idp34268752" href="#ftn.idp34268752" class="footnote">a</a>]</sup></td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">This field is irrelevant to
+<em class="wordasword">non-destructive Video Overlays</em>. For
+<em class="wordasword">destructive Video Overlays</em> applications must
+provide a base address. The driver may accept only base addresses
+which are a multiple of two, four or eight bytes. For
+<em class="wordasword">Video Output Overlays</em> the driver must return
+a valid base address, so applications can find the corresponding Linux
+framebuffer device (see <a class="xref" href="osd.html" title="Video Output Overlay Interface">the section called &#8220;Video Output Overlay Interface&#8221;</a>).</td></tr><tr><td valign="top">struct&#160;<a class="link" href="pixfmt.html#v4l2-pix-format" title="Table&#160;2.1.&#160;struct v4l2_pix_format">v4l2_pix_format</a></td><td valign="top"><em class="structfield"><code>fmt</code></em></td><td valign="top">&#160;</td><td valign="top">Layout of the frame buffer. The
+<span class="structname">v4l2_pix_format</span> structure is defined in <a class="xref" href="pixfmt.html" title="Chapter&#160;2.&#160;Image Formats">Chapter&#160;2, <i>Image Formats</i></a>, for clarification the fields and acceptable values
+	    are listed below:</td></tr><tr><td valign="top">&#160;</td><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>width</code></em></td><td valign="top">Width of the frame buffer in pixels.</td></tr><tr><td valign="top">&#160;</td><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>height</code></em></td><td valign="top">Height of the frame buffer in pixels.</td></tr><tr><td valign="top">&#160;</td><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>pixelformat</code></em></td><td valign="top">The pixel format of the
+framebuffer.</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">For <em class="wordasword">non-destructive Video
+Overlays</em> this field only defines a format for the
+struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a> <em class="structfield"><code>chromakey</code></em> field.</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">For <em class="wordasword">destructive Video
+Overlays</em> applications must initialize this field. For
+<em class="wordasword">Video Output Overlays</em> the driver must return
+a valid format.</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">Usually this is an RGB format (for example
+<a class="link" href="packed-rgb.html#V4L2-PIX-FMT-RGB565"><code class="constant">V4L2_PIX_FMT_RGB565</code></a>)
+but YUV formats (only packed YUV formats when chroma keying is used,
+not including <code class="constant">V4L2_PIX_FMT_YUYV</code> and
+<code class="constant">V4L2_PIX_FMT_UYVY</code>) and the
+<code class="constant">V4L2_PIX_FMT_PAL8</code> format are also permitted. The
+behavior of the driver when an application requests a compressed
+format is undefined. See <a class="xref" href="pixfmt.html" title="Chapter&#160;2.&#160;Image Formats">Chapter&#160;2, <i>Image Formats</i></a> for information on
+pixel formats.</td></tr><tr><td valign="top">&#160;</td><td valign="top">enum&#160;<a class="link" href="field-order.html#v4l2-field" title="Table&#160;3.9.&#160;enum v4l2_field">v4l2_field</a></td><td valign="top"><em class="structfield"><code>field</code></em></td><td valign="top">Drivers and applications shall ignore this field.
+If applicable, the field order is selected with the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a>
+ioctl, using the <em class="structfield"><code>field</code></em> field of
+struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a>.</td></tr><tr><td valign="top">&#160;</td><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>bytesperline</code></em></td><td valign="top">Distance in bytes between the leftmost pixels in
+two adjacent lines.</td></tr><tr><td colspan="4" valign="top"><p>This field is irrelevant to
+<em class="wordasword">non-destructive Video
+Overlays</em>.</p><p>For <em class="wordasword">destructive Video
+Overlays</em> both applications and drivers can set this field
+to request padding bytes at the end of each line. Drivers however may
+ignore the requested value, returning <em class="structfield"><code>width</code></em>
+times bytes-per-pixel or a larger value required by the hardware. That
+implies applications can just set this field to zero to get a
+reasonable default.</p><p>For <em class="wordasword">Video Output
+Overlays</em> the driver must return a valid
+value.</p><p>Video hardware may access padding bytes, therefore
+they must reside in accessible memory. Consider for example the case
+where padding bytes after the last line of an image cross a system
+page boundary. Capture devices may write padding bytes, the value is
+undefined. Output devices ignore the contents of padding
+bytes.</p><p>When the image format is planar the
+<em class="structfield"><code>bytesperline</code></em> value applies to the largest
+plane and is divided by the same factor as the
+<em class="structfield"><code>width</code></em> field for any smaller planes. For
+example the Cb and Cr planes of a YUV 4:2:0 image have half as many
+padding bytes following each line as the Y plane. To avoid ambiguities
+drivers must return a <em class="structfield"><code>bytesperline</code></em> value
+rounded up to a multiple of the scale factor.</p></td></tr><tr><td valign="top">&#160;</td><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>sizeimage</code></em></td><td valign="top"><p>This field is irrelevant to
+<em class="wordasword">non-destructive Video Overlays</em>. For
+<em class="wordasword">destructive Video Overlays</em> applications must
+initialize this field. For <em class="wordasword">Video Output
+Overlays</em> the driver must return a valid
+format.</p><p>Together with <em class="structfield"><code>base</code></em> it
+defines the framebuffer memory accessible by the
+driver.</p></td></tr><tr><td valign="top">&#160;</td><td valign="top">enum&#160;<a class="link" href="colorspaces.html#v4l2-colorspace" title="Table&#160;2.4.&#160;enum v4l2_colorspace">v4l2_colorspace</a></td><td valign="top"><em class="structfield"><code>colorspace</code></em></td><td valign="top">This information supplements the
+<em class="structfield"><code>pixelformat</code></em> and must be set by the driver,
+see <a class="xref" href="colorspaces.html" title="Colorspaces">the section called &#8220;Colorspaces&#8221;</a>.</td></tr><tr><td valign="top">&#160;</td><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>priv</code></em></td><td valign="top">Reserved for additional information about custom
+(driver defined) formats. When not used drivers and applications must
+set this field to zero.</td></tr></tbody><tbody class="footnotes"><tr><td colspan="4"><div class="footnote"><p><sup>[<a id="ftn.idp34268752" href="#idp34268752" class="para">a</a>] </sup>A physical base address may not suit all
+platforms. GK notes in theory we should pass something like PCI device
++ memory region + offset instead. If you encounter problems please
+discuss on the linux-media mailing list: <a class="ulink" href="http://www.linuxtv.org/lists.php" target="_top">http://www.linuxtv.org/lists.php</a>.</p></div></td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="framebuffer-cap"></a><p class="title"><b>Table&#160;A.65.&#160;Frame Buffer Capability Flags</b></p><div class="table-contents"><table summary="Frame Buffer Capability Flags" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_FBUF_CAP_EXTERNOVERLAY</code></td><td valign="top">0x0001</td><td valign="top">The device is capable of non-destructive overlays.
+When the driver clears this flag, only destructive overlays are
+supported. There are no drivers yet which support both destructive and
+non-destructive overlays. Video Output Overlays are in practice always
+non-destructive.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_CAP_CHROMAKEY</code></td><td valign="top">0x0002</td><td valign="top">The device supports clipping by chroma-keying the
+images. That is, image pixels replace pixels in the VGA or video
+signal only where the latter assume a certain color. Chroma-keying
+makes no sense for destructive overlays.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_CAP_LIST_CLIPPING</code></td><td valign="top">0x0004</td><td valign="top">The device supports clipping using a list of clip
+rectangles.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_CAP_BITMAP_CLIPPING</code></td><td valign="top">0x0008</td><td valign="top">The device supports clipping using a bit mask.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_CAP_LOCAL_ALPHA</code></td><td valign="top">0x0010</td><td valign="top">The device supports clipping/blending using the
+alpha channel of the framebuffer or VGA signal. Alpha blending makes
+no sense for destructive overlays.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_CAP_GLOBAL_ALPHA</code></td><td valign="top">0x0020</td><td valign="top">The device supports alpha blending using a global
+alpha value. Alpha blending makes no sense for destructive overlays.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_CAP_LOCAL_INV_ALPHA</code></td><td valign="top">0x0040</td><td valign="top">The device supports clipping/blending using the
+inverted alpha channel of the framebuffer or VGA signal. Alpha
+blending makes no sense for destructive overlays.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_CAP_SRC_CHROMAKEY</code></td><td valign="top">0x0080</td><td valign="top">The device supports Source Chroma-keying. Video pixels
+with the chroma-key colors are replaced by framebuffer pixels, which is exactly opposite of
+<code class="constant">V4L2_FBUF_CAP_CHROMAKEY</code></td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="framebuffer-flags"></a><p class="title"><b>Table&#160;A.66.&#160;Frame Buffer Flags</b></p><div class="table-contents"><table summary="Frame Buffer Flags" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_FBUF_FLAG_PRIMARY</code></td><td valign="top">0x0001</td><td valign="top">The framebuffer is the primary graphics surface.
+In other words, the overlay is destructive. This flag is typically set by any
+driver that doesn't have the <code class="constant">V4L2_FBUF_CAP_EXTERNOVERLAY</code>
+capability and it is cleared otherwise.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_FLAG_OVERLAY</code></td><td valign="top">0x0002</td><td valign="top">If this flag is set for a video capture device, then the
+driver will set the initial overlay size to cover the full framebuffer size,
+otherwise the existing overlay size (as set by <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a>) will be used.
+
+Only one video capture driver (bttv) supports this flag. The use of this flag
+for capture devices is deprecated. There is no way to detect which drivers
+support this flag, so the only reliable method of setting the overlay size is
+through <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a>.
+
+If this flag is set for a video output device, then the video output overlay
+window is relative to the top-left corner of the framebuffer and restricted
+to the size of the framebuffer. If it is cleared, then the video output
+overlay window is relative to the video output display.
+            </td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_FLAG_CHROMAKEY</code></td><td valign="top">0x0004</td><td valign="top">Use chroma-keying. The chroma-key color is
+determined by the <em class="structfield"><code>chromakey</code></em> field of
+struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a> and negotiated with the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl, see <a class="xref" href="overlay.html" title="Video Overlay Interface">the section called &#8220;Video Overlay Interface&#8221;</a>
+and
+	    <a class="xref" href="osd.html" title="Video Output Overlay Interface">the section called &#8220;Video Output Overlay Interface&#8221;</a>.</td></tr><tr><td colspan="3" valign="top">There are no flags to enable
+clipping using a list of clip rectangles or a bitmap. These methods
+are negotiated with the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl, see <a class="xref" href="overlay.html" title="Video Overlay Interface">the section called &#8220;Video Overlay Interface&#8221;</a> and <a class="xref" href="osd.html" title="Video Output Overlay Interface">the section called &#8220;Video Output Overlay Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_FLAG_LOCAL_ALPHA</code></td><td valign="top">0x0008</td><td valign="top">Use the alpha channel of the framebuffer to clip or
+blend framebuffer pixels with video images. The blend
+function is: output = framebuffer pixel * alpha + video pixel * (1 -
+alpha). The actual alpha depth depends on the framebuffer pixel
+format.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_FLAG_GLOBAL_ALPHA</code></td><td valign="top">0x0010</td><td valign="top">Use a global alpha value to blend the framebuffer
+with video images. The blend function is: output = (framebuffer pixel
+* alpha + video pixel * (255 - alpha)) / 255. The alpha value is
+determined by the <em class="structfield"><code>global_alpha</code></em> field of
+struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a> and negotiated with the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl, see <a class="xref" href="overlay.html" title="Video Overlay Interface">the section called &#8220;Video Overlay Interface&#8221;</a>
+and <a class="xref" href="osd.html" title="Video Output Overlay Interface">the section called &#8220;Video Output Overlay Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_FLAG_LOCAL_INV_ALPHA</code></td><td valign="top">0x0020</td><td valign="top">Like
+<code class="constant">V4L2_FBUF_FLAG_LOCAL_ALPHA</code>, use the alpha channel
+of the framebuffer to clip or blend framebuffer pixels with video
+images, but with an inverted alpha value. The blend function is:
+output = framebuffer pixel * (1 - alpha) + video pixel * alpha. The
+actual alpha depth depends on the framebuffer pixel format.</td></tr><tr><td valign="top"><code class="constant">V4L2_FBUF_FLAG_SRC_CHROMAKEY</code></td><td valign="top">0x0040</td><td valign="top">Use source chroma-keying. The source chroma-key color is
+determined by the <em class="structfield"><code>chromakey</code></em> field of
+struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a> and negotiated with the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl, see <a class="xref" href="overlay.html" title="Video Overlay Interface">the section called &#8220;Video Overlay Interface&#8221;</a> and <a class="xref" href="osd.html" title="Video Output Overlay Interface">the section called &#8220;Video Output Overlay Interface&#8221;</a>.
+Both chroma-keying are mutual exclusive to each other, so same
+<em class="structfield"><code>chromakey</code></em> field of struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a> is being used.</td></tr></tbody></table></div></div><br class="table-break" /></div><div class="refsect1" title="Return Value"><a id="idp34327312"></a><h2>Return Value</h2><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="variablelist"><dl><dt><span class="term"><span class="errorcode">EPERM</span></span></dt><dd><p><code class="constant">VIDIOC_S_FBUF</code> can only be called
+by a privileged user to negotiate the parameters for a destructive
+overlay.</p></dd><dt><span class="term"><span class="errorcode">EINVAL</span></span></dt><dd><p>The <code class="constant">VIDIOC_S_FBUF</code> parameters are unsuitable.</p></dd></dl></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="vidioc-g-ext-ctrls.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="user-func.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="vidioc-g-fmt.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ioctl VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS,
+VIDIOC_TRY_EXT_CTRLS&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;ioctl VIDIOC_G_FMT, VIDIOC_S_FMT,
+VIDIOC_TRY_FMT</td></tr></table></div></body></html>

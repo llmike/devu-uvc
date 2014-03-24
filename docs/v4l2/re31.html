@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>V4L2_PIX_FMT_NV12MT ('TM12')</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="yuv-formats.html" title="YUV Formats" /><link rel="prev" href="re30.html" title="V4L2_PIX_FMT_NV12M ('NM12'), V4L2_PIX_FMT_NV21M ('NM21'), V4L2_PIX_FMT_NV12MT_16X16" /><link rel="next" href="re32.html" title="V4L2_PIX_FMT_NV16 ('NV16'), V4L2_PIX_FMT_NV61 ('NV61')" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">V4L2_PIX_FMT_NV12MT ('TM12')</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="re30.html">Prev</a>&#160;</td><th width="60%" align="center">YUV Formats</th><td width="20%" align="right">&#160;<a accesskey="n" href="re32.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="V4L2_PIX_FMT_NV12MT ('TM12')"><a id="idp24506024"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p><code class="constant">V4L2_PIX_FMT_NV12MT
+</code> &#8212; Formats with &#189; horizontal and vertical
+chroma resolution. This format has two planes - one for luminance and one for
+chrominance. Chroma samples are interleaved. The difference to
+<code class="constant">V4L2_PIX_FMT_NV12</code> is the memory layout. Pixels are
+grouped in macroblocks of 64x32 size. The order of macroblocks in memory is
+also not standard.
+	</p></div><div class="refsect1" title="Description"><a id="idp24471992"></a><h2>Description</h2><p>This is the two-plane versions of the YUV 4:2:0 format where data
+is grouped into 64x32 macroblocks. The three components are separated into two
+sub-images or planes. The Y plane has one byte per pixel and pixels are grouped
+into 64x32 macroblocks. The CbCr plane has the same width, in bytes, as the Y
+plane (and the image), but is half as tall in pixels. The chroma plane is also
+grouped into 64x32 macroblocks.</p><p>Width of the buffer has to be aligned to the multiple of 128, and
+height alignment is 32. Every four adjacent buffers - two horizontally and two
+vertically are grouped together and are located in memory in Z or flipped Z
+order. </p><p>Layout of macroblocks in memory is presented in the following
+figure.</p><div class="figure"><a id="nv12mt"></a><p class="title"><b>Figure&#160;2.1.&#160;<code class="constant">V4L2_PIX_FMT_NV12MT</code> macroblock Z shape
+memory layout</b></p><div class="figure-contents"><div class="mediaobject"><img src="nv12mt.gif" alt="V4L2_PIX_FMT_NV12MT macroblock Z shape memory layout" /></div></div></div><p><br class="figure-break" />
+	The requirement that width is multiple of 128 is implemented because,
+the Z shape cannot be cut in half horizontally. In case the vertical resolution
+of macroblocks is odd then the last row of macroblocks is arranged in a linear
+order.  </p><p>In case of chroma the layout is identical. Cb and Cr samples are
+interleaved. Height of the buffer is aligned to 32.
+	</p><div class="example"><a id="idp24510064"></a><p class="title"><b>Example&#160;2.29.&#160;Memory layout of macroblocks in <code class="constant">V4L2_PIX_FMT_NV12
+</code> format pixel image - extreme case</b></p><div class="example-contents"><p>
+	</p><div class="figure"><a id="nv12mt_ex"></a><p class="title"><b>Figure&#160;2.2.&#160;Example <code class="constant">V4L2_PIX_FMT_NV12MT</code> memory
+layout of macroblocks</b></p><div class="figure-contents"><div class="mediaobject"><img src="nv12mt_example.gif" alt="Example V4L2_PIX_FMT_NV12MT memory layout of macroblocks" /></div></div></div><p><br class="figure-break" />
+	Memory layout of macroblocks of <code class="constant">V4L2_PIX_FMT_NV12MT
+</code> format in most extreme case.
+	</p></div></div><br class="example-break" /></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="re30.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="yuv-formats.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="re32.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">V4L2_PIX_FMT_NV12M ('NM12'), V4L2_PIX_FMT_NV21M ('NM21'), V4L2_PIX_FMT_NV12MT_16X16&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;V4L2_PIX_FMT_NV16 ('NV16'), V4L2_PIX_FMT_NV61 ('NV61')</td></tr></table></div></body></html>

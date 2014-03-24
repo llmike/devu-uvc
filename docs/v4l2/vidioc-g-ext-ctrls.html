@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>ioctl VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS, VIDIOC_TRY_EXT_CTRLS</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="user-func.html" title="Appendix&#160;A.&#160;Function Reference" /><link rel="prev" href="vidioc-g-enc-index.html" title="ioctl VIDIOC_G_ENC_INDEX" /><link rel="next" href="vidioc-g-fbuf.html" title="ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">ioctl VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS,
+VIDIOC_TRY_EXT_CTRLS</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="vidioc-g-enc-index.html">Prev</a>&#160;</td><th width="60%" align="center">Appendix&#160;A.&#160;Function Reference</th><td width="20%" align="right">&#160;<a accesskey="n" href="vidioc-g-fbuf.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="ioctl VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS, VIDIOC_TRY_EXT_CTRLS"><a id="vidioc-g-ext-ctrls"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS, VIDIOC_TRY_EXT_CTRLS &#8212; Get or set the value of several controls, try control
+values</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>struct v4l2_ext_controls
+*<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div></div><div class="refsect1" title="Arguments"><a id="idp34085680"></a><h2>Arguments</h2><div class="variablelist"><dl><dt><span class="term"><em class="parameter"><code>fd</code></em></span></dt><dd><p>File descriptor returned by <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>.</p></dd><dt><span class="term"><em class="parameter"><code>request</code></em></span></dt><dd><p>VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS,
+VIDIOC_TRY_EXT_CTRLS</p></dd><dt><span class="term"><em class="parameter"><code>argp</code></em></span></dt><dd><p></p></dd></dl></div></div><div class="refsect1" title="Description"><a id="idp34089816"></a><h2>Description</h2><p>These ioctls allow the caller to get or set multiple
+controls atomically. Control IDs are grouped into control classes (see
+<a class="xref" href="vidioc-g-ext-ctrls.html#ctrl-class" title="Table&#160;A.63.&#160;Control classes">Table&#160;A.63, &#8220;Control classes&#8221;</a>) and all controls in the control array
+must belong to the same control class.</p><p>Applications must always fill in the
+<em class="structfield"><code>count</code></em>,
+<em class="structfield"><code>ctrl_class</code></em>,
+<em class="structfield"><code>controls</code></em> and
+<em class="structfield"><code>reserved</code></em> fields of struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-controls" title="Table&#160;A.62.&#160;struct v4l2_ext_controls">v4l2_ext_controls</a>, and
+initialize the struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-control" title="Table&#160;A.61.&#160;struct v4l2_ext_control">v4l2_ext_control</a> array pointed to by the
+<em class="structfield"><code>controls</code></em> fields.</p><p>To get the current value of a set of controls applications
+initialize the <em class="structfield"><code>id</code></em>,
+<em class="structfield"><code>size</code></em> and <em class="structfield"><code>reserved2</code></em> fields
+of each struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-control" title="Table&#160;A.61.&#160;struct v4l2_ext_control">v4l2_ext_control</a> and call the
+<code class="constant">VIDIOC_G_EXT_CTRLS</code> ioctl. String controls controls
+must also set the <em class="structfield"><code>string</code></em> field.</p><p>If the <em class="structfield"><code>size</code></em> is too small to
+receive the control result (only relevant for pointer-type controls
+like strings), then the driver will set <em class="structfield"><code>size</code></em>
+to a valid value and return an <span class="errorcode">ENOSPC</span> error code. You should re-allocate the
+string memory to this new size and try again. It is possible that the
+same issue occurs again if the string has grown in the meantime. It is
+recommended to call <a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYCTRL</code></a> first and use
+<em class="structfield"><code>maximum</code></em>+1 as the new <em class="structfield"><code>size</code></em>
+value. It is guaranteed that that is sufficient memory.
+</p><p>To change the value of a set of controls applications
+initialize the <em class="structfield"><code>id</code></em>, <em class="structfield"><code>size</code></em>,
+<em class="structfield"><code>reserved2</code></em> and
+<em class="structfield"><code>value/string</code></em> fields of each struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-control" title="Table&#160;A.61.&#160;struct v4l2_ext_control">v4l2_ext_control</a> and
+call the <code class="constant">VIDIOC_S_EXT_CTRLS</code> ioctl. The controls
+will only be set if <span class="emphasis"><em>all</em></span> control values are
+valid.</p><p>To check if a set of controls have correct values applications
+initialize the <em class="structfield"><code>id</code></em>, <em class="structfield"><code>size</code></em>,
+<em class="structfield"><code>reserved2</code></em> and
+<em class="structfield"><code>value/string</code></em> fields of each struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-control" title="Table&#160;A.61.&#160;struct v4l2_ext_control">v4l2_ext_control</a> and
+call the <code class="constant">VIDIOC_TRY_EXT_CTRLS</code> ioctl. It is up to
+the driver whether wrong values are automatically adjusted to a valid
+value or if an error is returned.</p><p>When the <em class="structfield"><code>id</code></em> or
+<em class="structfield"><code>ctrl_class</code></em> is invalid drivers return an
+<span class="errorcode">EINVAL</span> error code. When the value is out of bounds drivers can choose to take
+the closest valid value or return an <span class="errorcode">ERANGE</span> error code, whatever seems more
+appropriate. In the first case the new value is set in
+struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-control" title="Table&#160;A.61.&#160;struct v4l2_ext_control">v4l2_ext_control</a>. If the new control value is inappropriate (e.g. the
+given menu index is not supported by the menu control), then this will
+also result in an <span class="errorcode">EINVAL</span> error code error.</p><p>The driver will only set/get these controls if all control
+values are correct. This prevents the situation where only some of the
+controls were set/get. Only low-level errors (e.&#160;g. a failed i2c
+command) can still cause this situation.</p><div class="table"><a id="v4l2-ext-control"></a><p class="title"><b>Table&#160;A.61.&#160;struct <span class="structname">v4l2_ext_control</span></b></p><div class="table-contents"><table summary="struct v4l2_ext_control" width="100%" border="0"><colgroup><col /><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>id</code></em></td><td valign="top">&#160;</td><td valign="top">Identifies the control, set by the
+application.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>size</code></em></td><td valign="top">&#160;</td><td valign="top">The total size in bytes of the payload of this
+control. This is normally 0, but for pointer controls this should be
+set to the size of the memory containing the payload, or that will
+receive the payload. If <code class="constant">VIDIOC_G_EXT_CTRLS</code> finds
+that this value is less than is required to store
+the payload result, then it is set to a value large enough to store the
+payload result and ENOSPC is returned. Note that for string controls
+this <em class="structfield"><code>size</code></em> field should not be confused with the length of the string.
+This field refers to the size of the memory that contains the string.
+The actual <span class="emphasis"><em>length</em></span> of the string may well be much smaller.
+</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>reserved2</code></em>[1]</td><td valign="top">&#160;</td><td valign="top">Reserved for future extensions. Drivers and
+applications must set the array to zero.</td></tr><tr><td valign="top">union</td><td valign="top">(anonymous)</td><td class="auto-generated">&#160;</td><td class="auto-generated">&#160;</td></tr><tr><td valign="top">&#160;</td><td valign="top">__s32</td><td valign="top"><em class="structfield"><code>value</code></em></td><td valign="top">New value or current value.</td></tr><tr><td valign="top">&#160;</td><td valign="top">__s64</td><td valign="top"><em class="structfield"><code>value64</code></em></td><td valign="top">New value or current value.</td></tr><tr><td valign="top">&#160;</td><td valign="top">char *</td><td valign="top"><em class="structfield"><code>string</code></em></td><td valign="top">A pointer to a string.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-ext-controls"></a><p class="title"><b>Table&#160;A.62.&#160;struct <span class="structname">v4l2_ext_controls</span></b></p><div class="table-contents"><table summary="struct v4l2_ext_controls" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>ctrl_class</code></em></td><td valign="top">The control class to which all controls belong, see
+<a class="xref" href="vidioc-g-ext-ctrls.html#ctrl-class" title="Table&#160;A.63.&#160;Control classes">Table&#160;A.63, &#8220;Control classes&#8221;</a>. Drivers that use a kernel framework for handling
+controls will also accept a value of 0 here, meaning that the controls can
+belong to any control class. Whether drivers support this can be tested by setting
+<em class="structfield"><code>ctrl_class</code></em> to 0 and calling <code class="constant">VIDIOC_TRY_EXT_CTRLS</code>
+with a <em class="structfield"><code>count</code></em> of 0. If that succeeds, then the driver
+supports this feature.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>count</code></em></td><td valign="top">The number of controls in the controls array. May
+also be zero.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>error_idx</code></em></td><td valign="top"><p>Set by the driver in case of an error. If the error is
+associated with a particular control, then <em class="structfield"><code>error_idx</code></em>
+is set to the index of that control. If the error is not related to a specific
+control, or the validation step failed (see below), then
+<em class="structfield"><code>error_idx</code></em> is set to <em class="structfield"><code>count</code></em>.
+The value is undefined if the ioctl returned 0 (success).</p>
+
+<p>Before controls are read from/written to hardware a validation step
+takes place: this checks if all controls in the list are valid controls,
+if no attempt is made to write to a read-only control or read from a write-only
+control, and any other up-front checks that can be done without accessing the
+hardware. The exact validations done during this step are driver dependent
+since some checks might require hardware access for some devices, thus making
+it impossible to do those checks up-front. However, drivers should make a
+best-effort to do as many up-front checks as possible.</p>
+
+<p>This check is done to avoid leaving the hardware in an inconsistent state due
+to easy-to-avoid problems. But it leads to another problem: the application needs to
+know whether an error came from the validation step (meaning that the hardware
+was not touched) or from an error during the actual reading from/writing to hardware.</p>
+
+<p>The, in hindsight quite poor, solution for that is to set <em class="structfield"><code>error_idx</code></em>
+to <em class="structfield"><code>count</code></em> if the validation failed. This has the
+unfortunate side-effect that it is not possible to see which control failed the
+validation. If the validation was successful and the error happened while
+accessing the hardware, then <em class="structfield"><code>error_idx</code></em> is less than
+<em class="structfield"><code>count</code></em> and only the controls up to
+<em class="structfield"><code>error_idx-1</code></em> were read or written correctly, and the
+state of the remaining controls is undefined.</p>
+
+<p>Since <code class="constant">VIDIOC_TRY_EXT_CTRLS</code> does not access hardware
+there is also no need to handle the validation step in this special way,
+so <em class="structfield"><code>error_idx</code></em> will just be set to the control that
+failed the validation step instead of to <em class="structfield"><code>count</code></em>.
+This means that if <code class="constant">VIDIOC_S_EXT_CTRLS</code> fails with
+<em class="structfield"><code>error_idx</code></em> set to <em class="structfield"><code>count</code></em>,
+then you can call <code class="constant">VIDIOC_TRY_EXT_CTRLS</code> to try to discover
+the actual control that failed the validation step. Unfortunately, there
+is no <code class="constant">TRY</code> equivalent for <code class="constant">VIDIOC_G_EXT_CTRLS</code>.
+</p></td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>reserved</code></em>[2]</td><td valign="top">Reserved for future extensions. Drivers and
+applications must set the array to zero.</td></tr><tr><td valign="top">struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-control" title="Table&#160;A.61.&#160;struct v4l2_ext_control">v4l2_ext_control</a> *</td><td valign="top"><em class="structfield"><code>controls</code></em></td><td valign="top">Pointer to an array of
+<em class="structfield"><code>count</code></em> v4l2_ext_control structures. Ignored
+if <em class="structfield"><code>count</code></em> equals zero.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="ctrl-class"></a><p class="title"><b>Table&#160;A.63.&#160;Control classes</b></p><div class="table-contents"><table summary="Control classes" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_CTRL_CLASS_USER</code></td><td valign="top">0x980000</td><td valign="top">The class containing user controls. These controls
+are described in <a class="xref" href="control.html" title="User Controls">the section called &#8220;User Controls&#8221;</a>. All controls that can be set
+using the <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_S_CTRL</code></a> and <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_G_CTRL</code></a> ioctl belong to this
+class.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_CLASS_MPEG</code></td><td valign="top">0x990000</td><td valign="top">The class containing MPEG compression controls.
+These controls are described in <a class="xref" href="extended-controls.html#mpeg-controls" title="Codec Control Reference">the section called &#8220;Codec Control Reference&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_CLASS_CAMERA</code></td><td valign="top">0x9a0000</td><td valign="top">The class containing camera controls.
+These controls are described in <a class="xref" href="extended-controls.html#camera-controls" title="Camera Control Reference">the section called &#8220;Camera Control Reference&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_CLASS_FM_TX</code></td><td valign="top">0x9b0000</td><td valign="top">The class containing FM Transmitter (FM TX) controls.
+These controls are described in <a class="xref" href="extended-controls.html#fm-tx-controls" title="FM Transmitter Control Reference">the section called &#8220;FM Transmitter Control Reference&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_CLASS_FLASH</code></td><td valign="top">0x9c0000</td><td valign="top">The class containing flash device controls.
+These controls are described in <a class="xref" href="extended-controls.html#flash-controls" title="Flash Control Reference">the section called &#8220;Flash Control Reference&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_CLASS_JPEG</code></td><td valign="top">0x9d0000</td><td valign="top">The class containing JPEG compression controls.
+These controls are described in <a class="xref" href="extended-controls.html#jpeg-controls" title="JPEG Control Reference">the section called &#8220;JPEG Control Reference&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_CLASS_IMAGE_SOURCE</code></td><td valign="top">0x9e0000</td><td valign="top">The class containing image
+	    source controls. These controls are described in <a class="xref" href="extended-controls.html#image-source-controls" title="Image Source Control Reference">the section called &#8220;Image Source Control Reference&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_CLASS_IMAGE_PROC</code></td><td valign="top">0x9f0000</td><td valign="top">The class containing image
+	    processing controls. These controls are described in <a class="xref" href="extended-controls.html#image-process-controls" title="Image Process Control Reference">the section called &#8220;Image Process Control Reference&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_CTRL_CLASS_FM_RX</code></td><td valign="top">0xa10000</td><td valign="top">The class containing FM Receiver (FM RX) controls.
+These controls are described in <a class="xref" href="extended-controls.html#fm-rx-controls" title="FM Receiver Control Reference">the section called &#8220;FM Receiver Control Reference&#8221;</a>.</td></tr></tbody></table></div></div><br class="table-break" /></div><div class="refsect1" title="Return Value"><a id="idp34148984"></a><h2>Return Value</h2><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="variablelist"><dl><dt><span class="term"><span class="errorcode">EINVAL</span></span></dt><dd><p>The struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-control" title="Table&#160;A.61.&#160;struct v4l2_ext_control">v4l2_ext_control</a> <em class="structfield"><code>id</code></em>
+is invalid, the struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-controls" title="Table&#160;A.62.&#160;struct v4l2_ext_controls">v4l2_ext_controls</a>
+<em class="structfield"><code>ctrl_class</code></em> is invalid, or the struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-control" title="Table&#160;A.61.&#160;struct v4l2_ext_control">v4l2_ext_control</a>
+<em class="structfield"><code>value</code></em> was inappropriate (e.g. the given menu
+index is not supported by the driver). This error code is
+also returned by the <code class="constant">VIDIOC_S_EXT_CTRLS</code> and
+<code class="constant">VIDIOC_TRY_EXT_CTRLS</code> ioctls if two or more
+control values are in conflict.</p></dd><dt><span class="term"><span class="errorcode">ERANGE</span></span></dt><dd><p>The struct&#160;<a class="link" href="vidioc-g-ext-ctrls.html#v4l2-ext-control" title="Table&#160;A.61.&#160;struct v4l2_ext_control">v4l2_ext_control</a> <em class="structfield"><code>value</code></em>
+is out of bounds.</p></dd><dt><span class="term"><span class="errorcode">EBUSY</span></span></dt><dd><p>The control is temporarily not changeable, possibly
+because another applications took over control of the device function
+this control belongs to.</p></dd><dt><span class="term"><span class="errorcode">ENOSPC</span></span></dt><dd><p>The space reserved for the control's payload is insufficient.
+The field <em class="structfield"><code>size</code></em> is set to a value that is enough
+to store the payload and this error code is returned.</p></dd><dt><span class="term"><span class="errorcode">EACCES</span></span></dt><dd><p>Attempt to try or set a read-only control or to get a
+	  write-only control.</p></dd></dl></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="vidioc-g-enc-index.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="user-func.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="vidioc-g-fbuf.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ioctl VIDIOC_G_ENC_INDEX&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF</td></tr></table></div></body></html>

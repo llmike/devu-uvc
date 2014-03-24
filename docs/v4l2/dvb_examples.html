@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;16.&#160;Examples</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvbapi.html" title="Part&#160;II.&#160;LINUX DVB API" /><link rel="prev" href="ch15s11.html" title="stop_filtering()" /><link rel="next" href="the_dvr_device.html" title="The DVR device" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;16.&#160;Examples</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch15s11.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;II.&#160;LINUX DVB API</th><td width="20%" align="right">&#160;<a accesskey="n" href="the_dvr_device.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;16.&#160;Examples"><div class="titlepage"><div><div><h2 class="title"><a id="dvb_examples"></a>Chapter&#160;16.&#160;Examples</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="dvb_examples.html#tuning">Tuning</a></span></dt><dt><span class="section"><a href="the_dvr_device.html">The DVR device</a></span></dt></dl></div><p>In this section we would like to present some examples for using the DVB API.
+</p><p>Maintainer note: This section is out of date. Please refer to the sample programs packaged
+with the driver distribution from <a class="ulink" href="http://linuxtv.org/hg/dvb-apps" target="_top">http://linuxtv.org/hg/dvb-apps</a>.
+</p><div class="section" title="Tuning"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="tuning"></a>Tuning</h2></div></div></div><p>We will start with a generic tuning subroutine that uses the frontend and SEC, as well as
+the demux devices. The example is given for QPSK tuners, but can easily be adjusted for
+QAM.
+</p><pre class="programlisting">
+ #include &lt;sys/ioctl.h&gt;
+ #include &lt;stdio.h&gt;
+ #include &lt;stdint.h&gt;
+ #include &lt;sys/types.h&gt;
+ #include &lt;sys/stat.h&gt;
+ #include &lt;fcntl.h&gt;
+ #include &lt;time.h&gt;
+ #include &lt;unistd.h&gt;
+
+ #include &lt;linux/dvb/dmx.h&gt;
+ #include &lt;linux/dvb/frontend.h&gt;
+ #include &lt;linux/dvb/sec.h&gt;
+ #include &lt;sys/poll.h&gt;
+
+ #define DMX "/dev/dvb/adapter0/demux1"
+ #define FRONT "/dev/dvb/adapter0/frontend1"
+ #define SEC "/dev/dvb/adapter0/sec1"
+
+ /&#8902; routine for checking if we have a signal and other status information&#8902;/
+ int FEReadStatus(int fd, fe_status_t &#8902;stat)
+ {
+	 int ans;
+
+	 if ( (ans = ioctl(fd,FE_READ_STATUS,stat) &lt; 0)){
+		 perror("FE READ STATUS: ");
+		 return -1;
+	 }
+
+	 if (&#8902;stat &amp; FE_HAS_POWER)
+		 printf("FE HAS POWER\n");
+
+	 if (&#8902;stat &amp; FE_HAS_SIGNAL)
+		 printf("FE HAS SIGNAL\n");
+
+	 if (&#8902;stat &amp; FE_SPECTRUM_INV)
+		 printf("SPEKTRUM INV\n");
+
+	 return 0;
+ }
+
+
+ /&#8902; tune qpsk &#8902;/
+ /&#8902; freq:             frequency of transponder                      &#8902;/
+ /&#8902; vpid, apid, tpid: PIDs of video, audio and teletext TS packets  &#8902;/
+ /&#8902; diseqc:           DiSEqC address of the used LNB                &#8902;/
+ /&#8902; pol:              Polarisation                                  &#8902;/
+ /&#8902; srate:            Symbol Rate                                   &#8902;/
+ /&#8902; fec.              FEC                                           &#8902;/
+ /&#8902; lnb_lof1:         local frequency of lower LNB band             &#8902;/
+ /&#8902; lnb_lof2:         local frequency of upper LNB band             &#8902;/
+ /&#8902; lnb_slof:         switch frequency of LNB                       &#8902;/
+
+ int set_qpsk_channel(int freq, int vpid, int apid, int tpid,
+		 int diseqc, int pol, int srate, int fec, int lnb_lof1,
+		 int lnb_lof2, int lnb_slof)
+ {
+	 struct secCommand scmd;
+	 struct secCmdSequence scmds;
+	 struct dmx_pes_filter_params pesFilterParams;
+	 FrontendParameters frp;
+	 struct pollfd pfd[1];
+	 FrontendEvent event;
+	 int demux1, demux2, demux3, front;
+
+	 frequency = (uint32_t) freq;
+	 symbolrate = (uint32_t) srate;
+
+	 if((front = open(FRONT,O_RDWR)) &lt; 0){
+		 perror("FRONTEND DEVICE: ");
+		 return -1;
+	 }
+
+	 if((sec = open(SEC,O_RDWR)) &lt; 0){
+		 perror("SEC DEVICE: ");
+		 return -1;
+	 }
+
+	 if (demux1 &lt; 0){
+		 if ((demux1=open(DMX, O_RDWR|O_NONBLOCK))
+		     &lt; 0){
+			 perror("DEMUX DEVICE: ");
+			 return -1;
+		 }
+	 }
+
+	 if (demux2 &lt; 0){
+		 if ((demux2=open(DMX, O_RDWR|O_NONBLOCK))
+		     &lt; 0){
+			 perror("DEMUX DEVICE: ");
+			 return -1;
+		 }
+	 }
+
+	 if (demux3 &lt; 0){
+		 if ((demux3=open(DMX, O_RDWR|O_NONBLOCK))
+		     &lt; 0){
+			 perror("DEMUX DEVICE: ");
+			 return -1;
+		 }
+	 }
+
+	 if (freq &lt; lnb_slof) {
+		 frp.Frequency = (freq - lnb_lof1);
+		 scmds.continuousTone = SEC_TONE_OFF;
+	 } else {
+		 frp.Frequency = (freq - lnb_lof2);
+		 scmds.continuousTone = SEC_TONE_ON;
+	 }
+	 frp.Inversion = INVERSION_AUTO;
+	 if (pol) scmds.voltage = SEC_VOLTAGE_18;
+	 else scmds.voltage = SEC_VOLTAGE_13;
+
+	 scmd.type=0;
+	 scmd.u.diseqc.addr=0x10;
+	 scmd.u.diseqc.cmd=0x38;
+	 scmd.u.diseqc.numParams=1;
+	 scmd.u.diseqc.params[0] = 0xF0 | ((diseqc &#8902; 4) &amp; 0x0F) |
+		 (scmds.continuousTone == SEC_TONE_ON ? 1 : 0) |
+		 (scmds.voltage==SEC_VOLTAGE_18 ? 2 : 0);
+
+	 scmds.miniCommand=SEC_MINI_NONE;
+	 scmds.numCommands=1;
+	 scmds.commands=&amp;scmd;
+	 if (ioctl(sec, SEC_SEND_SEQUENCE, &amp;scmds) &lt; 0){
+		 perror("SEC SEND: ");
+		 return -1;
+	 }
+
+	 if (ioctl(sec, SEC_SEND_SEQUENCE, &amp;scmds) &lt; 0){
+		 perror("SEC SEND: ");
+		 return -1;
+	 }
+
+	 frp.u.qpsk.SymbolRate = srate;
+	 frp.u.qpsk.FEC_inner = fec;
+
+	 if (ioctl(front, FE_SET_FRONTEND, &amp;frp) &lt; 0){
+		 perror("QPSK TUNE: ");
+		 return -1;
+	 }
+
+	 pfd[0].fd = front;
+	 pfd[0].events = POLLIN;
+
+	 if (poll(pfd,1,3000)){
+		 if (pfd[0].revents &amp; POLLIN){
+			 printf("Getting QPSK event\n");
+			 if ( ioctl(front, FE_GET_EVENT, &amp;event)
+
+			      == -EOVERFLOW){
+				 perror("qpsk get event");
+				 return -1;
+			 }
+			 printf("Received ");
+			 switch(event.type){
+			 case FE_UNEXPECTED_EV:
+				 printf("unexpected event\n");
+				 return -1;
+			 case FE_FAILURE_EV:
+				 printf("failure event\n");
+				 return -1;
+
+			 case FE_COMPLETION_EV:
+				 printf("completion event\n");
+			 }
+		 }
+	 }
+
+
+	 pesFilterParams.pid     = vpid;
+	 pesFilterParams.input   = DMX_IN_FRONTEND;
+	 pesFilterParams.output  = DMX_OUT_DECODER;
+	 pesFilterParams.pes_type = DMX_PES_VIDEO;
+	 pesFilterParams.flags   = DMX_IMMEDIATE_START;
+	 if (ioctl(demux1, DMX_SET_PES_FILTER, &amp;pesFilterParams) &lt; 0){
+		 perror("set_vpid");
+		 return -1;
+	 }
+
+	 pesFilterParams.pid     = apid;
+	 pesFilterParams.input   = DMX_IN_FRONTEND;
+	 pesFilterParams.output  = DMX_OUT_DECODER;
+	 pesFilterParams.pes_type = DMX_PES_AUDIO;
+	 pesFilterParams.flags   = DMX_IMMEDIATE_START;
+	 if (ioctl(demux2, DMX_SET_PES_FILTER, &amp;pesFilterParams) &lt; 0){
+		 perror("set_apid");
+		 return -1;
+	 }
+
+	 pesFilterParams.pid     = tpid;
+	 pesFilterParams.input   = DMX_IN_FRONTEND;
+	 pesFilterParams.output  = DMX_OUT_DECODER;
+	 pesFilterParams.pes_type = DMX_PES_TELETEXT;
+	 pesFilterParams.flags   = DMX_IMMEDIATE_START;
+	 if (ioctl(demux3, DMX_SET_PES_FILTER, &amp;pesFilterParams) &lt; 0){
+		 perror("set_tpid");
+		 return -1;
+	 }
+
+	 return has_signal(fds);
+ }
+
+</pre><p>The program assumes that you are using a universal LNB and a standard DiSEqC
+switch with up to 4 addresses. Of course, you could build in some more checking if
+tuning was successful and maybe try to repeat the tuning process. Depending on the
+external hardware, i.e. LNB and DiSEqC switch, and weather conditions this may be
+necessary.
+</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch15s11.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvbapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="the_dvr_device.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">stop_filtering()&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;The DVR device</td></tr></table></div></body></html>

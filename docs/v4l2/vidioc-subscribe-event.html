@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>ioctl VIDIOC_SUBSCRIBE_EVENT, VIDIOC_UNSUBSCRIBE_EVENT</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="user-func.html" title="Appendix&#160;A.&#160;Function Reference" /><link rel="prev" href="vidioc-subdev-g-selection.html" title="ioctl VIDIOC_SUBDEV_G_SELECTION, VIDIOC_SUBDEV_S_SELECTION" /><link rel="next" href="func-mmap.html" title="V4L2 mmap()" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">ioctl VIDIOC_SUBSCRIBE_EVENT, VIDIOC_UNSUBSCRIBE_EVENT</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="vidioc-subdev-g-selection.html">Prev</a>&#160;</td><th width="60%" align="center">Appendix&#160;A.&#160;Function Reference</th><td width="20%" align="right">&#160;<a accesskey="n" href="func-mmap.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="ioctl VIDIOC_SUBSCRIBE_EVENT, VIDIOC_UNSUBSCRIBE_EVENT"><a id="vidioc-subscribe-event"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>VIDIOC_SUBSCRIBE_EVENT, VIDIOC_UNSUBSCRIBE_EVENT &#8212; Subscribe or unsubscribe event</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>struct v4l2_event_subscription
+*<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div></div><div class="refsect1" title="Arguments"><a id="idp36766440"></a><h2>Arguments</h2><div class="variablelist"><dl><dt><span class="term"><em class="parameter"><code>fd</code></em></span></dt><dd><p>File descriptor returned by <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>.</p></dd><dt><span class="term"><em class="parameter"><code>request</code></em></span></dt><dd><p>VIDIOC_SUBSCRIBE_EVENT, VIDIOC_UNSUBSCRIBE_EVENT</p></dd><dt><span class="term"><em class="parameter"><code>argp</code></em></span></dt><dd><p></p></dd></dl></div></div><div class="refsect1" title="Description"><a id="idp36770560"></a><h2>Description</h2><p>Subscribe or unsubscribe V4L2 event. Subscribed events are
+    dequeued by using the <a class="link" href="vidioc-dqevent.html" title="ioctl VIDIOC_DQEVENT"><code class="constant">VIDIOC_DQEVENT</code></a> ioctl.</p><div class="table"><a id="v4l2-event-subscription"></a><p class="title"><b>Table&#160;A.105.&#160;struct <span class="structname">v4l2_event_subscription</span></b></p><div class="table-contents"><table summary="struct v4l2_event_subscription" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>type</code></em></td><td valign="top">Type of the event.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>id</code></em></td><td valign="top">ID of the event source. If there is no ID associated with
+		the event source, then set this to 0. Whether or not an event
+		needs an ID depends on the event type.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>flags</code></em></td><td valign="top">Event flags, see <a class="xref" href="vidioc-subscribe-event.html#event-flags" title="Table&#160;A.107.&#160;Event Flags">Table&#160;A.107, &#8220;Event Flags&#8221;</a>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>reserved</code></em>[5]</td><td valign="top">Reserved for future extensions. Drivers and applications
+	    must set the array to zero.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="event-type"></a><p class="title"><b>Table&#160;A.106.&#160;Event Types</b></p><div class="table-contents"><table summary="Event Types" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_EVENT_ALL</code></td><td valign="top">0</td><td valign="top">All events. V4L2_EVENT_ALL is valid only for
+	    VIDIOC_UNSUBSCRIBE_EVENT for unsubscribing all events at once.
+	    </td></tr><tr><td valign="top"><code class="constant">V4L2_EVENT_VSYNC</code></td><td valign="top">1</td><td valign="top">This event is triggered on the vertical sync.
+	    This event has a struct&#160;<a class="link" href="vidioc-dqevent.html#v4l2-event-vsync" title="Table&#160;A.13.&#160;struct v4l2_event_vsync">v4l2_event_vsync</a> associated with it.
+	    </td></tr><tr><td valign="top"><code class="constant">V4L2_EVENT_EOS</code></td><td valign="top">2</td><td valign="top">This event is triggered when the end of a stream is reached.
+	    This is typically used with MPEG decoders to report to the application
+	    when the last of the MPEG stream has been decoded.
+	    </td></tr><tr><td valign="top"><code class="constant">V4L2_EVENT_CTRL</code></td><td valign="top">3</td><td valign="top"><p>This event requires that the <em class="structfield"><code>id</code></em>
+		matches the control ID from which you want to receive events.
+		This event is triggered if the control's value changes, if a
+		button control is pressed or if the control's flags change.
+	    	This event has a struct&#160;<a class="link" href="vidioc-dqevent.html#v4l2-event-ctrl" title="Table&#160;A.14.&#160;struct v4l2_event_ctrl">v4l2_event_ctrl</a> associated with it. This struct
+		contains much of the same information as struct&#160;<a class="link" href="vidioc-queryctrl.html#v4l2-queryctrl" title="Table&#160;A.90.&#160;struct v4l2_queryctrl">v4l2_queryctrl</a> and
+		struct&#160;<a class="link" href="vidioc-g-ctrl.html#v4l2-control" title="Table&#160;A.52.&#160;struct v4l2_control">v4l2_control</a>.</p>
+
+		<p>If the event is generated due to a call to <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_S_CTRL</code></a> or
+		<a class="link" href="vidioc-g-ext-ctrls.html" title="ioctl VIDIOC_G_EXT_CTRLS, VIDIOC_S_EXT_CTRLS, VIDIOC_TRY_EXT_CTRLS"><code class="constant">VIDIOC_S_EXT_CTRLS</code></a>, then the event will <span class="emphasis"><em>not</em></span> be sent to
+		the file handle that called the ioctl function. This prevents
+		nasty feedback loops. If you <span class="emphasis"><em>do</em></span> want to get the
+		event, then set the <code class="constant">V4L2_EVENT_SUB_FL_ALLOW_FEEDBACK</code>
+		flag.
+		</p>
+
+		<p>This event type will ensure that no information is lost when
+		more events are raised than there is room internally. In that
+		case the struct&#160;<a class="link" href="vidioc-dqevent.html#v4l2-event-ctrl" title="Table&#160;A.14.&#160;struct v4l2_event_ctrl">v4l2_event_ctrl</a> of the second-oldest event is kept,
+		but the <em class="structfield"><code>changes</code></em> field of the
+		second-oldest event is ORed with the <em class="structfield"><code>changes</code></em>
+		field of the oldest event.</p>
+	    </td></tr><tr><td valign="top"><code class="constant">V4L2_EVENT_FRAME_SYNC</code></td><td valign="top">4</td><td valign="top">
+	      <p>Triggered immediately when the reception of a
+	      frame has begun. This event has a
+	      struct&#160;<a class="link" href="vidioc-dqevent.html#v4l2-event-frame-sync" title="Table&#160;A.15.&#160;struct v4l2_event_frame_sync">v4l2_event_frame_sync</a> associated with it.</p>
+
+	      <p>If the hardware needs to be stopped in the case of a
+	      buffer underrun it might not be able to generate this event.
+	      In such cases the <em class="structfield"><code>frame_sequence</code></em>
+	      field in struct&#160;<a class="link" href="vidioc-dqevent.html#v4l2-event-frame-sync" title="Table&#160;A.15.&#160;struct v4l2_event_frame_sync">v4l2_event_frame_sync</a> will not be incremented. This
+	      causes two consecutive frame sequence numbers to have n times
+	      frame interval in between them.</p>
+	    </td></tr><tr><td valign="top"><code class="constant">V4L2_EVENT_PRIVATE_START</code></td><td valign="top">0x08000000</td><td valign="top">Base event number for driver-private events.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="event-flags"></a><p class="title"><b>Table&#160;A.107.&#160;Event Flags</b></p><div class="table-contents"><table summary="Event Flags" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_EVENT_SUB_FL_SEND_INITIAL</code></td><td valign="top">0x0001</td><td valign="top">When this event is subscribed an initial event will be sent
+		containing the current status. This only makes sense for events
+		that are triggered by a status change such as <code class="constant">V4L2_EVENT_CTRL</code>.
+		Other events will ignore this flag.</td></tr><tr><td valign="top"><code class="constant">V4L2_EVENT_SUB_FL_ALLOW_FEEDBACK</code></td><td valign="top">0x0002</td><td valign="top"><p>If set, then events directly caused by an ioctl will also be sent to
+		the filehandle that called that ioctl. For example, changing a control using
+		<a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_S_CTRL</code></a> will cause a V4L2_EVENT_CTRL to be sent back to that same
+		filehandle. Normally such events are suppressed to prevent feedback loops
+		where an application changes a control to a one value and then another, and
+		then receives an event telling it that that control has changed to the first
+		value.</p>
+
+		<p>Since it can't tell whether that event was caused by another application
+		or by the <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_S_CTRL</code></a> call it is hard to decide whether to set the
+		control to the value in the event, or ignore it.</p>
+
+		<p>Think carefully when you set this flag so you won't get into situations
+		like that.</p>
+	    </td></tr></tbody></table></div></div><br class="table-break" /></div><div class="refsect1" title="Return Value"><a id="idp36802984"></a><h2>Return Value</h2><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="vidioc-subdev-g-selection.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="user-func.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="func-mmap.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ioctl VIDIOC_SUBDEV_G_SELECTION, VIDIOC_SUBDEV_S_SELECTION&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;V4L2 mmap()</td></tr></table></div></body></html>

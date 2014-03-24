@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Demux Directory API</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_kdapi.html" title="Chapter&#160;15.&#160;Kernel Demux API" /><link rel="prev" href="dvb_kdapi.html" title="Chapter&#160;15.&#160;Kernel Demux API" /><link rel="next" href="demux_api.html" title="Demux API" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Demux Directory API</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="dvb_kdapi.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;15.&#160;Kernel Demux API</th><td width="20%" align="right">&#160;<a accesskey="n" href="demux_api.html">Next</a></td></tr></table><hr /></div><div class="section" title="Demux Directory API"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="demux_directory_api"></a>Demux Directory API</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="demux_directory_api.html#idp49571080">dmx_register_demux()</a></span></dt><dt><span class="section"><a href="demux_directory_api.html#idp49580000">dmx_unregister_demux()</a></span></dt><dt><span class="section"><a href="demux_directory_api.html#idp49588984">dmx_get_demuxes()</a></span></dt></dl></div><p>The demux directory is a Linux kernel-wide facility for registering and accessing the
+MPEG-2 TS demuxes in the system. Run-time registering and unregistering of demux drivers
+is possible using this API.
+</p><p>All demux drivers in the directory implement the abstract interface dmx_demux_t.
+</p><div class="section" title="dmx_register_demux()"><div class="titlepage"><div><div><h3 class="title"><a id="idp49571080"></a>dmx_register_demux()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This function makes a demux driver interface available to the Linux kernel. It is
+ usually called by the init_module() function of the kernel module that contains
+ the demux driver. The caller of this function is responsible for allocating
+ dynamic or static memory for the demux structure and for initializing its fields
+ before calling this function. The memory allocated for the demux structure
+ must not be freed before calling dmx_unregister_demux(),</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int dmx_register_demux ( dmx_demux_t &#8902;demux )</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>dmx_demux_t*
+ demux</p>
+</td><td align="char">
+<p>Pointer to the demux structure.</p>
+</td></tr></tbody></table></div><p>RETURNS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>0</p>
+</td><td align="char">
+<p>The function was completed without errors.</p>
+</td></tr><tr><td align="char">
+<p>-EEXIST</p>
+</td><td align="char">
+<p>A demux with the same value of the id field already stored
+ in the directory.</p>
+</td></tr><tr><td align="char">
+<p>-ENOSPC</p>
+</td><td align="char">
+<p>No space left in the directory.</p>
+</td></tr></tbody></table></div></div><div class="section" title="dmx_unregister_demux()"><div class="titlepage"><div><div><h3 class="title"><a id="idp49580000"></a>dmx_unregister_demux()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This function is called to indicate that the given demux interface is no
+ longer available. The caller of this function is responsible for freeing the
+ memory of the demux structure, if it was dynamically allocated before calling
+ dmx_register_demux(). The cleanup_module() function of the kernel module
+ that contains the demux driver should call this function. Note that this function
+ fails if the demux is currently in use, i.e., release_demux() has not been called
+ for the interface.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int dmx_unregister_demux ( dmx_demux_t &#8902;demux )</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>dmx_demux_t*
+ demux</p>
+</td><td align="char">
+<p>Pointer to the demux structure which is to be
+ unregistered.</p>
+</td></tr></tbody></table></div><p>RETURNS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>0</p>
+</td><td align="char">
+<p>The function was completed without errors.</p>
+</td></tr><tr><td align="char">
+<p>ENODEV</p>
+</td><td align="char">
+<p>The specified demux is not registered in the demux
+ directory.</p>
+</td></tr><tr><td align="char">
+<p>EBUSY</p>
+</td><td align="char">
+<p>The specified demux is currently in use.</p>
+</td></tr></tbody></table></div></div><div class="section" title="dmx_get_demuxes()"><div class="titlepage"><div><div><h3 class="title"><a id="idp49588984"></a>dmx_get_demuxes()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>Provides the caller with the list of registered demux interfaces, using the
+ standard list structure defined in the include file linux/list.h. The include file
+ demux.h defines the macro DMX_DIR_ENTRY() for converting an element of
+ the generic type struct list_head* to the type dmx_demux_t*. The caller must
+ not free the memory of any of the elements obtained via this function call.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>struct list_head &#8902;dmx_get_demuxes ()</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>none</p>
+</td><td class="auto-generated">&#160;</td></tr></tbody></table></div><p>RETURNS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>struct list_head *</p>
+</td><td align="char">
+<p>A list of demux interfaces, or NULL in the case of an
+ empty list.</p>
+</td></tr></tbody></table></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dvb_kdapi.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_kdapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="demux_api.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&#160;15.&#160;Kernel Demux API&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Demux API</td></tr></table></div></body></html>

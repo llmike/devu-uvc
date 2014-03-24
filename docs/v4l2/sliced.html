@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Sliced VBI Data Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="devices.html" title="Chapter&#160;4.&#160;Interfaces" /><link rel="prev" href="raw-vbi.html" title="Raw VBI Data Interface" /><link rel="next" href="ttx.html" title="Teletext Interface" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Sliced VBI Data Interface</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="raw-vbi.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;4.&#160;Interfaces</th><td width="20%" align="right">&#160;<a accesskey="n" href="ttx.html">Next</a></td></tr></table><hr /></div><div class="section" title="Sliced VBI Data Interface"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="sliced"></a>Sliced VBI Data Interface</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="sliced.html#idp27162864">Querying Capabilities</a></span></dt><dt><span class="section"><a href="sliced.html#idp27165696">Supplemental Functions</a></span></dt><dt><span class="section"><a href="sliced.html#sliced-vbi-format-negotitation">Sliced VBI Format Negotiation</a></span></dt><dt><span class="section"><a href="sliced.html#idp27225416">Reading and writing sliced VBI data</a></span></dt><dt><span class="section"><a href="sliced.html#idp27246640">Sliced VBI Data in MPEG Streams</a></span></dt></dl></div><p>VBI stands for Vertical Blanking Interval, a gap in the
+sequence of lines of an analog video signal. During VBI no picture
+information is transmitted, allowing some time while the electron beam
+of a cathode ray tube TV returns to the top of the screen.</p><p>Sliced VBI devices use hardware to demodulate data transmitted
+in the VBI. V4L2 drivers shall <span class="emphasis"><em>not</em></span> do this by
+software, see also the <a class="link" href="raw-vbi.html" title="Raw VBI Data Interface">raw VBI
+interface</a>. The data is passed as short packets of fixed size,
+covering one scan line each. The number of packets per video frame is
+variable.</p><p>Sliced VBI capture and output devices are accessed through the
+same character special files as raw VBI devices. When a driver
+supports both interfaces, the default function of a
+<code class="filename">/dev/vbi</code> device is <span class="emphasis"><em>raw</em></span> VBI
+capturing or output, and the sliced VBI function is only available
+after calling the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl as defined below. Likewise a
+<code class="filename">/dev/video</code> device may support the sliced VBI API,
+however the default function here is video capturing or output.
+Different file descriptors must be used to pass raw and sliced VBI
+data simultaneously, if this is supported by the driver.</p><div class="section" title="Querying Capabilities"><div class="titlepage"><div><div><h3 class="title"><a id="idp27162864"></a>Querying Capabilities</h3></div></div></div><p>Devices supporting the sliced VBI capturing or output API
+set the <code class="constant">V4L2_CAP_SLICED_VBI_CAPTURE</code> or
+<code class="constant">V4L2_CAP_SLICED_VBI_OUTPUT</code> flag respectively, in
+the <em class="structfield"><code>capabilities</code></em> field of struct&#160;<a class="link" href="vidioc-querycap.html#v4l2-capability" title="Table&#160;A.88.&#160;struct v4l2_capability">v4l2_capability</a>
+returned by the <a class="link" href="vidioc-querycap.html" title="ioctl VIDIOC_QUERYCAP"><code class="constant">VIDIOC_QUERYCAP</code></a> ioctl. At least one of the
+read/write, streaming or asynchronous <a class="link" href="io.html" title="Chapter&#160;3.&#160;Input/Output">I/O
+methods</a> must be supported. Sliced VBI devices may have a tuner
+or modulator.</p></div><div class="section" title="Supplemental Functions"><div class="titlepage"><div><div><h3 class="title"><a id="idp27165696"></a>Supplemental Functions</h3></div></div></div><p>Sliced VBI devices shall support <a class="link" href="video.html" title="Video Inputs and Outputs">video
+input or output</a> and <a class="link" href="tuner.html" title="Tuners and Modulators">tuner or
+modulator</a> ioctls if they have these capabilities, and they may
+support <a class="link" href="control.html" title="User Controls">control</a> ioctls. The <a class="link" href="standard.html" title="Video Standards">video standard</a> ioctls provide information
+vital to program a sliced VBI device, therefore must be
+supported.</p></div><div class="section" title="Sliced VBI Format Negotiation"><div class="titlepage"><div><div><h3 class="title"><a id="sliced-vbi-format-negotitation"></a>Sliced VBI Format Negotiation</h3></div></div></div><p>To find out which data services are supported by the
+hardware applications can call the <a class="link" href="vidioc-g-sliced-vbi-cap.html" title="ioctl VIDIOC_G_SLICED_VBI_CAP"><code class="constant">VIDIOC_G_SLICED_VBI_CAP</code></a> ioctl.
+All drivers implementing the sliced VBI interface must support this
+ioctl. The results may differ from those of the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl
+when the number of VBI lines the hardware can capture or output per
+frame, or the number of services it can identify on a given line are
+limited. For example on PAL line 16 the hardware may be able to look
+for a VPS or Teletext signal, but not both at the same time.</p><p>To determine the currently selected services applications
+set the <em class="structfield"><code>type </code></em> field of struct&#160;<a class="link" href="vidioc-g-fmt.html#v4l2-format" title="Table&#160;A.67.&#160;struct v4l2_format">v4l2_format</a> to
+<code class="constant"> V4L2_BUF_TYPE_SLICED_VBI_CAPTURE</code> or <code class="constant">
+V4L2_BUF_TYPE_SLICED_VBI_OUTPUT</code>, and the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_G_FMT</code></a>
+ioctl fills the <em class="structfield"><code>fmt.sliced</code></em> member, a
+struct&#160;<a class="link" href="sliced.html#v4l2-sliced-vbi-format" title="Table&#160;4.6.&#160;struct v4l2_sliced_vbi_format">v4l2_sliced_vbi_format</a>.</p><p>Applications can request different parameters by
+initializing or modifying the <em class="structfield"><code>fmt.sliced</code></em>
+member and calling the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl with a pointer to the
+<span class="structname">v4l2_format</span> structure.</p><p>The sliced VBI API is more complicated than the raw VBI API
+because the hardware must be told which VBI service to expect on each
+scan line. Not all services may be supported by the hardware on all
+lines (this is especially true for VBI output where Teletext is often
+unsupported and other services can only be inserted in one specific
+line). In many cases, however, it is sufficient to just set the
+<em class="structfield"><code>service_set</code></em> field to the required services
+and let the driver fill the <em class="structfield"><code>service_lines</code></em>
+array according to hardware capabilities. Only if more precise control
+is needed should the programmer set the
+<em class="structfield"><code>service_lines</code></em> array explicitly.</p><p>The <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl modifies the parameters
+according to hardware capabilities. When the driver allocates
+resources at this point, it may return an <span class="errorcode">EBUSY</span> error code if the required
+resources are temporarily unavailable. Other resource allocation
+points which may return <span class="errorcode">EBUSY</span> can be the
+<a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMON</code></a> ioctl and the first <a class="link" href="func-read.html" title="V4L2 read()"><code class="function">read()</code></a>, <a class="link" href="func-write.html" title="V4L2 write()"><code class="function">write()</code></a> and
+<a class="link" href="func-select.html" title="V4L2 select()"><code class="function">select()</code></a> call.</p><div class="table"><a id="v4l2-sliced-vbi-format"></a><p class="title"><b>Table&#160;4.6.&#160;struct
+<span class="structname">v4l2_sliced_vbi_format</span></b></p><div class="table-contents"><table summary="struct&#10;v4l2_sliced_vbi_format" width="100%" border="0"><colgroup><col /><col /><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>service_set</code></em></td><td colspan="3" valign="top"><p>If
+<em class="structfield"><code>service_set</code></em> is non-zero when passed with
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> or <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_TRY_FMT</code></a>, the
+<em class="structfield"><code>service_lines</code></em> array will be filled by the
+driver according to the services specified in this field. For example,
+if <em class="structfield"><code>service_set</code></em> is initialized with
+<code class="constant">V4L2_SLICED_TELETEXT_B | V4L2_SLICED_WSS_625</code>, a
+driver for the cx25840 video decoder sets lines 7-22 of both
+fields<sup>[<a id="idp27186832" href="#ftn.idp27186832" class="footnote">a</a>]</sup> to <code class="constant">V4L2_SLICED_TELETEXT_B</code>
+and line 23 of the first field to
+<code class="constant">V4L2_SLICED_WSS_625</code>. If
+<em class="structfield"><code>service_set</code></em> is set to zero, then the values
+of <em class="structfield"><code>service_lines</code></em> will be used instead.
+</p><p>On return the driver sets this field to the union of all
+elements of the returned <em class="structfield"><code>service_lines</code></em>
+array. It may contain less services than requested, perhaps just one,
+if the hardware cannot handle more services simultaneously. It may be
+empty (zero) if none of the requested services are supported by the
+hardware.</p></td></tr><tr><td valign="top">__u16</td><td valign="top"><em class="structfield"><code>service_lines</code></em>[2][24]</td><td colspan="3" valign="top"><p>Applications initialize this
+array with sets of data services the driver shall look for or insert
+on the respective scan line. Subject to hardware capabilities drivers
+return the requested set, a subset, which may be just a single
+service, or an empty set. When the hardware cannot handle multiple
+services on the same line the driver shall choose one. No assumptions
+can be made on which service the driver chooses.</p><p>Data
+services are defined in <a class="xref" href="sliced.html#vbi-services2" title="Table&#160;4.7.&#160;Sliced VBI services">Table&#160;4.7, &#8220;Sliced VBI services&#8221;</a>. Array indices
+map to ITU-R line numbers (see also <a class="xref" href="raw-vbi.html#vbi-525" title="Figure&#160;4.2.&#160;ITU-R 525 line numbering (M/NTSC and M/PAL)">Figure&#160;4.2, &#8220;ITU-R 525 line numbering (M/NTSC and M/PAL)&#8221;</a> and <a class="xref" href="raw-vbi.html#vbi-625" title="Figure&#160;4.3.&#160;ITU-R 625 line numbering">Figure&#160;4.3, &#8220;ITU-R 625 line numbering&#8221;</a>) as follows: </p></td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">Element</td><td valign="top">525 line systems</td><td valign="top">625 line systems</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top"><em class="structfield"><code>service_lines</code></em>[0][1]</td><td align="center" valign="top">1</td><td align="center" valign="top">1</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top"><em class="structfield"><code>service_lines</code></em>[0][23]</td><td align="center" valign="top">23</td><td align="center" valign="top">23</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top"><em class="structfield"><code>service_lines</code></em>[1][1]</td><td align="center" valign="top">264</td><td align="center" valign="top">314</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top"><em class="structfield"><code>service_lines</code></em>[1][23]</td><td align="center" valign="top">286</td><td align="center" valign="top">336</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td colspan="3" valign="top">Drivers must set
+<em class="structfield"><code>service_lines</code></em>[0][0] and
+<em class="structfield"><code>service_lines</code></em>[1][0] to zero.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>io_size</code></em></td><td colspan="3" valign="top">Maximum number of bytes passed by
+one <a class="link" href="func-read.html" title="V4L2 read()"><code class="function">read()</code></a> or <a class="link" href="func-write.html" title="V4L2 write()"><code class="function">write()</code></a> call, and the buffer size in bytes for
+the <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF"><code class="constant">VIDIOC_QBUF</code></a> and <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF"><code class="constant">VIDIOC_DQBUF</code></a> ioctl. Drivers set this field to
+the size of struct&#160;<a class="link" href="sliced.html#v4l2-sliced-vbi-data" title="Table&#160;4.8.&#160;struct v4l2_sliced_vbi_data">v4l2_sliced_vbi_data</a> times the number of non-zero
+elements in the returned <em class="structfield"><code>service_lines</code></em>
+array (that is the number of lines potentially carrying data).</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>reserved</code></em>[2]</td><td colspan="3" valign="top">This array is reserved for future
+extensions. Applications and drivers must set it to zero.</td></tr></tbody><tbody class="footnotes"><tr><td colspan="5"><div class="footnote"><p><sup>[<a id="ftn.idp27186832" href="#idp27186832" class="para">a</a>] </sup>According to <a class="link" href="bi01.html#ets300706" title="ETS 300 706 &quot;Enhanced Teletext specification&quot;">ETS&#160;300&#160;706</a> lines 6-22 of the
+first field and lines 5-22 of the second field may carry Teletext
+data.</p></div></td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="vbi-services2"></a><p class="title"><b>Table&#160;4.7.&#160;Sliced VBI services</b></p><div class="table-contents"><table summary="Sliced VBI services" width="100%" border="0"><colgroup><col /><col /><col /><col /><col /></colgroup><thead><tr><th>Symbol</th><th>Value</th><th>Reference</th><th>Lines, usually</th><th>Payload</th></tr></thead><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_SLICED_TELETEXT_B</code>
+(Teletext System B)</td><td valign="top">0x0001</td><td valign="top"><a class="xref" href="bi01.html#ets300706" title="ETS 300 706 &quot;Enhanced Teletext specification&quot;">[<abbr class="abbrev">ETS&#160;300&#160;706</abbr>]</a>, <a class="xref" href="bi01.html#itu653" title="ITU-R Recommendation BT.653-3 &quot;Teletext systems&quot;">[<abbr class="abbrev">ITU&#160;BT.653</abbr>]</a></td><td valign="top">PAL/SECAM line 7-22, 320-335 (second field 7-22)</td><td valign="top">Last 42 of the 45 byte Teletext packet, that is
+without clock run-in and framing code, lsb first transmitted.</td></tr><tr><td valign="top"><code class="constant">V4L2_SLICED_VPS</code></td><td valign="top">0x0400</td><td valign="top"><a class="xref" href="bi01.html#ets300231" title="ETS 300 231 &quot;Specification of the domestic video Programme Delivery Control system (PDC)&quot;">[<abbr class="abbrev">ETS&#160;300&#160;231</abbr>]</a></td><td valign="top">PAL line 16</td><td valign="top">Byte number 3 to 15 according to Figure 9 of
+ETS&#160;300&#160;231, lsb first transmitted.</td></tr><tr><td valign="top"><code class="constant">V4L2_SLICED_CAPTION_525</code></td><td valign="top">0x1000</td><td valign="top"><a class="xref" href="bi01.html#eia608" title="EIA 608-B &quot;Recommended Practice for Line 21 Data Service&quot;">[<abbr class="abbrev">EIA&#160;608-B</abbr>]</a></td><td valign="top">NTSC line 21, 284 (second field 21)</td><td valign="top">Two bytes in transmission order, including parity
+bit, lsb first transmitted.</td></tr><tr><td valign="top"><code class="constant">V4L2_SLICED_WSS_625</code></td><td valign="top">0x4000</td><td valign="top"><a class="xref" href="bi01.html#itu1119" title="ITU-R Recommendation BT.1119 &quot;625-line television Wide Screen Signalling (WSS)&quot;">[<abbr class="abbrev">ITU&#160;BT.1119</abbr>]</a>, <a class="xref" href="bi01.html#en300294" title="EN 300 294 &quot;625-line television Wide Screen Signalling (WSS)&quot;">[<abbr class="abbrev">EN&#160;300&#160;294</abbr>]</a></td><td valign="top">PAL/SECAM line 23</td><td valign="top"><pre class="screen">
+Byte         0                 1
+      msb         lsb  msb           lsb
+ Bit  7 6 5 4 3 2 1 0  x x 13 12 11 10 9
+</pre></td></tr><tr><td valign="top"><code class="constant">V4L2_SLICED_VBI_525</code></td><td valign="top">0x1000</td><td colspan="3" valign="top">Set of services applicable to 525
+line systems.</td></tr><tr><td valign="top"><code class="constant">V4L2_SLICED_VBI_625</code></td><td valign="top">0x4401</td><td colspan="3" valign="top">Set of services applicable to 625
+line systems.</td></tr></tbody></table></div></div><br class="table-break" /><p>Drivers may return an <span class="errorcode">EINVAL</span> error code when applications attempt to
+read or write data without prior format negotiation, after switching
+the video standard (which may invalidate the negotiated VBI
+parameters) and after switching the video input (which may change the
+video standard as a side effect). The <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl may return
+an <span class="errorcode">EBUSY</span> error code when applications attempt to change the format while i/o is
+in progress (between a <a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMON</code></a> and <a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMOFF</code></a> call,
+and after the first <a class="link" href="func-read.html" title="V4L2 read()"><code class="function">read()</code></a> or <a class="link" href="func-write.html" title="V4L2 write()"><code class="function">write()</code></a> call).</p></div><div class="section" title="Reading and writing sliced VBI data"><div class="titlepage"><div><div><h3 class="title"><a id="idp27225416"></a>Reading and writing sliced VBI data</h3></div></div></div><p>A single <a class="link" href="func-read.html" title="V4L2 read()"><code class="function">read()</code></a> or <a class="link" href="func-write.html" title="V4L2 write()"><code class="function">write()</code></a> call must pass all data
+belonging to one video frame. That is an array of
+<span class="structname">v4l2_sliced_vbi_data</span> structures with one or
+more elements and a total size not exceeding
+<em class="structfield"><code>io_size</code></em> bytes. Likewise in streaming I/O
+mode one buffer of <em class="structfield"><code>io_size</code></em> bytes must
+contain data of one video frame. The <em class="structfield"><code>id</code></em> of
+unused <span class="structname">v4l2_sliced_vbi_data</span> elements must be
+zero.</p><div class="table"><a id="v4l2-sliced-vbi-data"></a><p class="title"><b>Table&#160;4.8.&#160;struct
+<span class="structname">v4l2_sliced_vbi_data</span></b></p><div class="table-contents"><table summary="struct&#10;v4l2_sliced_vbi_data" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>id</code></em></td><td valign="top">A flag from <a class="xref" href="vidioc-g-sliced-vbi-cap.html#vbi-services" title="Table&#160;A.81.&#160;Sliced VBI services">Table&#160;A.81, &#8220;Sliced VBI services&#8221;</a>
+identifying the type of data in this packet. Only a single bit must be
+set. When the <em class="structfield"><code>id</code></em> of a captured packet is
+zero, the packet is empty and the contents of other fields are
+undefined. Applications shall ignore empty packets. When the
+<em class="structfield"><code>id</code></em> of a packet for output is zero the
+contents of the <em class="structfield"><code>data</code></em> field are undefined
+and the driver must no longer insert data on the requested
+<em class="structfield"><code>field</code></em> and
+<em class="structfield"><code>line</code></em>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>field</code></em></td><td valign="top">The video field number this data has been captured
+from, or shall be inserted at. <code class="constant">0</code> for the first
+field, <code class="constant">1</code> for the second field.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>line</code></em></td><td valign="top">The field (as opposed to frame) line number this
+data has been captured from, or shall be inserted at. See <a class="xref" href="raw-vbi.html#vbi-525" title="Figure&#160;4.2.&#160;ITU-R 525 line numbering (M/NTSC and M/PAL)">Figure&#160;4.2, &#8220;ITU-R 525 line numbering (M/NTSC and M/PAL)&#8221;</a> and <a class="xref" href="raw-vbi.html#vbi-625" title="Figure&#160;4.3.&#160;ITU-R 625 line numbering">Figure&#160;4.3, &#8220;ITU-R 625 line numbering&#8221;</a> for valid
+values. Sliced VBI capture devices can set the line number of all
+packets to <code class="constant">0</code> if the hardware cannot reliably
+identify scan lines. The field number must always be valid.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>reserved</code></em></td><td valign="top">This field is reserved for future extensions.
+Applications and drivers must set it to zero.</td></tr><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>data</code></em>[48]</td><td valign="top">The packet payload. See <a class="xref" href="vidioc-g-sliced-vbi-cap.html#vbi-services" title="Table&#160;A.81.&#160;Sliced VBI services">Table&#160;A.81, &#8220;Sliced VBI services&#8221;</a> for the contents and number of
+bytes passed for each data type. The contents of padding bytes at the
+end of this array are undefined, drivers and applications shall ignore
+them.</td></tr></tbody></table></div></div><br class="table-break" /><p>Packets are always passed in ascending line number order,
+without duplicate line numbers. The <a class="link" href="func-write.html" title="V4L2 write()"><code class="function">write()</code></a> function and the
+<a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF"><code class="constant">VIDIOC_QBUF</code></a> ioctl must return an <span class="errorcode">EINVAL</span> error code when applications violate
+this rule. They must also return an <span class="errorcode">EINVAL</span> error code when applications pass an
+incorrect field or line number, or a combination of
+<em class="structfield"><code>field</code></em>, <em class="structfield"><code>line</code></em> and
+<em class="structfield"><code>id</code></em> which has not been negotiated with the
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_G_FMT</code></a> or <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl. When the line numbers are
+unknown the driver must pass the packets in transmitted order. The
+driver can insert empty packets with <em class="structfield"><code>id</code></em> set
+to zero anywhere in the packet array.</p><p>To assure synchronization and to distinguish from frame
+dropping, when a captured frame does not carry any of the requested
+data services drivers must pass one or more empty packets. When an
+application fails to pass VBI data in time for output, the driver
+must output the last VPS and WSS packet again, and disable the output
+of Closed Caption and Teletext data, or output data which is ignored
+by Closed Caption and Teletext decoders.</p><p>A sliced VBI device may support <a class="link" href="io.html#rw" title="Read/Write">read/write</a> and/or streaming (<a class="link" href="mmap.html" title="Streaming I/O (Memory Mapping)">memory mapping</a> and/or <a class="link" href="userp.html" title="Streaming I/O (User Pointers)">user
+pointer</a>) I/O. The latter bears the possibility of synchronizing
+video and VBI data by using buffer timestamps.</p></div><div class="section" title="Sliced VBI Data in MPEG Streams"><div class="titlepage"><div><div><h3 class="title"><a id="idp27246640"></a>Sliced VBI Data in MPEG Streams</h3></div></div></div><div class="toc"><dl><dt><span class="section"><a href="sliced.html#idp27251552">MPEG Stream Embedded, Sliced VBI Data Format: NONE</a></span></dt><dt><span class="section"><a href="sliced.html#idp27253048">MPEG Stream Embedded, Sliced VBI Data Format: IVTV</a></span></dt></dl></div><p>If a device can produce an MPEG output stream, it may be
+capable of providing <a class="link" href="sliced.html#sliced-vbi-format-negotitation" title="Sliced VBI Format Negotiation">negotiated sliced VBI
+services</a> as data embedded in the MPEG stream.  Users or
+applications control this sliced VBI data insertion with the <a class="link" href="extended-controls.html#v4l2-mpeg-stream-vbi-fmt">V4L2_CID_MPEG_STREAM_VBI_FMT</a>
+control.</p><p>If the driver does not provide the <a class="link" href="extended-controls.html#v4l2-mpeg-stream-vbi-fmt">V4L2_CID_MPEG_STREAM_VBI_FMT</a>
+control, or only allows that control to be set to <a class="link" href="extended-controls.html#v4l2-mpeg-stream-vbi-fmt"><code class="constant">
+V4L2_MPEG_STREAM_VBI_FMT_NONE</code></a>, then the device
+cannot embed sliced VBI data in the MPEG stream.</p><p>The <a class="link" href="extended-controls.html#v4l2-mpeg-stream-vbi-fmt">
+V4L2_CID_MPEG_STREAM_VBI_FMT</a> control does not implicitly set
+the device driver to capture nor cease capturing sliced VBI data.  The
+control only indicates to embed sliced VBI data in the MPEG stream, if
+an application has negotiated sliced VBI service be captured.</p><p>It may also be the case that a device can embed sliced VBI
+data in only certain types of MPEG streams: for example in an MPEG-2
+PS but not an MPEG-2 TS.  In this situation, if sliced VBI data
+insertion is requested, the sliced VBI data will be embedded in MPEG
+stream types when supported, and silently omitted from MPEG stream
+types where sliced VBI data insertion is not supported by the device.
+</p><p>The following subsections specify the format of the
+embedded sliced VBI data.</p><div class="section" title="MPEG Stream Embedded, Sliced VBI Data Format: NONE"><div class="titlepage"><div><div><h4 class="title"><a id="idp27251552"></a>MPEG Stream Embedded, Sliced VBI Data Format: NONE</h4></div></div></div><p>The <a class="link" href="extended-controls.html#v4l2-mpeg-stream-vbi-fmt"><code class="constant">
+V4L2_MPEG_STREAM_VBI_FMT_NONE</code></a> embedded sliced VBI
+format shall be interpreted by drivers as a control to cease
+embedding sliced VBI data in MPEG streams.  Neither the device nor
+driver shall insert "empty" embedded sliced VBI data packets in the
+MPEG stream when this format is set.  No MPEG stream data structures
+are specified for this format.</p></div><div class="section" title="MPEG Stream Embedded, Sliced VBI Data Format: IVTV"><div class="titlepage"><div><div><h4 class="title"><a id="idp27253048"></a>MPEG Stream Embedded, Sliced VBI Data Format: IVTV</h4></div></div></div><p>The <a class="link" href="extended-controls.html#v4l2-mpeg-stream-vbi-fmt"><code class="constant">
+V4L2_MPEG_STREAM_VBI_FMT_IVTV</code></a> embedded sliced VBI
+format, when supported, indicates to the driver to embed up to 36
+lines of sliced VBI data per frame in an MPEG-2 <span class="emphasis"><em>Private
+Stream 1 PES</em></span> packet encapsulated in an MPEG-2 <span class="emphasis"><em>
+Program Pack</em></span> in the MPEG stream.</p><p><span class="emphasis"><em>Historical context</em></span>: This format
+specification originates from a custom, embedded, sliced VBI data
+format used by the <code class="filename">ivtv</code> driver.  This format
+has already been informally specified in the kernel sources in the
+file <code class="filename">Documentation/video4linux/cx2341x/README.vbi</code>
+.  The maximum size of the payload and other aspects of this format
+are driven by the CX23415 MPEG decoder's capabilities and limitations
+with respect to extracting, decoding, and displaying sliced VBI data
+embedded within an MPEG stream.</p><p>This format's use is <span class="emphasis"><em>not</em></span> exclusive to
+the <code class="filename">ivtv</code> driver <span class="emphasis"><em>nor</em></span>
+exclusive to CX2341x devices, as the sliced VBI data packet insertion
+into the MPEG stream is implemented in driver software.  At least the
+<code class="filename">cx18</code> driver provides sliced VBI data insertion
+into an MPEG-2 PS in this format as well.</p><p>The following definitions specify the payload of the
+MPEG-2 <span class="emphasis"><em>Private Stream 1 PES</em></span> packets that contain
+sliced VBI data when <a class="link" href="extended-controls.html#v4l2-mpeg-stream-vbi-fmt">
+<code class="constant">V4L2_MPEG_STREAM_VBI_FMT_IVTV</code></a> is set.
+(The MPEG-2 <span class="emphasis"><em>Private Stream 1 PES</em></span> packet header
+and encapsulating MPEG-2 <span class="emphasis"><em>Program Pack</em></span> header are
+not detailed here.  Please refer to the MPEG-2 specifications for
+details on those packet headers.)</p><p>The payload of the MPEG-2 <span class="emphasis"><em>Private Stream 1 PES
+</em></span> packets that contain sliced VBI data is specified by
+struct&#160;<a class="link" href="sliced.html#v4l2-mpeg-vbi-fmt-ivtv" title="Table&#160;4.9.&#160;struct v4l2_mpeg_vbi_fmt_ivtv">v4l2_mpeg_vbi_fmt_ivtv</a>.  The payload is variable
+length, depending on the actual number of lines of sliced VBI data
+present in a video frame.  The payload may be padded at the end with
+unspecified fill bytes to align the end of the payload to a 4-byte
+boundary.  The payload shall never exceed 1552 bytes (2 fields with
+18 lines/field with 43 bytes of data/line and a 4 byte magic number).
+</p><div class="table"><a id="v4l2-mpeg-vbi-fmt-ivtv"></a><p class="title"><b>Table&#160;4.9.&#160;struct <span class="structname">v4l2_mpeg_vbi_fmt_ivtv</span>
+      </b></p><div class="table-contents"><table summary="struct v4l2_mpeg_vbi_fmt_ivtv&#10;      " width="100%" border="0"><colgroup><col /><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>magic</code></em>[4]</td><td valign="top">&#160;</td><td valign="top">A "magic" constant from <a class="xref" href="sliced.html#v4l2-mpeg-vbi-fmt-ivtv-magic" title="Table&#160;4.10.&#160;Magic Constants for struct&#160;v4l2_mpeg_vbi_fmt_ivtv magic field">Table&#160;4.10, &#8220;Magic Constants for struct&#160;v4l2_mpeg_vbi_fmt_ivtv
+	<em class="structfield"><code>magic</code></em> field&#8221;</a> that indicates
+this is a valid sliced VBI data payload and also indicates which
+member of the anonymous union, <em class="structfield"><code>itv0</code></em> or
+<em class="structfield"><code>ITV0</code></em>, to use for the payload data.</td></tr><tr><td valign="top">union</td><td valign="top">(anonymous)</td><td class="auto-generated">&#160;</td><td class="auto-generated">&#160;</td></tr><tr><td valign="top">&#160;</td><td valign="top">struct <a class="link" href="sliced.html#v4l2-mpeg-vbi-itv0" title="Table&#160;4.11.&#160;struct v4l2_mpeg_vbi_itv0">
+	      <span class="structname">v4l2_mpeg_vbi_itv0</span></a>
+	    </td><td valign="top"><em class="structfield"><code>itv0</code></em></td><td valign="top">The primary form of the sliced VBI data payload
+that contains anywhere from 1 to 35 lines of sliced VBI data.
+Line masks are provided in this form of the payload indicating
+which VBI lines are provided.</td></tr><tr><td valign="top">&#160;</td><td valign="top">struct <a class="link" href="sliced.html#v4l2-mpeg-vbi-itv0-1" title="Table&#160;4.12.&#160;struct v4l2_mpeg_vbi_ITV0">
+	      <span class="structname">v4l2_mpeg_vbi_ITV0</span></a>
+	    </td><td valign="top"><em class="structfield"><code>ITV0</code></em></td><td valign="top">An alternate form of the sliced VBI data payload
+used when 36 lines of sliced VBI data are present.  No line masks are
+provided in this form of the payload; all valid line mask bits are
+implcitly set.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-mpeg-vbi-fmt-ivtv-magic"></a><p class="title"><b>Table&#160;4.10.&#160;Magic Constants for struct&#160;<a class="link" href="sliced.html#v4l2-mpeg-vbi-fmt-ivtv" title="Table&#160;4.9.&#160;struct v4l2_mpeg_vbi_fmt_ivtv">v4l2_mpeg_vbi_fmt_ivtv</a>
+	<em class="structfield"><code>magic</code></em> field</b></p><div class="table-contents"><table summary="Magic Constants for struct&#160;v4l2_mpeg_vbi_fmt_ivtv&#10;&#9;magic field" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><thead><tr><th align="left">Defined Symbol</th><th align="left">Value</th><th align="left">Description</th></tr></thead><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_MPEG_VBI_IVTV_MAGIC0</code>
+	    </td><td valign="top">"itv0"</td><td valign="top">Indicates the <em class="structfield"><code>itv0</code></em>
+member of the union in struct&#160;<a class="link" href="sliced.html#v4l2-mpeg-vbi-fmt-ivtv" title="Table&#160;4.9.&#160;struct v4l2_mpeg_vbi_fmt_ivtv">v4l2_mpeg_vbi_fmt_ivtv</a> is valid.</td></tr><tr><td valign="top"><code class="constant">V4L2_MPEG_VBI_IVTV_MAGIC1</code>
+	    </td><td valign="top">"ITV0"</td><td valign="top">Indicates the <em class="structfield"><code>ITV0</code></em>
+member of the union in struct&#160;<a class="link" href="sliced.html#v4l2-mpeg-vbi-fmt-ivtv" title="Table&#160;4.9.&#160;struct v4l2_mpeg_vbi_fmt_ivtv">v4l2_mpeg_vbi_fmt_ivtv</a> is valid and
+that 36 lines of sliced VBI data are present.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-mpeg-vbi-itv0"></a><p class="title"><b>Table&#160;4.11.&#160;struct <span class="structname">v4l2_mpeg_vbi_itv0</span>
+      </b></p><div class="table-contents"><table summary="struct v4l2_mpeg_vbi_itv0&#10;      " width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__le32</td><td valign="top"><em class="structfield"><code>linemask</code></em>[2]</td><td valign="top"><p>Bitmasks indicating the VBI service lines
+present.  These <em class="structfield"><code>linemask</code></em> values are stored
+in little endian byte order in the MPEG stream.  Some reference
+<em class="structfield"><code>linemask</code></em> bit positions with their
+corresponding VBI line number and video field are given below.
+b<sub>0</sub> indicates the least significant bit of a
+<em class="structfield"><code>linemask</code></em> value:</p><pre class="screen">
+<em class="structfield"><code>linemask</code></em>[0] b<sub>0</sub>:		line  6		first field
+<em class="structfield"><code>linemask</code></em>[0] b<sub>17</sub>:		line 23		first field
+<em class="structfield"><code>linemask</code></em>[0] b<sub>18</sub>:		line  6		second field
+<em class="structfield"><code>linemask</code></em>[0] b<sub>31</sub>:		line 19		second field
+<em class="structfield"><code>linemask</code></em>[1] b<sub>0</sub>:		line 20		second field
+<em class="structfield"><code>linemask</code></em>[1] b<sub>3</sub>:		line 23		second field
+<em class="structfield"><code>linemask</code></em>[1] b<sub>4</sub>-b<sub>31</sub>:	unused and set to 0</pre></td></tr><tr><td valign="top">struct <a class="link" href="sliced.html#v4l2-mpeg-vbi-itv0-line" title="Table&#160;4.13.&#160;struct v4l2_mpeg_vbi_itv0_line">
+	      <span class="structname">v4l2_mpeg_vbi_itv0_line</span></a>
+	    </td><td valign="top"><em class="structfield"><code>line</code></em>[35]</td><td valign="top">This is a variable length array that holds from 1
+to 35 lines of sliced VBI data.  The sliced VBI data lines present
+correspond to the bits set in the <em class="structfield"><code>linemask</code></em>
+array, starting from b<sub>0</sub> of <em class="structfield"><code>
+linemask</code></em>[0] up through b<sub>31</sub> of
+<em class="structfield"><code>linemask</code></em>[0], and from b<sub>0
+</sub> of <em class="structfield"><code>linemask</code></em>[1] up through b
+<sub>3</sub> of <em class="structfield"><code>linemask</code></em>[1].
+<em class="structfield"><code>line</code></em>[0] corresponds to the first bit
+found set in the <em class="structfield"><code>linemask</code></em> array,
+<em class="structfield"><code>line</code></em>[1] corresponds to the second bit
+found set in the <em class="structfield"><code>linemask</code></em> array, etc.
+If no <em class="structfield"><code>linemask</code></em> array bits are set, then
+<em class="structfield"><code>line</code></em>[0] may contain one line of
+unspecified data that should be ignored by applications.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-mpeg-vbi-itv0-1"></a><p class="title"><b>Table&#160;4.12.&#160;struct <span class="structname">v4l2_mpeg_vbi_ITV0</span>
+      </b></p><div class="table-contents"><table summary="struct v4l2_mpeg_vbi_ITV0&#10;      " width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">struct <a class="link" href="sliced.html#v4l2-mpeg-vbi-itv0-line" title="Table&#160;4.13.&#160;struct v4l2_mpeg_vbi_itv0_line">
+	      <span class="structname">v4l2_mpeg_vbi_itv0_line</span></a>
+	    </td><td valign="top"><em class="structfield"><code>line</code></em>[36]</td><td valign="top">A fixed length array of 36 lines of sliced VBI
+data.  <em class="structfield"><code>line</code></em>[0] through <em class="structfield"><code>line
+</code></em>[17] correspond to lines 6 through 23 of the
+first field.  <em class="structfield"><code>line</code></em>[18] through
+<em class="structfield"><code>line</code></em>[35] corresponds to lines 6
+through 23 of the second field.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-mpeg-vbi-itv0-line"></a><p class="title"><b>Table&#160;4.13.&#160;struct <span class="structname">v4l2_mpeg_vbi_itv0_line</span>
+      </b></p><div class="table-contents"><table summary="struct v4l2_mpeg_vbi_itv0_line&#10;      " width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>id</code></em></td><td valign="top">A line identifier value from
+<a class="xref" href="sliced.html#ITV0-Line-Identifier-Constants" title="Table&#160;4.14.&#160;Line Identifiers for struct v4l2_mpeg_vbi_itv0_line id field">Table&#160;4.14, &#8220;Line Identifiers for struct <span class="structname">
+v4l2_mpeg_vbi_itv0_line</span> <em class="structfield"><code>id
+</code></em> field&#8221;</a> that indicates
+the type of sliced VBI data stored on this line.</td></tr><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>data</code></em>[42]</td><td valign="top">The sliced VBI data for the line.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="ITV0-Line-Identifier-Constants"></a><p class="title"><b>Table&#160;4.14.&#160;Line Identifiers for struct <a class="link" href="sliced.html#v4l2-mpeg-vbi-itv0-line" title="Table&#160;4.13.&#160;struct v4l2_mpeg_vbi_itv0_line"><span class="structname">
+v4l2_mpeg_vbi_itv0_line</span></a> <em class="structfield"><code>id
+</code></em> field</b></p><div class="table-contents"><table summary="Line Identifiers for struct &#10;v4l2_mpeg_vbi_itv0_line id&#10; field" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><thead><tr><th align="left">Defined Symbol</th><th align="left">Value</th><th align="left">Description</th></tr></thead><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_MPEG_VBI_IVTV_TELETEXT_B</code>
+	    </td><td valign="top">1</td><td valign="top">Refer to <a class="link" href="sliced.html#vbi-services2" title="Table&#160;4.7.&#160;Sliced VBI services">
+Sliced VBI services</a> for a description of the line payload.</td></tr><tr><td valign="top"><code class="constant">V4L2_MPEG_VBI_IVTV_CAPTION_525</code>
+	    </td><td valign="top">4</td><td valign="top">Refer to <a class="link" href="sliced.html#vbi-services2" title="Table&#160;4.7.&#160;Sliced VBI services">
+Sliced VBI services</a> for a description of the line payload.</td></tr><tr><td valign="top"><code class="constant">V4L2_MPEG_VBI_IVTV_WSS_625</code>
+	    </td><td valign="top">5</td><td valign="top">Refer to <a class="link" href="sliced.html#vbi-services2" title="Table&#160;4.7.&#160;Sliced VBI services">
+Sliced VBI services</a> for a description of the line payload.</td></tr><tr><td valign="top"><code class="constant">V4L2_MPEG_VBI_IVTV_VPS</code>
+	    </td><td valign="top">7</td><td valign="top">Refer to <a class="link" href="sliced.html#vbi-services2" title="Table&#160;4.7.&#160;Sliced VBI services">
+Sliced VBI services</a> for a description of the line payload.</td></tr></tbody></table></div></div><br class="table-break" /></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="raw-vbi.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="devices.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="ttx.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Raw VBI Data Interface&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Teletext Interface</td></tr></table></div></body></html>

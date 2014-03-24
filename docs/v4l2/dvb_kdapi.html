@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;15.&#160;Kernel Demux API</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvbapi.html" title="Part&#160;II.&#160;LINUX DVB API" /><link rel="prev" href="net_fcalls.html" title="DVB net Function Calls" /><link rel="next" href="demux_directory_api.html" title="Demux Directory API" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;15.&#160;Kernel Demux API</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="net_fcalls.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;II.&#160;LINUX DVB API</th><td width="20%" align="right">&#160;<a accesskey="n" href="demux_directory_api.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;15.&#160;Kernel Demux API"><div class="titlepage"><div><div><h2 class="title"><a id="dvb_kdapi"></a>Chapter&#160;15.&#160;Kernel Demux API</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="dvb_kdapi.html#kernel_demux_data_types">Kernel Demux Data Types</a></span></dt><dd><dl><dt><span class="section"><a href="dvb_kdapi.html#dmx_success_t">dmx_success_t</a></span></dt><dt><span class="section"><a href="dvb_kdapi.html#ts_filter_types">TS filter types</a></span></dt><dt><span class="section"><a href="dvb_kdapi.html#dmx_ts_pes_t">dmx_ts_pes_t</a></span></dt><dt><span class="section"><a href="dvb_kdapi.html#demux_demux_t">demux_demux_t</a></span></dt><dt><span class="section"><a href="dvb_kdapi.html#demux_directory">Demux directory</a></span></dt></dl></dd><dt><span class="section"><a href="demux_directory_api.html">Demux Directory API</a></span></dt><dd><dl><dt><span class="section"><a href="demux_directory_api.html#idp49571080">dmx_register_demux()</a></span></dt><dt><span class="section"><a href="demux_directory_api.html#idp49580000">dmx_unregister_demux()</a></span></dt><dt><span class="section"><a href="demux_directory_api.html#idp49588984">dmx_get_demuxes()</a></span></dt></dl></dd><dt><span class="section"><a href="demux_api.html">Demux API</a></span></dt><dd><dl><dt><span class="section"><a href="demux_api.html#kdapi_fopen">open()</a></span></dt><dt><span class="section"><a href="demux_api.html#kdapi_fclose">close()</a></span></dt><dt><span class="section"><a href="demux_api.html#kdapi_fwrite">write()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49628376">allocate_ts_feed()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49640416">release_ts_feed()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49648976">allocate_section_feed()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49661392">release_section_feed()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49670016">descramble_mac_address()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49684664">descramble_section_payload()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49701512">add_frontend()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49713840">remove_frontend()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49724008">get_frontends()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49731352">connect_frontend()</a></span></dt><dt><span class="section"><a href="demux_api.html#idp49741928">disconnect_frontend()</a></span></dt></dl></dd><dt><span class="section"><a href="demux_callback_api.html">Demux Callback API</a></span></dt><dd><dl><dt><span class="section"><a href="demux_callback_api.html#idp49751744">dmx_ts_cb()</a></span></dt><dt><span class="section"><a href="demux_callback_api.html#idp49772272">dmx_section_cb()</a></span></dt></dl></dd><dt><span class="section"><a href="ts_feed_api.html">TS Feed API</a></span></dt><dd><dl><dt><span class="section"><a href="ts_feed_api.html#idp49788336">set()</a></span></dt><dt><span class="section"><a href="ts_feed_api.html#idp49804048">start_filtering()</a></span></dt><dt><span class="section"><a href="ts_feed_api.html#idp49811616">stop_filtering()</a></span></dt></dl></dd><dt><span class="section"><a href="section_feed_api.html">Section Feed API</a></span></dt><dt><span class="section"><a href="kdapi_set.html">set()</a></span></dt><dt><span class="section"><a href="ch15s08.html">allocate_filter()</a></span></dt><dt><span class="section"><a href="ch15s09.html">release_filter()</a></span></dt><dt><span class="section"><a href="ch15s10.html">start_filtering()</a></span></dt><dt><span class="section"><a href="ch15s11.html">stop_filtering()</a></span></dt></dl></div><p>The kernel demux API defines a driver-internal interface for registering low-level,
+hardware specific driver to a hardware independent demux layer. It is only of interest for
+DVB device driver writers. The header file for this API is named <span class="tt">demux.h</span> and located in
+<span class="tt">drivers/media/dvb-core</span>.
+</p><p>Maintainer note: This section must be reviewed. It is probably out of date.
+</p><div class="section" title="Kernel Demux Data Types"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="kernel_demux_data_types"></a>Kernel Demux Data Types</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="dvb_kdapi.html#dmx_success_t">dmx_success_t</a></span></dt><dt><span class="section"><a href="dvb_kdapi.html#ts_filter_types">TS filter types</a></span></dt><dt><span class="section"><a href="dvb_kdapi.html#dmx_ts_pes_t">dmx_ts_pes_t</a></span></dt><dt><span class="section"><a href="dvb_kdapi.html#demux_demux_t">demux_demux_t</a></span></dt><dt><span class="section"><a href="dvb_kdapi.html#demux_directory">Demux directory</a></span></dt></dl></div><div class="section" title="dmx_success_t"><div class="titlepage"><div><div><h3 class="title"><a id="dmx_success_t"></a>dmx_success_t</h3></div></div></div><pre class="programlisting">
+ typedef enum {
+   DMX_OK = 0, /&#8902; Received Ok &#8902;/
+   DMX_LENGTH_ERROR, /&#8902; Incorrect length &#8902;/
+   DMX_OVERRUN_ERROR, /&#8902; Receiver ring buffer overrun &#8902;/
+   DMX_CRC_ERROR, /&#8902; Incorrect CRC &#8902;/
+   DMX_FRAME_ERROR, /&#8902; Frame alignment error &#8902;/
+   DMX_FIFO_ERROR, /&#8902; Receiver FIFO overrun &#8902;/
+   DMX_MISSED_ERROR /&#8902; Receiver missed packet &#8902;/
+ } dmx_success_t;
+</pre></div><div class="section" title="TS filter types"><div class="titlepage"><div><div><h3 class="title"><a id="ts_filter_types"></a>TS filter types</h3></div></div></div><pre class="programlisting">
+ /&#8902;--------------------------------------------------------------------------&#8902;/
+ /&#8902; TS packet reception &#8902;/
+ /&#8902;--------------------------------------------------------------------------&#8902;/
+
+ /&#8902; TS filter type for set_type() &#8902;/
+
+ #define TS_PACKET       1   /&#8902; send TS packets (188 bytes) to callback (default) &#8902;/
+ #define TS_PAYLOAD_ONLY 2   /&#8902; in case TS_PACKET is set, only send the TS
+				payload (&lt;=184 bytes per packet) to callback &#8902;/
+ #define TS_DECODER      4   /&#8902; send stream to built-in decoder (if present) &#8902;/
+</pre></div><div class="section" title="dmx_ts_pes_t"><div class="titlepage"><div><div><h3 class="title"><a id="dmx_ts_pes_t"></a>dmx_ts_pes_t</h3></div></div></div><p>The structure
+</p><pre class="programlisting">
+ typedef enum
+ {
+	 DMX_TS_PES_AUDIO,   /&#8902; also send packets to audio decoder (if it exists) &#8902;/
+	 DMX_TS_PES_VIDEO,   /&#8902; ... &#8902;/
+	 DMX_TS_PES_TELETEXT,
+	 DMX_TS_PES_SUBTITLE,
+	 DMX_TS_PES_PCR,
+	 DMX_TS_PES_OTHER,
+ } dmx_ts_pes_t;
+</pre><p>describes the PES type for filters which write to a built-in decoder. The correspond (and
+should be kept identical) to the types in the demux device.
+</p><pre class="programlisting">
+ struct dmx_ts_feed_s {
+	 int is_filtering; /&#8902; Set to non-zero when filtering in progress &#8902;/
+	 struct dmx_demux_s&#8902; parent; /&#8902; Back-pointer &#8902;/
+	 void&#8902; priv; /&#8902; Pointer to private data of the API client &#8902;/
+	 int (&#8902;set) (struct dmx_ts_feed_s&#8902; feed,
+		     __u16 pid,
+		     size_t callback_length,
+		     size_t circular_buffer_size,
+		     int descramble,
+		     struct timespec timeout);
+	 int (&#8902;start_filtering) (struct dmx_ts_feed_s&#8902; feed);
+	 int (&#8902;stop_filtering) (struct dmx_ts_feed_s&#8902; feed);
+	 int (&#8902;set_type) (struct dmx_ts_feed_s&#8902; feed,
+			  int type,
+			  dmx_ts_pes_t pes_type);
+ };
+
+ typedef struct dmx_ts_feed_s dmx_ts_feed_t;
+</pre><pre class="programlisting">
+ /&#8902;--------------------------------------------------------------------------&#8902;/
+ /&#8902; PES packet reception (not supported yet) &#8902;/
+ /&#8902;--------------------------------------------------------------------------&#8902;/
+
+ typedef struct dmx_pes_filter_s {
+	 struct dmx_pes_s&#8902; parent; /&#8902; Back-pointer &#8902;/
+	 void&#8902; priv; /&#8902; Pointer to private data of the API client &#8902;/
+ } dmx_pes_filter_t;
+</pre><pre class="programlisting">
+ typedef struct dmx_pes_feed_s {
+	 int is_filtering; /&#8902; Set to non-zero when filtering in progress &#8902;/
+	 struct dmx_demux_s&#8902; parent; /&#8902; Back-pointer &#8902;/
+	 void&#8902; priv; /&#8902; Pointer to private data of the API client &#8902;/
+	 int (&#8902;set) (struct dmx_pes_feed_s&#8902; feed,
+		     __u16 pid,
+		     size_t circular_buffer_size,
+		     int descramble,
+		     struct timespec timeout);
+	 int (&#8902;start_filtering) (struct dmx_pes_feed_s&#8902; feed);
+	 int (&#8902;stop_filtering) (struct dmx_pes_feed_s&#8902; feed);
+	 int (&#8902;allocate_filter) (struct dmx_pes_feed_s&#8902; feed,
+				 dmx_pes_filter_t&#8902;&#8902; filter);
+	 int (&#8902;release_filter) (struct dmx_pes_feed_s&#8902; feed,
+				dmx_pes_filter_t&#8902; filter);
+ } dmx_pes_feed_t;
+</pre><pre class="programlisting">
+ typedef struct {
+	 __u8 filter_value [DMX_MAX_FILTER_SIZE];
+	 __u8 filter_mask [DMX_MAX_FILTER_SIZE];
+	 struct dmx_section_feed_s&#8902; parent; /&#8902; Back-pointer &#8902;/
+	 void&#8902; priv; /&#8902; Pointer to private data of the API client &#8902;/
+ } dmx_section_filter_t;
+</pre><pre class="programlisting">
+ struct dmx_section_feed_s {
+	 int is_filtering; /&#8902; Set to non-zero when filtering in progress &#8902;/
+	 struct dmx_demux_s&#8902; parent; /&#8902; Back-pointer &#8902;/
+	 void&#8902; priv; /&#8902; Pointer to private data of the API client &#8902;/
+	 int (&#8902;set) (struct dmx_section_feed_s&#8902; feed,
+		     __u16 pid,
+		     size_t circular_buffer_size,
+		     int descramble,
+		     int check_crc);
+	 int (&#8902;allocate_filter) (struct dmx_section_feed_s&#8902; feed,
+				 dmx_section_filter_t&#8902;&#8902; filter);
+	 int (&#8902;release_filter) (struct dmx_section_feed_s&#8902; feed,
+				dmx_section_filter_t&#8902; filter);
+	 int (&#8902;start_filtering) (struct dmx_section_feed_s&#8902; feed);
+	 int (&#8902;stop_filtering) (struct dmx_section_feed_s&#8902; feed);
+ };
+ typedef struct dmx_section_feed_s dmx_section_feed_t;
+
+ /&#8902;--------------------------------------------------------------------------&#8902;/
+ /&#8902; Callback functions &#8902;/
+ /&#8902;--------------------------------------------------------------------------&#8902;/
+
+ typedef int (&#8902;dmx_ts_cb) ( __u8 &#8902; buffer1,
+			    size_t buffer1_length,
+			    __u8 &#8902; buffer2,
+			    size_t buffer2_length,
+			    dmx_ts_feed_t&#8902; source,
+			    dmx_success_t success);
+
+ typedef int (&#8902;dmx_section_cb) ( __u8 &#8902; buffer1,
+				 size_t buffer1_len,
+				 __u8 &#8902; buffer2,
+				 size_t buffer2_len,
+				 dmx_section_filter_t &#8902; source,
+				 dmx_success_t success);
+
+ typedef int (&#8902;dmx_pes_cb) ( __u8 &#8902; buffer1,
+			     size_t buffer1_len,
+			     __u8 &#8902; buffer2,
+			     size_t buffer2_len,
+			     dmx_pes_filter_t&#8902; source,
+			     dmx_success_t success);
+
+ /&#8902;--------------------------------------------------------------------------&#8902;/
+ /&#8902; DVB Front-End &#8902;/
+ /&#8902;--------------------------------------------------------------------------&#8902;/
+
+ typedef enum {
+	 DMX_OTHER_FE = 0,
+	 DMX_SATELLITE_FE,
+	 DMX_CABLE_FE,
+	 DMX_TERRESTRIAL_FE,
+	 DMX_LVDS_FE,
+	 DMX_ASI_FE, /&#8902; DVB-ASI interface &#8902;/
+	 DMX_MEMORY_FE
+ } dmx_frontend_source_t;
+
+ typedef struct {
+	 /&#8902; The following char&#8902; fields point to NULL terminated strings &#8902;/
+	 char&#8902; id;                    /&#8902; Unique front-end identifier &#8902;/
+	 char&#8902; vendor;                /&#8902; Name of the front-end vendor &#8902;/
+	 char&#8902; model;                 /&#8902; Name of the front-end model &#8902;/
+	 struct list_head connectivity_list; /&#8902; List of front-ends that can
+						be connected to a particular
+						demux &#8902;/
+	 void&#8902; priv;     /&#8902; Pointer to private data of the API client &#8902;/
+	 dmx_frontend_source_t source;
+ } dmx_frontend_t;
+
+ /&#8902;--------------------------------------------------------------------------&#8902;/
+ /&#8902; MPEG-2 TS Demux &#8902;/
+ /&#8902;--------------------------------------------------------------------------&#8902;/
+
+ /&#8902;
+  &#8902; Flags OR'ed in the capabilites field of struct dmx_demux_s.
+  &#8902;/
+
+ #define DMX_TS_FILTERING                        1
+ #define DMX_PES_FILTERING                       2
+ #define DMX_SECTION_FILTERING                   4
+ #define DMX_MEMORY_BASED_FILTERING              8    /&#8902; write() available &#8902;/
+ #define DMX_CRC_CHECKING                        16
+ #define DMX_TS_DESCRAMBLING                     32
+ #define DMX_SECTION_PAYLOAD_DESCRAMBLING        64
+ #define DMX_MAC_ADDRESS_DESCRAMBLING            128
+</pre></div><div class="section" title="demux_demux_t"><div class="titlepage"><div><div><h3 class="title"><a id="demux_demux_t"></a>demux_demux_t</h3></div></div></div><pre class="programlisting">
+ /&#8902;
+  &#8902; DMX_FE_ENTRY(): Casts elements in the list of registered
+  &#8902; front-ends from the generic type struct list_head
+  &#8902; to the type &#8902; dmx_frontend_t
+  &#8902;.
+ &#8902;/
+
+ #define DMX_FE_ENTRY(list) list_entry(list, dmx_frontend_t, connectivity_list)
+
+ struct dmx_demux_s {
+	 /&#8902; The following char&#8902; fields point to NULL terminated strings &#8902;/
+	 char&#8902; id;                    /&#8902; Unique demux identifier &#8902;/
+	 char&#8902; vendor;                /&#8902; Name of the demux vendor &#8902;/
+	 char&#8902; model;                 /&#8902; Name of the demux model &#8902;/
+	 __u32 capabilities;          /&#8902; Bitfield of capability flags &#8902;/
+	 dmx_frontend_t&#8902; frontend;    /&#8902; Front-end connected to the demux &#8902;/
+	 struct list_head reg_list;   /&#8902; List of registered demuxes &#8902;/
+	 void&#8902; priv;                  /&#8902; Pointer to private data of the API client &#8902;/
+	 int users;                   /&#8902; Number of users &#8902;/
+	 int (&#8902;open) (struct dmx_demux_s&#8902; demux);
+	 int (&#8902;close) (struct dmx_demux_s&#8902; demux);
+	 int (&#8902;write) (struct dmx_demux_s&#8902; demux, const char&#8902; buf, size_t count);
+	 int (&#8902;allocate_ts_feed) (struct dmx_demux_s&#8902; demux,
+				  dmx_ts_feed_t&#8902;&#8902; feed,
+				  dmx_ts_cb callback);
+	 int (&#8902;release_ts_feed) (struct dmx_demux_s&#8902; demux,
+				 dmx_ts_feed_t&#8902; feed);
+	 int (&#8902;allocate_pes_feed) (struct dmx_demux_s&#8902; demux,
+				   dmx_pes_feed_t&#8902;&#8902; feed,
+				   dmx_pes_cb callback);
+	 int (&#8902;release_pes_feed) (struct dmx_demux_s&#8902; demux,
+				  dmx_pes_feed_t&#8902; feed);
+	 int (&#8902;allocate_section_feed) (struct dmx_demux_s&#8902; demux,
+				       dmx_section_feed_t&#8902;&#8902; feed,
+				       dmx_section_cb callback);
+	 int (&#8902;release_section_feed) (struct dmx_demux_s&#8902; demux,
+				      dmx_section_feed_t&#8902; feed);
+	 int (&#8902;descramble_mac_address) (struct dmx_demux_s&#8902; demux,
+					__u8&#8902; buffer1,
+					size_t buffer1_length,
+					__u8&#8902; buffer2,
+					size_t buffer2_length,
+					__u16 pid);
+	 int (&#8902;descramble_section_payload) (struct dmx_demux_s&#8902; demux,
+					    __u8&#8902; buffer1,
+					    size_t buffer1_length,
+					    __u8&#8902; buffer2, size_t buffer2_length,
+					    __u16 pid);
+	 int (&#8902;add_frontend) (struct dmx_demux_s&#8902; demux,
+			      dmx_frontend_t&#8902; frontend);
+	 int (&#8902;remove_frontend) (struct dmx_demux_s&#8902; demux,
+				 dmx_frontend_t&#8902; frontend);
+	 struct list_head&#8902; (&#8902;get_frontends) (struct dmx_demux_s&#8902; demux);
+	 int (&#8902;connect_frontend) (struct dmx_demux_s&#8902; demux,
+				  dmx_frontend_t&#8902; frontend);
+	 int (&#8902;disconnect_frontend) (struct dmx_demux_s&#8902; demux);
+
+
+	 /&#8902; added because js cannot keep track of these himself &#8902;/
+	 int (&#8902;get_pes_pids) (struct dmx_demux_s&#8902; demux, __u16 &#8902;pids);
+ };
+ typedef struct dmx_demux_s dmx_demux_t;
+</pre></div><div class="section" title="Demux directory"><div class="titlepage"><div><div><h3 class="title"><a id="demux_directory"></a>Demux directory</h3></div></div></div><pre class="programlisting">
+ /&#8902;
+  &#8902; DMX_DIR_ENTRY(): Casts elements in the list of registered
+  &#8902; demuxes from the generic type struct list_head&#8902; to the type dmx_demux_t
+  &#8902;.
+  &#8902;/
+
+ #define DMX_DIR_ENTRY(list) list_entry(list, dmx_demux_t, reg_list)
+
+ int dmx_register_demux (dmx_demux_t&#8902; demux);
+ int dmx_unregister_demux (dmx_demux_t&#8902; demux);
+ struct list_head&#8902; dmx_get_demuxes (void);
+</pre></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="net_fcalls.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvbapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="demux_directory_api.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">DVB net Function Calls&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Demux Directory API</td></tr></table></div></body></html>

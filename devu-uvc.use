@@ -1,0 +1,27 @@
+%C - USB Video Class driver.
+
+(c) 2013-2014 by Mike Gorchak <mike.gorchak.qnx@gmail.com>
+
+Supported devices:
+    All UVC 1.0/1.1/1.5 compatible devices.
+
+Options:
+    -v   Increase verbosity:
+             -v usb insert/removal events.
+             -vv the same as -v, but with class specific descriptors.
+             -vvv the same as -vv, but with devctl trace.
+             -vvvv the same as -vvv, but with usb transfer trace.
+
+    -l   List compiled-in libraries and exit.
+
+    -e   Disable pixel format emulation, driver currently supports:
+             YUY2->UYVY conversion,
+             YUY2->VYUY conversion,
+             YUY2->YVYU conversion.
+         These formats are not intersect with libv4l2 and libv4lconvert
+         format emulation.
+
+    -a   Do not register USB audio capture driver. By default driver
+         registers USB audio capture interface, which belongs to UVC
+         camera, in io-audio service. If system already has USB audio
+         driver up and running, this option must be set.

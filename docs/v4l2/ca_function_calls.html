@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>CA Function Calls</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_ca.html" title="Chapter&#160;13.&#160;DVB CA Device" /><link rel="prev" href="dvb_ca.html" title="Chapter&#160;13.&#160;DVB CA Device" /><link rel="next" href="dvb_net.html" title="Chapter&#160;14.&#160;DVB Network API" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">CA Function Calls</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="dvb_ca.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;13.&#160;DVB CA Device</th><td width="20%" align="right">&#160;<a accesskey="n" href="dvb_net.html">Next</a></td></tr></table><hr /></div><div class="section" title="CA Function Calls"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="ca_function_calls"></a>CA Function Calls</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="ca_function_calls.html#ca_fopen">open()</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#ca_fclose">close()</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_RESET">CA_RESET</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_GET_CAP">CA_GET_CAP</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_GET_SLOT_INFO">CA_GET_SLOT_INFO</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_GET_DESCR_INFO">CA_GET_DESCR_INFO</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_GET_MSG">CA_GET_MSG</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_SEND_MSG">CA_SEND_MSG</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_SET_DESCR">CA_SET_DESCR</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_SET_PID">CA_SET_PID</a></span></dt></dl></div><div class="section" title="open()"><div class="titlepage"><div><div><h3 class="title"><a id="ca_fopen"></a>open()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call opens a named ca device (e.g. /dev/ost/ca) for subsequent use.</p>
+<p>When an open() call has succeeded, the device will be ready for use.
+ The significance of blocking or non-blocking mode is described in the
+ documentation for functions where there is a difference. It does not affect the
+ semantics of the open() call itself. A device opened in blocking mode can later
+ be put into non-blocking mode (and vice versa) using the F_SETFL command
+ of the fcntl system call. This is a standard system call, documented in the Linux
+ manual page for fcntl. Only one user can open the CA Device in O_RDWR
+ mode. All other attempts to open the device in this mode will fail, and an error
+ code will be returned.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int open(const char &#8902;deviceName, int flags);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>const char
+ *deviceName</p>
+</td><td align="char">
+<p>Name of specific video device.</p>
+</td></tr><tr><td align="char">
+<p>int flags</p>
+</td><td align="char">
+<p>A bit-wise OR of the following flags:</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_RDONLY read-only access</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_RDWR read/write access</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_NONBLOCK open in non-blocking mode</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>(blocking mode is the default)</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>ENODEV</p>
+</td><td align="char">
+<p>Device driver not loaded/available.</p>
+</td></tr><tr><td align="char">
+<p>EINTERNAL</p>
+</td><td align="char">
+<p>Internal error.</p>
+</td></tr><tr><td align="char">
+<p>EBUSY</p>
+</td><td align="char">
+<p>Device or resource busy.</p>
+</td></tr><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>Invalid argument.</p>
+</td></tr></tbody></table></div></div><div class="section" title="close()"><div class="titlepage"><div><div><h3 class="title"><a id="ca_fclose"></a>close()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call closes a previously opened audio device.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int close(int fd);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EBADF</p>
+</td><td align="char">
+<p>fd is not a valid open file descriptor.</p>
+</td></tr></tbody></table></div></div><div class="section" title="CA_RESET"><div class="titlepage"><div><div><h3 class="title"><a id="CA_RESET"></a>CA_RESET</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = CA_RESET);
+</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals CA_RESET for this command.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="CA_GET_CAP"><div class="titlepage"><div><div><h3 class="title"><a id="CA_GET_CAP"></a>CA_GET_CAP</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = CA_GET_CAP,
+ ca_caps_t *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals CA_GET_CAP for this command.</p>
+</td></tr><tr><td align="char">
+<p>ca_caps_t *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="CA_GET_SLOT_INFO"><div class="titlepage"><div><div><h3 class="title"><a id="CA_GET_SLOT_INFO"></a>CA_GET_SLOT_INFO</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = CA_GET_SLOT_INFO,
+ ca_slot_info_t *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals CA_GET_SLOT_INFO for this command.</p>
+</td></tr><tr><td align="char">
+<p>ca_slot_info_t *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="CA_GET_DESCR_INFO"><div class="titlepage"><div><div><h3 class="title"><a id="CA_GET_DESCR_INFO"></a>CA_GET_DESCR_INFO</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = CA_GET_DESCR_INFO,
+ ca_descr_info_t *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals CA_GET_DESCR_INFO for this command.</p>
+</td></tr><tr><td align="char">
+<p>ca_descr_info_t *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="CA_GET_MSG"><div class="titlepage"><div><div><h3 class="title"><a id="CA_GET_MSG"></a>CA_GET_MSG</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = CA_GET_MSG,
+ ca_msg_t *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals CA_GET_MSG for this command.</p>
+</td></tr><tr><td align="char">
+<p>ca_msg_t *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="CA_SEND_MSG"><div class="titlepage"><div><div><h3 class="title"><a id="CA_SEND_MSG"></a>CA_SEND_MSG</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = CA_SEND_MSG,
+ ca_msg_t *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals CA_SEND_MSG for this command.</p>
+</td></tr><tr><td align="char">
+<p>ca_msg_t *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="CA_SET_DESCR"><div class="titlepage"><div><div><h3 class="title"><a id="CA_SET_DESCR"></a>CA_SET_DESCR</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = CA_SET_DESCR,
+ ca_descr_t *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals CA_SET_DESCR for this command.</p>
+</td></tr><tr><td align="char">
+<p>ca_descr_t *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="CA_SET_PID"><div class="titlepage"><div><div><h3 class="title"><a id="CA_SET_PID"></a>CA_SET_PID</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = CA_SET_PID,
+ ca_pid_t *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals CA_SET_PID for this command.</p>
+</td></tr><tr><td align="char">
+<p>ca_pid_t *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dvb_ca.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_ca.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="dvb_net.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&#160;13.&#160;DVB CA Device&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Chapter&#160;14.&#160;DVB Network API</td></tr></table></div></body></html>

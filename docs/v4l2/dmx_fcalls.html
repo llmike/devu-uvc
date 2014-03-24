@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Demux Function Calls</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_demux.html" title="Chapter&#160;10.&#160;DVB Demux Device" /><link rel="prev" href="dvb_demux.html" title="Chapter&#160;10.&#160;DVB Demux Device" /><link rel="next" href="dvb_video.html" title="Chapter&#160;11.&#160;DVB Video Device" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Demux Function Calls</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="dvb_demux.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;10.&#160;DVB Demux Device</th><td width="20%" align="right">&#160;<a accesskey="n" href="dvb_video.html">Next</a></td></tr></table><hr /></div><div class="section" title="Demux Function Calls"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="dmx_fcalls"></a>Demux Function Calls</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="dmx_fcalls.html#dmx_fopen">open()</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#dmx_fclose">close()</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#dmx_fread">read()</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#dmx_fwrite">write()</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_START">DMX_START</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_STOP">DMX_STOP</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_SET_FILTER">DMX_SET_FILTER</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_SET_PES_FILTER">DMX_SET_PES_FILTER</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_SET_BUFFER_SIZE">DMX_SET_BUFFER_SIZE</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_GET_EVENT">DMX_GET_EVENT</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_GET_STC">DMX_GET_STC</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_GET_PES_PIDS">DMX_GET_PES_PIDS</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_GET_CAPS">DMX_GET_CAPS</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_SET_SOURCE">DMX_SET_SOURCE</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_ADD_PID">DMX_ADD_PID</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_REMOVE_PID">DMX_REMOVE_PID</a></span></dt></dl></div><div class="section" title="open()"><div class="titlepage"><div><div><h3 class="title"><a id="dmx_fopen"></a>open()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call, used with a device name of /dev/dvb/adapter0/demux0,
+ allocates a new filter and returns a handle which can be used for subsequent
+ control of that filter. This call has to be made for each filter to be used, i.e. every
+ returned file descriptor is a reference to a single filter. /dev/dvb/adapter0/dvr0
+ is a logical device to be used for retrieving Transport Streams for digital
+ video recording. When reading from this device a transport stream containing
+ the packets from all PES filters set in the corresponding demux device
+ (/dev/dvb/adapter0/demux0) having the output set to DMX_OUT_TS_TAP. A
+ recorded Transport Stream is replayed by writing to this device. </p>
+<p>The significance of blocking or non-blocking mode is described in the
+ documentation for functions where there is a difference. It does not affect the
+ semantics of the open() call itself. A device opened in blocking mode can later
+ be put into non-blocking mode (and vice versa) using the F_SETFL command
+ of the fcntl system call.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int open(const char &#8902;deviceName, int flags);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>const char
+ *deviceName</p>
+</td><td align="char">
+<p>Name of demux device.</p>
+</td></tr><tr><td align="char">
+<p>int flags</p>
+</td><td align="char">
+<p>A bit-wise OR of the following flags:</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_RDWR read/write access</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>O_NONBLOCK open in non-blocking mode</p>
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>(blocking mode is the default)</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>ENODEV</p>
+</td><td align="char">
+<p>Device driver not loaded/available.</p>
+</td></tr><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>Invalid argument.</p>
+</td></tr><tr><td align="char">
+<p>EMFILE</p>
+</td><td align="char">
+<p>&#8220;Too many open files&#8221;, i.e. no more filters available.</p>
+</td></tr><tr><td align="char">
+<p>ENOMEM</p>
+</td><td align="char">
+<p>The driver failed to allocate enough memory.</p>
+</td></tr></tbody></table></div></div><div class="section" title="close()"><div class="titlepage"><div><div><h3 class="title"><a id="dmx_fclose"></a>close()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call deactivates and deallocates a filter that was previously
+ allocated via the open() call.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int close(int fd);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EBADF</p>
+</td><td align="char">
+<p>fd is not a valid open file descriptor.</p>
+</td></tr></tbody></table></div></div><div class="section" title="read()"><div class="titlepage"><div><div><h3 class="title"><a id="dmx_fread"></a>read()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call returns filtered data, which might be section or PES data. The
+ filtered data is transferred from the driver&#8217;s internal circular buffer to buf. The
+ maximum amount of data to be transferred is implied by count.</p>
+</td></tr><tr><td align="char">
+<p>When returning section data the driver always tries to return a complete single
+ section (even though buf would provide buffer space for more data). If the size
+ of the buffer is smaller than the section as much as possible will be returned,
+ and the remaining data will be provided in subsequent calls.</p>
+</td></tr><tr><td align="char">
+<p>The size of the internal buffer is 2 * 4096 bytes (the size of two maximum
+ sized sections) by default. The size of this buffer may be changed by using the
+ DMX_SET_BUFFER_SIZE function. If the buffer is not large enough, or if
+ the read operations are not performed fast enough, this may result in a buffer
+ overflow error. In this case EOVERFLOW will be returned, and the circular
+ buffer will be emptied. This call is blocking if there is no data to return, i.e. the
+ process will be put to sleep waiting for data, unless the O_NONBLOCK flag
+ is specified.</p>
+</td></tr><tr><td align="char">
+<p>Note that in order to be able to read, the filtering process has to be started
+ by defining either a section or a PES filter by means of the ioctl functions,
+ and then starting the filtering process via the DMX_START ioctl function
+ or by setting the DMX_IMMEDIATE_START flag. If the reading is done
+ from a logical DVR demux device, the data will constitute a Transport Stream
+ including the packets from all PES filters in the corresponding demux device
+ /dev/dvb/adapter0/demux0 having the output set to DMX_OUT_TS_TAP.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>size_t read(int fd, void &#8902;buf, size_t count);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>void *buf</p>
+</td><td align="char">
+<p>Pointer to the buffer to be used for returned filtered data.</p>
+</td></tr><tr><td align="char">
+<p>size_t count</p>
+</td><td align="char">
+<p>Size of buf.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EWOULDBLOCK</p>
+</td><td align="char">
+<p>No data to return and O_NONBLOCK was specified.</p>
+</td></tr><tr><td align="char">
+<p>EBADF</p>
+</td><td align="char">
+<p>fd is not a valid open file descriptor.</p>
+</td></tr><tr><td align="char">
+<p>ECRC</p>
+</td><td align="char">
+<p>Last section had a CRC error - no data returned. The
+ buffer is flushed.</p>
+</td></tr><tr><td align="char">
+<p>EOVERFLOW</p>
+</td><td align="char">
+</td></tr><tr><td align="char">
+</td><td align="char">
+<p>The filtered data was not read from the buffer in due
+ time, resulting in non-read data being lost. The buffer is
+ flushed.</p>
+</td></tr><tr><td align="char">
+<p>ETIMEDOUT</p>
+</td><td align="char">
+<p>The section was not loaded within the stated timeout
+ period. See ioctl DMX_SET_FILTER for how to set a
+ timeout.</p>
+</td></tr><tr><td align="char">
+<p>EFAULT</p>
+</td><td align="char">
+<p>The driver failed to write to the callers buffer due to an
+ invalid *buf pointer.</p>
+</td></tr></tbody></table></div></div><div class="section" title="write()"><div class="titlepage"><div><div><h3 class="title"><a id="dmx_fwrite"></a>write()</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This system call is only provided by the logical device /dev/dvb/adapter0/dvr0,
+ associated with the physical demux device that provides the actual DVR
+ functionality. It is used for replay of a digitally recorded Transport Stream.
+ Matching filters have to be defined in the corresponding physical demux
+ device, /dev/dvb/adapter0/demux0. The amount of data to be transferred is
+ implied by count.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>ssize_t write(int fd, const void &#8902;buf, size_t
+ count);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>void *buf</p>
+</td><td align="char">
+<p>Pointer to the buffer containing the Transport Stream.</p>
+</td></tr><tr><td align="char">
+<p>size_t count</p>
+</td><td align="char">
+<p>Size of buf.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EWOULDBLOCK</p>
+</td><td align="char">
+<p>No data was written. This
+ might happen if O_NONBLOCK was specified and there
+ is no more buffer space available (if O_NONBLOCK is
+ not specified the function will block until buffer space is
+ available).</p>
+</td></tr><tr><td align="char">
+<p>EBUSY</p>
+</td><td align="char">
+<p>This error code indicates that there are conflicting
+ requests. The corresponding demux device is setup to
+ receive data from the front- end. Make sure that these
+ filters are stopped and that the filters with input set to
+ DMX_IN_DVR are started.</p>
+</td></tr><tr><td align="char">
+<p>EBADF</p>
+</td><td align="char">
+<p>fd is not a valid open file descriptor.</p>
+</td></tr></tbody></table></div></div><div class="section" title="DMX_START"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_START"></a>DMX_START</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call is used to start the actual filtering operation defined via the ioctl
+ calls DMX_SET_FILTER or DMX_SET_PES_FILTER.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl( int fd, int request = DMX_START);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_START for this command.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>Invalid argument, i.e. no filtering parameters provided via
+ the DMX_SET_FILTER or DMX_SET_PES_FILTER
+ functions.</p>
+</td></tr><tr><td align="char">
+<p>EBUSY</p>
+</td><td align="char">
+<p>This error code indicates that there are conflicting
+ requests. There are active filters filtering data from
+ another input source. Make sure that these filters are
+ stopped before starting this filter.</p>
+</td></tr></tbody></table></div></div><div class="section" title="DMX_STOP"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_STOP"></a>DMX_STOP</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call is used to stop the actual filtering operation defined via the
+ ioctl calls DMX_SET_FILTER or DMX_SET_PES_FILTER and started via
+ the DMX_START command.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl( int fd, int request = DMX_STOP);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_STOP for this command.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="DMX_SET_FILTER"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_SET_FILTER"></a>DMX_SET_FILTER</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call sets up a filter according to the filter and mask parameters
+ provided. A timeout may be defined stating number of seconds to wait for a
+ section to be loaded. A value of 0 means that no timeout should be applied.
+ Finally there is a flag field where it is possible to state whether a section should
+ be CRC-checked, whether the filter should be a &#8221;one-shot&#8221; filter, i.e. if the
+ filtering operation should be stopped after the first section is received, and
+ whether the filtering operation should be started immediately (without waiting
+ for a DMX_START ioctl call). If a filter was previously set-up, this filter will
+ be canceled, and the receive buffer will be flushed.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl( int fd, int request = DMX_SET_FILTER,
+ struct dmx_sct_filter_params &#8902;params);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_SET_FILTER for this command.</p>
+</td></tr><tr><td align="char">
+<p>struct
+ dmx_sct_filter_params
+ *params</p>
+</td><td align="char">
+<p>Pointer to structure containing filter parameters.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="DMX_SET_PES_FILTER"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_SET_PES_FILTER"></a>DMX_SET_PES_FILTER</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call sets up a PES filter according to the parameters provided. By a
+ PES filter is meant a filter that is based just on the packet identifier (PID), i.e.
+ no PES header or payload filtering capability is supported.</p>
+</td></tr><tr><td align="char">
+<p>The transport stream destination for the filtered output may be set. Also the
+ PES type may be stated in order to be able to e.g. direct a video stream directly
+ to the video decoder. Finally there is a flag field where it is possible to state
+ whether the filtering operation should be started immediately (without waiting
+ for a DMX_START ioctl call). If a filter was previously set-up, this filter will
+ be cancelled, and the receive buffer will be flushed.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl( int fd, int request = DMX_SET_PES_FILTER,
+ struct dmx_pes_filter_params &#8902;params);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_SET_PES_FILTER for this command.</p>
+</td></tr><tr><td align="char">
+<p>struct
+ dmx_pes_filter_params
+ *params</p>
+</td><td align="char">
+<p>Pointer to structure containing filter parameters.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EBUSY</p>
+</td><td align="char">
+<p>This error code indicates that there are conflicting
+ requests. There are active filters filtering data from
+ another input source. Make sure that these filters are
+ stopped before starting this filter.</p>
+</td></tr></tbody></table></div></div><div class="section" title="DMX_SET_BUFFER_SIZE"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_SET_BUFFER_SIZE"></a>DMX_SET_BUFFER_SIZE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call is used to set the size of the circular buffer used for filtered data.
+ The default size is two maximum sized sections, i.e. if this function is not called
+ a buffer size of 2 * 4096 bytes will be used.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl( int fd, int request =
+ DMX_SET_BUFFER_SIZE, unsigned long size);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_SET_BUFFER_SIZE for this command.</p>
+</td></tr><tr><td align="char">
+<p>unsigned long size</p>
+</td><td align="char">
+<p>Size of circular buffer.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="DMX_GET_EVENT"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_GET_EVENT"></a>DMX_GET_EVENT</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call returns an event if available. If an event is not available,
+ the behavior depends on whether the device is in blocking or non-blocking
+ mode. In the latter case, the call fails immediately with errno set to
+ EWOULDBLOCK. In the former case, the call blocks until an event becomes
+ available.</p>
+</td></tr><tr><td align="char">
+<p>The standard Linux poll() and/or select() system calls can be used with the
+ device file descriptor to watch for new events. For select(), the file descriptor
+ should be included in the exceptfds argument, and for poll(), POLLPRI should
+ be specified as the wake-up condition. Only the latest event for each filter is
+ saved.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl( int fd, int request = DMX_GET_EVENT,
+ struct dmx_event &#8902;ev);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_GET_EVENT for this command.</p>
+</td></tr><tr><td align="char">
+<p>struct dmx_event *ev</p>
+</td><td align="char">
+<p>Pointer to the location where the event is to be stored.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EWOULDBLOCK</p>
+</td><td align="char">
+<p>There is no event pending, and the device is in
+ non-blocking mode.</p>
+</td></tr></tbody></table></div></div><div class="section" title="DMX_GET_STC"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_GET_STC"></a>DMX_GET_STC</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl call returns the current value of the system time counter (which is driven
+ by a PES filter of type DMX_PES_PCR). Some hardware supports more than one
+ STC, so you must specify which one by setting the num field of stc before the ioctl
+ (range 0...n). The result is returned in form of a ratio with a 64 bit numerator
+ and a 32 bit denominator, so the real 90kHz STC value is stc-&gt;stc /
+ stc-&gt;base
+ .</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl( int fd, int request = DMX_GET_STC, struct
+ dmx_stc &#8902;stc);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_GET_STC for this command.</p>
+</td></tr><tr><td align="char">
+<p>struct dmx_stc *stc</p>
+</td><td align="char">
+<p>Pointer to the location where the stc is to be stored.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>EINVAL</p>
+</td><td align="char">
+<p>Invalid stc number.</p>
+</td></tr></tbody></table></div></div><div class="section" title="DMX_GET_PES_PIDS"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_GET_PES_PIDS"></a>DMX_GET_PES_PIDS</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = DMX_GET_PES_PIDS,
+ __u16[5]);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_GET_PES_PIDS for this command.</p>
+</td></tr><tr><td align="char">
+<p>__u16[5]
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="DMX_GET_CAPS"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_GET_CAPS"></a>DMX_GET_CAPS</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = DMX_GET_CAPS,
+ dmx_caps_t *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_GET_CAPS for this command.</p>
+</td></tr><tr><td align="char">
+<p>dmx_caps_t *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="DMX_SET_SOURCE"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_SET_SOURCE"></a>DMX_SET_SOURCE</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = DMX_SET_SOURCE,
+ dmx_source_t *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_SET_SOURCE for this command.</p>
+</td></tr><tr><td align="char">
+<p>dmx_source_t *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="DMX_ADD_PID"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_ADD_PID"></a>DMX_ADD_PID</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = DMX_ADD_PID,
+ __u16 *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_ADD_PID for this command.</p>
+</td></tr><tr><td align="char">
+<p>__u16 *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div><div class="section" title="DMX_REMOVE_PID"><div class="titlepage"><div><div><h3 class="title"><a id="DMX_REMOVE_PID"></a>DMX_REMOVE_PID</h3></div></div></div><p>DESCRIPTION
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>This ioctl is undocumented. Documentation is welcome.</p>
+</td></tr></tbody></table></div><p>SYNOPSIS
+</p><div class="informaltable"><table border="1"><colgroup><col /></colgroup><tbody><tr><td align="char">
+<p>int ioctl(fd, int request = DMX_REMOVE_PID,
+ __u16 *);</p>
+</td></tr></tbody></table></div><p>PARAMETERS
+</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><tbody><tr><td align="char">
+<p>int fd</p>
+</td><td align="char">
+<p>File descriptor returned by a previous call to open().</p>
+</td></tr><tr><td align="char">
+<p>int request</p>
+</td><td align="char">
+<p>Equals DMX_REMOVE_PID for this command.</p>
+</td></tr><tr><td align="char">
+<p>__u16 *
+</p>
+</td><td align="char">
+<p>Undocumented.</p>
+</td></tr></tbody></table></div><p>RETURN VALUE</p><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dvb_demux.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_demux.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="dvb_video.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&#160;10.&#160;DVB Demux Device&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Chapter&#160;11.&#160;DVB Video Device</td></tr></table></div></body></html>

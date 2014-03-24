@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>User Controls</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="common.html" title="Chapter&#160;1.&#160;Common API Elements" /><link rel="prev" href="dv-timings.html" title="Digital Video (DV) Timings" /><link rel="next" href="extended-controls.html" title="Extended Controls" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">User Controls</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="dv-timings.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;1.&#160;Common API Elements</th><td width="20%" align="right">&#160;<a accesskey="n" href="extended-controls.html">Next</a></td></tr></table><hr /></div><div class="section" title="User Controls"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="control"></a>User Controls</h2></div></div></div><p>Devices typically have a number of user-settable controls
+such as brightness, saturation and so on, which would be presented to
+the user on a graphical user interface. But, different devices
+will have different controls available, and furthermore, the range of
+possible values, and the default value will vary from device to
+device. The control ioctls provide the information and a mechanism to
+create a nice user interface for these controls that will work
+correctly with any device.</p><p>All controls are accessed using an ID value. V4L2 defines
+several IDs for specific purposes. Drivers can also implement their
+own custom controls using <code class="constant">V4L2_CID_PRIVATE_BASE</code>
+and higher values. The pre-defined control IDs have the prefix
+<code class="constant">V4L2_CID_</code>, and are listed in <a class="xref" href="control.html#control-id" title="Table&#160;1.1.&#160;Control IDs">Table&#160;1.1, &#8220;Control IDs&#8221;</a>. The ID is used when querying the attributes of
+a control, and when getting or setting the current value.</p><p>Generally applications should present controls to the user
+without assumptions about their purpose. Each control comes with a
+name string the user is supposed to understand. When the purpose is
+non-intuitive the driver writer should provide a user manual, a user
+interface plug-in or a driver specific panel application. Predefined
+IDs were introduced to change a few controls programmatically, for
+example to mute a device during a channel switch.</p><p>Drivers may enumerate different controls after switching
+the current video input or output, tuner or modulator, or audio input
+or output. Different in the sense of other bounds, another default and
+current value, step size or other menu items. A control with a certain
+<span class="emphasis"><em>custom</em></span> ID can also change name and
+type.<sup>[<a id="idp19232496" href="#ftn.idp19232496" class="footnote">9</a>]</sup> Control values are stored globally, they do not
+change when switching except to stay within the reported bounds. They
+also do not change e.&#160;g. when the device is opened or closed, when the
+tuner radio frequency is changed or generally never without
+application request. Since V4L2 specifies no event mechanism, panel
+applications intended to cooperate with other panel applications (be
+they built into a larger application, as a TV viewer) may need to
+regularly poll control values to update their user
+interface.<sup>[<a id="idp19193232" href="#ftn.idp19193232" class="footnote">10</a>]</sup></p><p>
+      All controls use machine endianness.
+    </p><div class="table"><a id="control-id"></a><p class="title"><b>Table&#160;1.1.&#160;Control IDs</b></p><div class="table-contents"><table summary="Control IDs" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><thead><tr><th>ID</th><th>Type</th><th>Description</th></tr></thead><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_CID_BASE</code></td><td valign="top">&#160;</td><td valign="top">First predefined ID, equal to
+<code class="constant">V4L2_CID_BRIGHTNESS</code>.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_USER_BASE</code></td><td valign="top">&#160;</td><td valign="top">Synonym of <code class="constant">V4L2_CID_BASE</code>.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_BRIGHTNESS</code></td><td valign="top">integer</td><td valign="top">Picture brightness, or more precisely, the black
+level.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_CONTRAST</code></td><td valign="top">integer</td><td valign="top">Picture contrast or luma gain.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_SATURATION</code></td><td valign="top">integer</td><td valign="top">Picture color saturation or chroma gain.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_HUE</code></td><td valign="top">integer</td><td valign="top">Hue or color balance.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_AUDIO_VOLUME</code></td><td valign="top">integer</td><td valign="top">Overall audio volume. Note some drivers also
+provide an OSS or ALSA mixer interface.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_AUDIO_BALANCE</code></td><td valign="top">integer</td><td valign="top">Audio stereo balance. Minimum corresponds to all
+the way left, maximum to right.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_AUDIO_BASS</code></td><td valign="top">integer</td><td valign="top">Audio bass adjustment.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_AUDIO_TREBLE</code></td><td valign="top">integer</td><td valign="top">Audio treble adjustment.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_AUDIO_MUTE</code></td><td valign="top">boolean</td><td valign="top">Mute audio, i.&#160;e. set the volume to zero, however
+without affecting <code class="constant">V4L2_CID_AUDIO_VOLUME</code>. Like
+ALSA drivers, V4L2 drivers must mute at load time to avoid excessive
+noise. Actually the entire device should be reset to a low power
+consumption state.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_AUDIO_LOUDNESS</code></td><td valign="top">boolean</td><td valign="top">Loudness mode (bass boost).</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_BLACK_LEVEL</code></td><td valign="top">integer</td><td valign="top">Another name for brightness (not a synonym of
+<code class="constant">V4L2_CID_BRIGHTNESS</code>). This control is deprecated
+and should not be used in new drivers and applications.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_AUTO_WHITE_BALANCE</code></td><td valign="top">boolean</td><td valign="top">Automatic white balance (cameras).</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_DO_WHITE_BALANCE</code></td><td valign="top">button</td><td valign="top">This is an action control. When set (the value is
+ignored), the device will do a white balance and then hold the current
+setting. Contrast this with the boolean
+<code class="constant">V4L2_CID_AUTO_WHITE_BALANCE</code>, which, when
+activated, keeps adjusting the white balance.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_RED_BALANCE</code></td><td valign="top">integer</td><td valign="top">Red chroma balance.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_BLUE_BALANCE</code></td><td valign="top">integer</td><td valign="top">Blue chroma balance.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_GAMMA</code></td><td valign="top">integer</td><td valign="top">Gamma adjust.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_WHITENESS</code></td><td valign="top">integer</td><td valign="top">Whiteness for grey-scale devices. This is a synonym
+for <code class="constant">V4L2_CID_GAMMA</code>. This control is deprecated
+and should not be used in new drivers and applications.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_EXPOSURE</code></td><td valign="top">integer</td><td valign="top">Exposure (cameras). [Unit?]</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_AUTOGAIN</code></td><td valign="top">boolean</td><td valign="top">Automatic gain/exposure control.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_GAIN</code></td><td valign="top">integer</td><td valign="top">Gain control.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_HFLIP</code></td><td valign="top">boolean</td><td valign="top">Mirror the picture horizontally.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_VFLIP</code></td><td valign="top">boolean</td><td valign="top">Mirror the picture vertically.</td></tr><tr><td valign="top"><a id="v4l2-power-line-frequency"></a><code class="constant">V4L2_CID_POWER_LINE_FREQUENCY</code></td><td valign="top">enum</td><td valign="top">Enables a power line frequency filter to avoid
+flicker. Possible values for <code class="constant">enum v4l2_power_line_frequency</code> are:
+<code class="constant">V4L2_CID_POWER_LINE_FREQUENCY_DISABLED</code> (0),
+<code class="constant">V4L2_CID_POWER_LINE_FREQUENCY_50HZ</code> (1),
+<code class="constant">V4L2_CID_POWER_LINE_FREQUENCY_60HZ</code> (2) and
+<code class="constant">V4L2_CID_POWER_LINE_FREQUENCY_AUTO</code> (3).</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_HUE_AUTO</code></td><td valign="top">boolean</td><td valign="top">Enables automatic hue control by the device. The
+effect of setting <code class="constant">V4L2_CID_HUE</code> while automatic
+hue control is enabled is undefined, drivers should ignore such
+request.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_WHITE_BALANCE_TEMPERATURE</code></td><td valign="top">integer</td><td valign="top">This control specifies the white balance settings
+as a color temperature in Kelvin. A driver should have a minimum of
+2800 (incandescent) to 6500 (daylight). For more information about
+color temperature see <a class="ulink" href="http://en.wikipedia.org/wiki/Color_temperature" target="_top">Wikipedia</a>.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_SHARPNESS</code></td><td valign="top">integer</td><td valign="top">Adjusts the sharpness filters in a camera. The
+minimum value disables the filters, higher values give a sharper
+picture.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_BACKLIGHT_COMPENSATION</code></td><td valign="top">integer</td><td valign="top">Adjusts the backlight compensation in a camera. The
+minimum value disables backlight compensation.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_CHROMA_AGC</code></td><td valign="top">boolean</td><td valign="top">Chroma automatic gain control.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_CHROMA_GAIN</code></td><td valign="top">integer</td><td valign="top">Adjusts the Chroma gain control (for use when chroma AGC
+	    is disabled).</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_COLOR_KILLER</code></td><td valign="top">boolean</td><td valign="top">Enable the color killer (i.&#160;e. force a black &amp; white image in case of a weak video signal).</td></tr><tr><td valign="top"><a id="v4l2-colorfx"></a><code class="constant">V4L2_CID_COLORFX</code></td><td valign="top">enum</td><td valign="top">Selects a color effect. The following values are defined:
+	    </td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top"><table width="100%" border="0"><colgroup><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_COLORFX_NONE</code>&#160;</td><td valign="top">Color effect is disabled.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_ANTIQUE</code>&#160;</td><td valign="top">An aging (old photo) effect.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_ART_FREEZE</code>&#160;</td><td valign="top">Frost color effect.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_AQUA</code>&#160;</td><td valign="top">Water color, cool tone.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_BW</code>&#160;</td><td valign="top">Black and white.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_EMBOSS</code>&#160;</td><td valign="top">Emboss, the highlights and shadows replace light/dark boundaries
+		  and low contrast areas are set to a gray background.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_GRASS_GREEN</code>&#160;</td><td valign="top">Grass green.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_NEGATIVE</code>&#160;</td><td valign="top">Negative.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_SEPIA</code>&#160;</td><td valign="top">Sepia tone.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_SKETCH</code>&#160;</td><td valign="top">Sketch.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_SKIN_WHITEN</code>&#160;</td><td valign="top">Skin whiten.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_SKY_BLUE</code>&#160;</td><td valign="top">Sky blue.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_SOLARIZATION</code>&#160;</td><td valign="top">Solarization, the image is partially reversed in tone,
+		  only color values above or below a certain threshold are inverted.
+		  </td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_SILHOUETTE</code>&#160;</td><td valign="top">Silhouette (outline).</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_VIVID</code>&#160;</td><td valign="top">Vivid colors.</td></tr><tr><td valign="top"><code class="constant">V4L2_COLORFX_SET_CBCR</code>&#160;</td><td valign="top">The Cb and Cr chroma components are replaced by fixed
+		  coefficients determined by <code class="constant">V4L2_CID_COLORFX_CBCR</code>
+		  control.</td></tr></tbody></table></td></tr><tr><td valign="top"><code class="constant">V4L2_CID_COLORFX_CBCR</code></td><td valign="top">integer</td><td valign="top">Determines the Cb and Cr coefficients for <code class="constant">V4L2_COLORFX_SET_CBCR</code>
+	    color effect. Bits [7:0] of the supplied 32 bit value are interpreted as
+	    Cr component, bits [15:8] as Cb component and bits [31:16] must be zero.
+	  </td></tr><tr><td valign="top"><code class="constant">V4L2_CID_AUTOBRIGHTNESS</code></td><td valign="top">boolean</td><td valign="top">Enable Automatic Brightness.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_ROTATE</code></td><td valign="top">integer</td><td valign="top">Rotates the image by specified angle. Common angles are 90,
+	    270 and 180. Rotating the image to 90 and 270 will reverse the height
+	    and width of the display window. It is necessary to set the new height and
+	    width of the picture using the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl according to
+	    the rotation angle selected.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_BG_COLOR</code></td><td valign="top">integer</td><td valign="top">Sets the background color on the current output device.
+	    Background color needs to be specified in the RGB24 format. The
+	    supplied 32 bit value is interpreted as bits 0-7 Red color information,
+	    bits 8-15 Green color information, bits 16-23 Blue color
+	    information and bits 24-31 must be zero.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_ILLUMINATORS_1</code>
+		<code class="constant">V4L2_CID_ILLUMINATORS_2</code></td><td valign="top">boolean</td><td valign="top">Switch on or off the illuminator 1 or 2 of the device
+		(usually a microscope).</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_MIN_BUFFERS_FOR_CAPTURE</code></td><td valign="top">integer</td><td valign="top">This is a read-only control that can be read by the application
+and used as a hint to determine the number of CAPTURE buffers to pass to REQBUFS.
+The value is the minimum number of CAPTURE buffers that is necessary for hardware
+to work.</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_MIN_BUFFERS_FOR_OUTPUT</code></td><td valign="top">integer</td><td valign="top">This is a read-only control that can be read by the application
+and used as a hint to determine the number of OUTPUT buffers to pass to REQBUFS.
+The value is the minimum number of OUTPUT buffers that is necessary for hardware
+to work.</td></tr><tr><td valign="top"><a id="v4l2-alpha-component"></a><code class="constant">V4L2_CID_ALPHA_COMPONENT</code></td><td valign="top">integer</td><td valign="top"> Sets the alpha color component on the capture device or on
+	    the capture buffer queue of a mem-to-mem device. When a mem-to-mem
+	    device produces frame format that includes an alpha component
+	    (e.g. <a class="link" href="packed-rgb.html#rgb-formats" title="Table&#160;2.6.&#160;Packed RGB Image Formats">packed RGB image formats</a>)
+	    and the alpha value is not defined by the mem-to-mem input data
+	    this control lets you select the alpha component value of all
+	    pixels. It is applicable to any pixel format that contains an alpha
+	    component.
+	    </td></tr><tr><td valign="top"><code class="constant">V4L2_CID_LASTP1</code></td><td valign="top">&#160;</td><td valign="top">End of the predefined control IDs (currently
+	      <code class="constant">V4L2_CID_ALPHA_COMPONENT</code> + 1).</td></tr><tr><td valign="top"><code class="constant">V4L2_CID_PRIVATE_BASE</code></td><td valign="top">&#160;</td><td valign="top">ID of the first custom (driver specific) control.
+Applications depending on particular custom controls should check the
+driver name and version, see <a class="xref" href="querycap.html" title="Querying Capabilities">the section called &#8220;Querying Capabilities&#8221;</a>.</td></tr></tbody></table></div></div><br class="table-break" /><p>Applications can enumerate the available controls with the
+<a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYCTRL</code></a> and <a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYMENU</code></a> ioctls, get and set a
+control value with the <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_G_CTRL</code></a> and <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_S_CTRL</code></a> ioctls.
+Drivers must implement <code class="constant">VIDIOC_QUERYCTRL</code>,
+<code class="constant">VIDIOC_G_CTRL</code> and
+<code class="constant">VIDIOC_S_CTRL</code> when the device has one or more
+controls, <code class="constant">VIDIOC_QUERYMENU</code> when it has one or
+more menu type controls.</p><div class="example"><a id="idp19337528"></a><p class="title"><b>Example&#160;1.8.&#160;Enumerating all controls</b></p><div class="example-contents"><pre class="programlisting">
+struct&#160;<a class="link" href="vidioc-queryctrl.html#v4l2-queryctrl" title="Table&#160;A.90.&#160;struct v4l2_queryctrl">v4l2_queryctrl</a> queryctrl;
+struct&#160;<a class="link" href="vidioc-queryctrl.html#v4l2-querymenu" title="Table&#160;A.91.&#160;struct v4l2_querymenu">v4l2_querymenu</a> querymenu;
+
+static void
+enumerate_menu (void)
+{
+	printf ("  Menu items:\n");
+
+	memset (&amp;querymenu, 0, sizeof (querymenu));
+	querymenu.id = queryctrl.id;
+
+	for (querymenu.index = queryctrl.minimum;
+	     querymenu.index &lt;= queryctrl.maximum;
+	      querymenu.index++) {
+		if (0 == ioctl (fd, <a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYMENU</code></a>, &amp;querymenu)) {
+			printf ("  %s\n", querymenu.name);
+		}
+	}
+}
+
+memset (&amp;queryctrl, 0, sizeof (queryctrl));
+
+for (queryctrl.id = V4L2_CID_BASE;
+     queryctrl.id &lt; V4L2_CID_LASTP1;
+     queryctrl.id++) {
+	if (0 == ioctl (fd, <a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYCTRL</code></a>, &amp;queryctrl)) {
+		if (queryctrl.flags &amp; V4L2_CTRL_FLAG_DISABLED)
+			continue;
+
+		printf ("Control %s\n", queryctrl.name);
+
+		if (queryctrl.type == V4L2_CTRL_TYPE_MENU)
+			enumerate_menu ();
+	} else {
+		if (errno == EINVAL)
+			continue;
+
+		perror ("VIDIOC_QUERYCTRL");
+		exit (EXIT_FAILURE);
+	}
+}
+
+for (queryctrl.id = V4L2_CID_PRIVATE_BASE;;
+     queryctrl.id++) {
+	if (0 == ioctl (fd, <a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYCTRL</code></a>, &amp;queryctrl)) {
+		if (queryctrl.flags &amp; V4L2_CTRL_FLAG_DISABLED)
+			continue;
+
+		printf ("Control %s\n", queryctrl.name);
+
+		if (queryctrl.type == V4L2_CTRL_TYPE_MENU)
+			enumerate_menu ();
+	} else {
+		if (errno == EINVAL)
+			break;
+
+		perror ("VIDIOC_QUERYCTRL");
+		exit (EXIT_FAILURE);
+	}
+}
+</pre></div></div><br class="example-break" /><div class="example"><a id="idp19343264"></a><p class="title"><b>Example&#160;1.9.&#160;Changing controls</b></p><div class="example-contents"><pre class="programlisting">
+struct&#160;<a class="link" href="vidioc-queryctrl.html#v4l2-queryctrl" title="Table&#160;A.90.&#160;struct v4l2_queryctrl">v4l2_queryctrl</a> queryctrl;
+struct&#160;<a class="link" href="vidioc-g-ctrl.html#v4l2-control" title="Table&#160;A.52.&#160;struct v4l2_control">v4l2_control</a> control;
+
+memset (&amp;queryctrl, 0, sizeof (queryctrl));
+queryctrl.id = V4L2_CID_BRIGHTNESS;
+
+if (-1 == ioctl (fd, <a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYCTRL</code></a>, &amp;queryctrl)) {
+	if (errno != EINVAL) {
+		perror ("VIDIOC_QUERYCTRL");
+		exit (EXIT_FAILURE);
+	} else {
+		printf ("V4L2_CID_BRIGHTNESS is not supported\n");
+	}
+} else if (queryctrl.flags &amp; V4L2_CTRL_FLAG_DISABLED) {
+	printf ("V4L2_CID_BRIGHTNESS is not supported\n");
+} else {
+	memset (&amp;control, 0, sizeof (control));
+	control.id = V4L2_CID_BRIGHTNESS;
+	control.value = queryctrl.default_value;
+
+	if (-1 == ioctl (fd, <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_S_CTRL</code></a>, &amp;control)) {
+		perror ("VIDIOC_S_CTRL");
+		exit (EXIT_FAILURE);
+	}
+}
+
+memset (&amp;control, 0, sizeof (control));
+control.id = V4L2_CID_CONTRAST;
+
+if (0 == ioctl (fd, <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_G_CTRL</code></a>, &amp;control)) {
+	control.value += 1;
+
+	/* The driver may clamp the value or return ERANGE, ignored here */
+
+	if (-1 == ioctl (fd, <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_S_CTRL</code></a>, &amp;control)
+	    &amp;&amp; errno != ERANGE) {
+		perror ("VIDIOC_S_CTRL");
+		exit (EXIT_FAILURE);
+	}
+/* Ignore if V4L2_CID_CONTRAST is unsupported */
+} else if (errno != EINVAL) {
+	perror ("VIDIOC_G_CTRL");
+	exit (EXIT_FAILURE);
+}
+
+control.id = V4L2_CID_AUDIO_MUTE;
+control.value = TRUE; /* silence */
+
+/* Errors ignored */
+ioctl (fd, VIDIOC_S_CTRL, &amp;control);
+</pre></div></div><br class="example-break" /><div class="footnotes"><br /><hr width="100" align="left" /><div class="footnote"><p><sup>[<a id="ftn.idp19232496" href="#idp19232496" class="para">9</a>] </sup>It will be more convenient for applications if drivers
+make use of the <code class="constant">V4L2_CTRL_FLAG_DISABLED</code> flag, but
+that was never required.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp19193232" href="#idp19193232" class="para">10</a>] </sup>Applications could call an ioctl to request events.
+After another process called <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_S_CTRL</code></a> or another ioctl changing
+shared properties the <a class="link" href="func-select.html" title="V4L2 select()"><code class="function">select()</code></a> function would indicate
+readability until any ioctl (querying the properties) is
+called.</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dv-timings.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="common.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="extended-controls.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Digital Video (DV) Timings&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Extended Controls</td></tr></table></div></body></html>

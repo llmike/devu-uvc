@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;7.&#160;Changes</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="v4l2spec.html" title="Part&#160;I.&#160;Video for Linux Two API Specification" /><link rel="prev" href="libv4l.html" title="Chapter&#160;6.&#160;Libv4l Userspace Library" /><link rel="next" href="hist-v4l2.html" title="Changes of the V4L2 API" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;7.&#160;Changes</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="libv4l.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;I.&#160;Video for Linux Two API Specification</th><td width="20%" align="right">&#160;<a accesskey="n" href="hist-v4l2.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;7.&#160;Changes"><div class="titlepage"><div><div><h2 class="title"><a id="compat"></a>Chapter&#160;7.&#160;Changes</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="compat.html#diff-v4l">Differences between V4L and V4L2</a></span></dt><dd><dl><dt><span class="section"><a href="compat.html#idp30842152">Opening and Closing Devices</a></span></dt><dt><span class="section"><a href="compat.html#idp30890688">Querying Capabilities</a></span></dt><dt><span class="section"><a href="compat.html#idp30924216">Video Sources</a></span></dt><dt><span class="section"><a href="compat.html#idp30937824">Tuning</a></span></dt><dt><span class="section"><a href="compat.html#v4l-image-properties">Image Properties</a></span></dt><dt><span class="section"><a href="compat.html#idp30986288">Audio</a></span></dt><dt><span class="section"><a href="compat.html#idp31005624">Frame Buffer Overlay</a></span></dt><dt><span class="section"><a href="compat.html#idp31022104">Cropping</a></span></dt><dt><span class="section"><a href="compat.html#idp31030800">Reading Images, Memory Mapping</a></span></dt><dt><span class="section"><a href="compat.html#idp31051664">Reading Raw VBI Data</a></span></dt><dt><span class="section"><a href="compat.html#idp31064480">Miscellaneous</a></span></dt></dl></dd><dt><span class="section"><a href="hist-v4l2.html">Changes of the V4L2 API</a></span></dt><dd><dl><dt><span class="section"><a href="hist-v4l2.html#idp31068160">Early Versions</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31081024">V4L2 Version 0.16 1999-01-31</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31081896">V4L2 Version 0.18 1999-03-16</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31082904">V4L2 Version 0.19 1999-06-05</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31085552">V4L2 Version 0.20 (1999-09-10)</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31103784">V4L2 Version 0.20 incremental changes</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31118712">V4L2 Version 0.20 2000-11-23</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31127528">V4L2 Version 0.20 2002-07-25</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31128192">V4L2 in Linux 2.5.46, 2002-10</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31224784">V4L2 2003-06-19</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31235672">V4L2 2003-11-05</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31245088">V4L2 in Linux 2.6.6, 2004-05-09</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31247200">V4L2 in Linux 2.6.8</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31250024">V4L2 spec erratum 2004-08-01</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31254744">V4L2 in Linux 2.6.14</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31257176">V4L2 in Linux 2.6.15</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31263808">V4L2 spec erratum 2005-11-27</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31266232">V4L2 spec erratum 2006-01-10</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31269320">V4L2 spec erratum 2006-02-03</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31271792">V4L2 spec erratum 2006-02-04</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31274680">V4L2 in Linux 2.6.17</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31279360">V4L2 spec erratum 2006-09-23 (Draft 0.15)</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31289672">V4L2 in Linux 2.6.18</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31295304">V4L2 in Linux 2.6.19</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31300472">V4L2 spec erratum 2006-10-12 (Draft 0.17)</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31302344">V4L2 in Linux 2.6.21</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31304072">V4L2 in Linux 2.6.22</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31311536">V4L2 in Linux 2.6.24</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31313944">V4L2 in Linux 2.6.25</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31324696">V4L2 in Linux 2.6.26</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31327336">V4L2 in Linux 2.6.27</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31331480">V4L2 in Linux 2.6.28</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31334944">V4L2 in Linux 2.6.29</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31340208">V4L2 in Linux 2.6.30</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31342328">V4L2 in Linux 2.6.32</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31348632">V4L2 in Linux 2.6.33</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31350000">V4L2 in Linux 2.6.34</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31352248">V4L2 in Linux 2.6.37</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31353744">V4L2 in Linux 2.6.39</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31356016">V4L2 in Linux 3.1</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31357824">V4L2 in Linux 3.2</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31360216">V4L2 in Linux 3.3</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31362672">V4L2 in Linux 3.4</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31366184">V4L2 in Linux 3.5</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31375056">V4L2 in Linux 3.6</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31378744">V4L2 in Linux 3.9</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31381792">V4L2 in Linux 3.10</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31384072">V4L2 in Linux 3.11</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#idp31385488">V4L2 in Linux 3.14</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#other">Relation of V4L2 to other Linux multimedia APIs</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#experimental">Experimental API Elements</a></span></dt><dt><span class="section"><a href="hist-v4l2.html#obsolete">Obsolete API Elements</a></span></dt></dl></dd></dl></div><p>The following chapters document the evolution of the V4L2 API,
+errata or extensions. They are also intended to help application and
+driver writers to port or update their code.</p><div class="section" title="Differences between V4L and V4L2"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="diff-v4l"></a>Differences between V4L and V4L2</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="compat.html#idp30842152">Opening and Closing Devices</a></span></dt><dt><span class="section"><a href="compat.html#idp30890688">Querying Capabilities</a></span></dt><dt><span class="section"><a href="compat.html#idp30924216">Video Sources</a></span></dt><dt><span class="section"><a href="compat.html#idp30937824">Tuning</a></span></dt><dt><span class="section"><a href="compat.html#v4l-image-properties">Image Properties</a></span></dt><dt><span class="section"><a href="compat.html#idp30986288">Audio</a></span></dt><dt><span class="section"><a href="compat.html#idp31005624">Frame Buffer Overlay</a></span></dt><dt><span class="section"><a href="compat.html#idp31022104">Cropping</a></span></dt><dt><span class="section"><a href="compat.html#idp31030800">Reading Images, Memory Mapping</a></span></dt><dt><span class="section"><a href="compat.html#idp31051664">Reading Raw VBI Data</a></span></dt><dt><span class="section"><a href="compat.html#idp31064480">Miscellaneous</a></span></dt></dl></div><p>The Video For Linux API was first introduced in Linux 2.1 to
+unify and replace various TV and radio device related interfaces,
+developed independently by driver writers in prior years. Starting
+with Linux 2.5 the much improved V4L2 API replaces the V4L API.
+The support for the old V4L calls were removed from Kernel, but the
+library <a class="xref" href="libv4l.html" title="Chapter&#160;6.&#160;Libv4l Userspace Library">Chapter&#160;6, <i>Libv4l Userspace Library</i></a> supports the conversion of a V4L
+API system call into a V4L2 one.</p><div class="section" title="Opening and Closing Devices"><div class="titlepage"><div><div><h3 class="title"><a id="idp30842152"></a>Opening and Closing Devices</h3></div></div></div><p>For compatibility reasons the character device file names
+recommended for V4L2 video capture, overlay, radio and raw
+vbi capture devices did not change from those used by V4L. They are
+listed in <a class="xref" href="devices.html" title="Chapter&#160;4.&#160;Interfaces">Chapter&#160;4, <i>Interfaces</i></a> and below in <a class="xref" href="compat.html#v4l-dev" title="Table&#160;7.1.&#160;V4L Device Types, Names and Numbers">Table&#160;7.1, &#8220;V4L Device Types, Names and Numbers&#8221;</a>.</p><p>The teletext devices (minor range 192-223) have been removed in
+V4L2 and no longer exist. There is no hardware available anymore for handling
+pure teletext. Instead raw or sliced VBI is used.</p><p>The V4L <code class="filename">videodev</code> module automatically
+assigns minor numbers to drivers in load order, depending on the
+registered device type. We recommend that V4L2 drivers by default
+register devices with the same numbers, but the system administrator
+can assign arbitrary minor numbers using driver module options. The
+major device number remains 81.</p><div class="table"><a id="v4l-dev"></a><p class="title"><b>Table&#160;7.1.&#160;V4L Device Types, Names and Numbers</b></p><div class="table-contents"><table summary="V4L Device Types, Names and Numbers" border="1"><colgroup><col /><col /><col /></colgroup><thead><tr><th>Device Type</th><th>File Name</th><th>Minor Numbers</th></tr></thead><tbody valign="top"><tr><td valign="top">Video capture and overlay</td><td valign="top"><p><code class="filename">/dev/video</code> and
+<code class="filename">/dev/bttv0</code><sup>[<a id="idp30882192" href="#ftn.idp30882192" class="footnote">a</a>]</sup>,
+<code class="filename">/dev/video0</code> to
+<code class="filename">/dev/video63</code></p></td><td valign="top">0-63</td></tr><tr><td valign="top">Radio receiver</td><td valign="top"><p><code class="filename">/dev/radio</code><sup>[<a id="idp30885024" href="#ftn.idp30885024" class="footnote">b</a>]</sup>, <code class="filename">/dev/radio0</code> to
+<code class="filename">/dev/radio63</code></p></td><td valign="top">64-127</td></tr><tr><td valign="top">Raw VBI capture</td><td valign="top"><p><code class="filename">/dev/vbi</code>,
+<code class="filename">/dev/vbi0</code> to
+<code class="filename">/dev/vbi31</code></p></td><td valign="top">224-255</td></tr></tbody><tbody class="footnotes"><tr><td colspan="3"><div class="footnote"><p><sup>[<a id="ftn.idp30882192" href="#idp30882192" class="para">a</a>] </sup>According to
+Documentation/devices.txt these should be symbolic links to
+<code class="filename">/dev/video0</code>. Note the original bttv interface is
+not compatible with V4L or V4L2.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp30885024" href="#idp30885024" class="para">b</a>] </sup>According to
+<code class="filename">Documentation/devices.txt</code> a symbolic link to
+<code class="filename">/dev/radio0</code>.</p></div></td></tr></tbody></table></div></div><br class="table-break" /><p>V4L prohibits (or used to prohibit) multiple opens of a
+device file. V4L2 drivers <span class="emphasis"><em>may</em></span> support multiple
+opens, see <a class="xref" href="common.html#open" title="Opening and Closing Devices">the section called &#8220;Opening and Closing Devices&#8221;</a> for details and consequences.</p><p>V4L drivers respond to V4L2 ioctls with an <span class="errorcode">EINVAL</span> error code.</p></div><div class="section" title="Querying Capabilities"><div class="titlepage"><div><div><h3 class="title"><a id="idp30890688"></a>Querying Capabilities</h3></div></div></div><p>The V4L <code class="constant">VIDIOCGCAP</code> ioctl is
+equivalent to V4L2's <a class="link" href="vidioc-querycap.html" title="ioctl VIDIOC_QUERYCAP"><code class="constant">VIDIOC_QUERYCAP</code></a>.</p><p>The <em class="structfield"><code>name</code></em> field in struct
+<span class="structname">video_capability</span> became
+<em class="structfield"><code>card</code></em> in struct&#160;<a class="link" href="vidioc-querycap.html#v4l2-capability" title="Table&#160;A.88.&#160;struct v4l2_capability">v4l2_capability</a>,
+<em class="structfield"><code>type</code></em> was replaced by
+<em class="structfield"><code>capabilities</code></em>. Note V4L2 does not
+distinguish between device types like this, better think of basic
+video input, video output and radio devices supporting a set of
+related functions like video capturing, video overlay and VBI
+capturing. See <a class="xref" href="common.html#open" title="Opening and Closing Devices">the section called &#8220;Opening and Closing Devices&#8221;</a> for an
+introduction.</p><div class="informaltable"><table border="1"><colgroup><col /><col /><col /></colgroup><thead><tr><th>struct
+<span class="structname">video_capability</span>
+<em class="structfield"><code>type</code></em></th><th>struct&#160;<a class="link" href="vidioc-querycap.html#v4l2-capability" title="Table&#160;A.88.&#160;struct v4l2_capability">v4l2_capability</a>
+<em class="structfield"><code>capabilities</code></em> flags</th><th>Purpose</th></tr></thead><tbody valign="top"><tr><td valign="top"><code class="constant">VID_TYPE_CAPTURE</code></td><td valign="top"><code class="constant">V4L2_CAP_VIDEO_CAPTURE</code></td><td valign="top">The <a class="link" href="devices.html#capture" title="Video Capture Interface">video
+capture</a> interface is supported.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_TUNER</code></td><td valign="top"><code class="constant">V4L2_CAP_TUNER</code></td><td valign="top">The device has a <a class="link" href="tuner.html" title="Tuners and Modulators">tuner or
+modulator</a>.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_TELETEXT</code></td><td valign="top"><code class="constant">V4L2_CAP_VBI_CAPTURE</code></td><td valign="top">The <a class="link" href="raw-vbi.html" title="Raw VBI Data Interface">raw VBI
+capture</a> interface is supported.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_OVERLAY</code></td><td valign="top"><code class="constant">V4L2_CAP_VIDEO_OVERLAY</code></td><td valign="top">The <a class="link" href="overlay.html" title="Video Overlay Interface">video
+overlay</a> interface is supported.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_CHROMAKEY</code></td><td valign="top"><code class="constant">V4L2_FBUF_CAP_CHROMAKEY</code> in
+field <em class="structfield"><code>capability</code></em> of
+struct&#160;<a class="link" href="vidioc-g-fbuf.html#v4l2-framebuffer" title="Table&#160;A.64.&#160;struct v4l2_framebuffer">v4l2_framebuffer</a></td><td valign="top">Whether chromakey overlay is supported. For
+more information on overlay see
+<a class="xref" href="overlay.html" title="Video Overlay Interface">the section called &#8220;Video Overlay Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_CLIPPING</code></td><td valign="top"><code class="constant">V4L2_FBUF_CAP_LIST_CLIPPING</code>
+and <code class="constant">V4L2_FBUF_CAP_BITMAP_CLIPPING</code> in field
+<em class="structfield"><code>capability</code></em> of struct&#160;<a class="link" href="vidioc-g-fbuf.html#v4l2-framebuffer" title="Table&#160;A.64.&#160;struct v4l2_framebuffer">v4l2_framebuffer</a></td><td valign="top">Whether clipping the overlaid image is
+supported, see <a class="xref" href="overlay.html" title="Video Overlay Interface">the section called &#8220;Video Overlay Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_FRAMERAM</code></td><td valign="top"><code class="constant">V4L2_FBUF_CAP_EXTERNOVERLAY</code>
+<span class="emphasis"><em>not set</em></span> in field
+<em class="structfield"><code>capability</code></em> of struct&#160;<a class="link" href="vidioc-g-fbuf.html#v4l2-framebuffer" title="Table&#160;A.64.&#160;struct v4l2_framebuffer">v4l2_framebuffer</a></td><td valign="top">Whether overlay overwrites frame buffer memory,
+see <a class="xref" href="overlay.html" title="Video Overlay Interface">the section called &#8220;Video Overlay Interface&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_SCALES</code></td><td valign="top"><code class="constant">-</code></td><td valign="top">This flag indicates if the hardware can scale
+images. The V4L2 API implies the scale factor by setting the cropping
+dimensions and image size with the <a class="link" href="vidioc-g-crop.html" title="ioctl VIDIOC_G_CROP, VIDIOC_S_CROP"><code class="constant">VIDIOC_S_CROP</code></a> and <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a>
+ioctl, respectively. The driver returns the closest sizes possible.
+For more information on cropping and scaling see <a class="xref" href="crop.html" title="Image Cropping, Insertion and Scaling">the section called &#8220;Image Cropping, Insertion and Scaling&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_MONOCHROME</code></td><td valign="top"><code class="constant">-</code></td><td valign="top">Applications can enumerate the supported image
+formats with the <a class="link" href="vidioc-enum-fmt.html" title="ioctl VIDIOC_ENUM_FMT"><code class="constant">VIDIOC_ENUM_FMT</code></a> ioctl to determine if the device
+supports grey scale capturing only. For more information on image
+formats see <a class="xref" href="pixfmt.html" title="Chapter&#160;2.&#160;Image Formats">Chapter&#160;2, <i>Image Formats</i></a>.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_SUBCAPTURE</code></td><td valign="top"><code class="constant">-</code></td><td valign="top">Applications can call the <a class="link" href="vidioc-g-crop.html" title="ioctl VIDIOC_G_CROP, VIDIOC_S_CROP"><code class="constant">VIDIOC_G_CROP</code></a> ioctl
+to determine if the device supports capturing a subsection of the full
+picture ("cropping" in V4L2). If not, the ioctl returns the <span class="errorcode">EINVAL</span> error code.
+For more information on cropping and scaling see <a class="xref" href="crop.html" title="Image Cropping, Insertion and Scaling">the section called &#8220;Image Cropping, Insertion and Scaling&#8221;</a>.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_MPEG_DECODER</code></td><td valign="top"><code class="constant">-</code></td><td valign="top">Applications can enumerate the supported image
+formats with the <a class="link" href="vidioc-enum-fmt.html" title="ioctl VIDIOC_ENUM_FMT"><code class="constant">VIDIOC_ENUM_FMT</code></a> ioctl to determine if the device
+supports MPEG streams.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_MPEG_ENCODER</code></td><td valign="top"><code class="constant">-</code></td><td valign="top">See above.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_MJPEG_DECODER</code></td><td valign="top"><code class="constant">-</code></td><td valign="top">See above.</td></tr><tr><td valign="top"><code class="constant">VID_TYPE_MJPEG_ENCODER</code></td><td valign="top"><code class="constant">-</code></td><td valign="top">See above.</td></tr></tbody></table></div><p>The <em class="structfield"><code>audios</code></em> field was replaced
+by <em class="structfield"><code>capabilities</code></em> flag
+<code class="constant">V4L2_CAP_AUDIO</code>, indicating
+<span class="emphasis"><em>if</em></span> the device has any audio inputs or outputs. To
+determine their number applications can enumerate audio inputs with
+the <a class="link" href="vidioc-g-audio.html" title="ioctl VIDIOC_G_AUDIO, VIDIOC_S_AUDIO"><code class="constant">VIDIOC_G_AUDIO</code></a> ioctl. The audio ioctls are described in <a class="xref" href="audio.html" title="Audio Inputs and Outputs">the section called &#8220;Audio Inputs and Outputs&#8221;</a>.</p><p>The <em class="structfield"><code>maxwidth</code></em>,
+<em class="structfield"><code>maxheight</code></em>,
+<em class="structfield"><code>minwidth</code></em> and
+<em class="structfield"><code>minheight</code></em> fields were removed. Calling the
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> or <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_TRY_FMT</code></a> ioctl with the desired dimensions
+returns the closest size possible, taking into account the current
+video standard, cropping and scaling limitations.</p></div><div class="section" title="Video Sources"><div class="titlepage"><div><div><h3 class="title"><a id="idp30924216"></a>Video Sources</h3></div></div></div><p>V4L provides the <code class="constant">VIDIOCGCHAN</code> and
+<code class="constant">VIDIOCSCHAN</code> ioctl using struct
+<span class="structname">video_channel</span> to enumerate
+the video inputs of a V4L device. The equivalent V4L2 ioctls
+are <a class="link" href="vidioc-enuminput.html" title="ioctl VIDIOC_ENUMINPUT"><code class="constant">VIDIOC_ENUMINPUT</code></a>, <a class="link" href="vidioc-g-input.html" title="ioctl VIDIOC_G_INPUT, VIDIOC_S_INPUT"><code class="constant">VIDIOC_G_INPUT</code></a> and <a class="link" href="vidioc-g-input.html" title="ioctl VIDIOC_G_INPUT, VIDIOC_S_INPUT"><code class="constant">VIDIOC_S_INPUT</code></a>
+using struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a> as discussed in <a class="xref" href="video.html" title="Video Inputs and Outputs">the section called &#8220;Video Inputs and Outputs&#8221;</a>.</p><p>The <em class="structfield"><code>channel</code></em> field counting
+inputs was renamed to <em class="structfield"><code>index</code></em>, the video
+input types were renamed as follows: </p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><thead><tr><th>struct <span class="structname">video_channel</span>
+<em class="structfield"><code>type</code></em></th><th>struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a>
+<em class="structfield"><code>type</code></em></th></tr></thead><tbody valign="top"><tr><td valign="top"><code class="constant">VIDEO_TYPE_TV</code></td><td valign="top"><code class="constant">V4L2_INPUT_TYPE_TUNER</code></td></tr><tr><td valign="top"><code class="constant">VIDEO_TYPE_CAMERA</code></td><td valign="top"><code class="constant">V4L2_INPUT_TYPE_CAMERA</code></td></tr></tbody></table></div><p>Unlike the <em class="structfield"><code>tuners</code></em> field
+expressing the number of tuners of this input, V4L2 assumes each video
+input is connected to at most one tuner. However a tuner can have more
+than one input, i.&#160;e. RF connectors, and a device can have multiple
+tuners. The index number of the tuner associated with the input, if
+any, is stored in field <em class="structfield"><code>tuner</code></em> of
+struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a>. Enumeration of tuners is discussed in <a class="xref" href="tuner.html" title="Tuners and Modulators">the section called &#8220;Tuners and Modulators&#8221;</a>.</p><p>The redundant <code class="constant">VIDEO_VC_TUNER</code> flag was
+dropped. Video inputs associated with a tuner are of type
+<code class="constant">V4L2_INPUT_TYPE_TUNER</code>. The
+<code class="constant">VIDEO_VC_AUDIO</code> flag was replaced by the
+<em class="structfield"><code>audioset</code></em> field. V4L2 considers devices with
+up to 32 audio inputs. Each set bit in the
+<em class="structfield"><code>audioset</code></em> field represents one audio input
+this video input combines with. For information about audio inputs and
+how to switch between them see <a class="xref" href="audio.html" title="Audio Inputs and Outputs">the section called &#8220;Audio Inputs and Outputs&#8221;</a>.</p><p>The <em class="structfield"><code>norm</code></em> field describing the
+supported video standards was replaced by
+<em class="structfield"><code>std</code></em>. The V4L specification mentions a flag
+<code class="constant">VIDEO_VC_NORM</code> indicating whether the standard can
+be changed. This flag was a later addition together with the
+<em class="structfield"><code>norm</code></em> field and has been removed in the
+meantime. V4L2 has a similar, albeit more comprehensive approach
+to video standards, see <a class="xref" href="standard.html" title="Video Standards">the section called &#8220;Video Standards&#8221;</a> for more
+information.</p></div><div class="section" title="Tuning"><div class="titlepage"><div><div><h3 class="title"><a id="idp30937824"></a>Tuning</h3></div></div></div><p>The V4L <code class="constant">VIDIOCGTUNER</code> and
+<code class="constant">VIDIOCSTUNER</code> ioctl and struct
+<span class="structname">video_tuner</span> can be used to enumerate the
+tuners of a V4L TV or radio device. The equivalent V4L2 ioctls are
+<a class="link" href="vidioc-g-tuner.html" title="ioctl VIDIOC_G_TUNER, VIDIOC_S_TUNER"><code class="constant">VIDIOC_G_TUNER</code></a> and <a class="link" href="vidioc-g-tuner.html" title="ioctl VIDIOC_G_TUNER, VIDIOC_S_TUNER"><code class="constant">VIDIOC_S_TUNER</code></a> using struct&#160;<a class="link" href="vidioc-g-tuner.html#v4l2-tuner" title="Table&#160;A.82.&#160;struct v4l2_tuner">v4l2_tuner</a>. Tuners are
+covered in <a class="xref" href="tuner.html" title="Tuners and Modulators">the section called &#8220;Tuners and Modulators&#8221;</a>.</p><p>The <em class="structfield"><code>tuner</code></em> field counting tuners
+was renamed to <em class="structfield"><code>index</code></em>. The fields
+<em class="structfield"><code>name</code></em>, <em class="structfield"><code>rangelow</code></em>
+and <em class="structfield"><code>rangehigh</code></em> remained unchanged.</p><p>The <code class="constant">VIDEO_TUNER_PAL</code>,
+<code class="constant">VIDEO_TUNER_NTSC</code> and
+<code class="constant">VIDEO_TUNER_SECAM</code> flags indicating the supported
+video standards were dropped. This information is now contained in the
+associated struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a>. No replacement exists for the
+<code class="constant">VIDEO_TUNER_NORM</code> flag indicating whether the
+video standard can be switched. The <em class="structfield"><code>mode</code></em>
+field to select a different video standard was replaced by a whole new
+set of ioctls and structures described in <a class="xref" href="standard.html" title="Video Standards">the section called &#8220;Video Standards&#8221;</a>.
+Due to its ubiquity it should be mentioned the BTTV driver supports
+several standards in addition to the regular
+<code class="constant">VIDEO_MODE_PAL</code> (0),
+<code class="constant">VIDEO_MODE_NTSC</code>,
+<code class="constant">VIDEO_MODE_SECAM</code> and
+<code class="constant">VIDEO_MODE_AUTO</code> (3). Namely N/PAL Argentina,
+M/PAL, N/PAL, and NTSC Japan with numbers 3-6 (sic).</p><p>The <code class="constant">VIDEO_TUNER_STEREO_ON</code> flag
+indicating stereo reception became
+<code class="constant">V4L2_TUNER_SUB_STEREO</code> in field
+<em class="structfield"><code>rxsubchans</code></em>. This field also permits the
+detection of monaural and bilingual audio, see the definition of
+struct&#160;<a class="link" href="vidioc-g-tuner.html#v4l2-tuner" title="Table&#160;A.82.&#160;struct v4l2_tuner">v4l2_tuner</a> for details. Presently no replacement exists for the
+<code class="constant">VIDEO_TUNER_RDS_ON</code> and
+<code class="constant">VIDEO_TUNER_MBS_ON</code> flags.</p><p> The <code class="constant">VIDEO_TUNER_LOW</code> flag was renamed
+to <code class="constant">V4L2_TUNER_CAP_LOW</code> in the struct&#160;<a class="link" href="vidioc-g-tuner.html#v4l2-tuner" title="Table&#160;A.82.&#160;struct v4l2_tuner">v4l2_tuner</a>
+<em class="structfield"><code>capability</code></em> field.</p><p>The <code class="constant">VIDIOCGFREQ</code> and
+<code class="constant">VIDIOCSFREQ</code> ioctl to change the tuner frequency
+where renamed to <a class="link" href="vidioc-g-frequency.html" title="ioctl VIDIOC_G_FREQUENCY, VIDIOC_S_FREQUENCY"><code class="constant">VIDIOC_G_FREQUENCY</code></a> and  <a class="link" href="vidioc-g-frequency.html" title="ioctl VIDIOC_G_FREQUENCY, VIDIOC_S_FREQUENCY"><code class="constant">VIDIOC_S_FREQUENCY</code></a>. They
+take a pointer to a struct&#160;<a class="link" href="vidioc-g-frequency.html#v4l2-frequency" title="Table&#160;A.68.&#160;struct v4l2_frequency">v4l2_frequency</a> instead of an unsigned long
+integer.</p></div><div class="section" title="Image Properties"><div class="titlepage"><div><div><h3 class="title"><a id="v4l-image-properties"></a>Image Properties</h3></div></div></div><p>V4L2 has no equivalent of the
+<code class="constant">VIDIOCGPICT</code> and <code class="constant">VIDIOCSPICT</code>
+ioctl and struct <span class="structname">video_picture</span>. The following
+fields where replaced by V4L2 controls accessible with the
+<a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYCTRL</code></a>, <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_G_CTRL</code></a> and <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_S_CTRL</code></a> ioctls:</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><thead><tr><th>struct <span class="structname">video_picture</span></th><th>V4L2 Control ID</th></tr></thead><tbody valign="top"><tr><td valign="top"><em class="structfield"><code>brightness</code></em></td><td valign="top"><code class="constant">V4L2_CID_BRIGHTNESS</code></td></tr><tr><td valign="top"><em class="structfield"><code>hue</code></em></td><td valign="top"><code class="constant">V4L2_CID_HUE</code></td></tr><tr><td valign="top"><em class="structfield"><code>colour</code></em></td><td valign="top"><code class="constant">V4L2_CID_SATURATION</code></td></tr><tr><td valign="top"><em class="structfield"><code>contrast</code></em></td><td valign="top"><code class="constant">V4L2_CID_CONTRAST</code></td></tr><tr><td valign="top"><em class="structfield"><code>whiteness</code></em></td><td valign="top"><code class="constant">V4L2_CID_WHITENESS</code></td></tr></tbody></table></div><p>The V4L picture controls are assumed to range from 0 to
+65535 with no particular reset value. The V4L2 API permits arbitrary
+limits and defaults which can be queried with the <a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYCTRL</code></a>
+ioctl. For general information about controls see <a class="xref" href="control.html" title="User Controls">the section called &#8220;User Controls&#8221;</a>.</p><p>The <em class="structfield"><code>depth</code></em> (average number of
+bits per pixel) of a video image is implied by the selected image
+format. V4L2 does not explicitely provide such information assuming
+applications recognizing the format are aware of the image depth and
+others need not know. The <em class="structfield"><code>palette</code></em> field
+moved into the struct&#160;<a class="link" href="pixfmt.html#v4l2-pix-format" title="Table&#160;2.1.&#160;struct v4l2_pix_format">v4l2_pix_format</a>:</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><thead><tr><th>struct <span class="structname">video_picture</span>
+<em class="structfield"><code>palette</code></em></th><th>struct&#160;<a class="link" href="pixfmt.html#v4l2-pix-format" title="Table&#160;2.1.&#160;struct v4l2_pix_format">v4l2_pix_format</a>
+<em class="structfield"><code>pixfmt</code></em></th></tr></thead><tbody valign="top"><tr><td valign="top"><code class="constant">VIDEO_PALETTE_GREY</code></td><td valign="top"><p><a class="link" href="V4L2-PIX-FMT-GREY.html" title="V4L2_PIX_FMT_GREY ('GREY')"><code class="constant">V4L2_PIX_FMT_GREY</code></a></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_HI240</code></td><td valign="top"><p><a class="link" href="pixfmt-reserved.html" title="Reserved Format Identifiers"><code class="constant">V4L2_PIX_FMT_HI240</code></a><sup>[<a id="idp30966384" href="#ftn.idp30966384" class="footnote">a</a>]</sup></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_RGB565</code></td><td valign="top"><p><a class="link" href="pixfmt-rgb.html" title="RGB Formats"><code class="constant">V4L2_PIX_FMT_RGB565</code></a></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_RGB555</code></td><td valign="top"><p><a class="link" href="pixfmt-rgb.html" title="RGB Formats"><code class="constant">V4L2_PIX_FMT_RGB555</code></a></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_RGB24</code></td><td valign="top"><p><a class="link" href="pixfmt-rgb.html" title="RGB Formats"><code class="constant">V4L2_PIX_FMT_BGR24</code></a></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_RGB32</code></td><td valign="top"><p><a class="link" href="pixfmt-rgb.html" title="RGB Formats"><code class="constant">V4L2_PIX_FMT_BGR32</code></a><sup>[<a id="idp30971184" href="#ftn.idp30971184" class="footnote">b</a>]</sup></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_YUV422</code></td><td valign="top"><p><a class="link" href="V4L2-PIX-FMT-YUYV.html" title="V4L2_PIX_FMT_YUYV ('YUYV')"><code class="constant">V4L2_PIX_FMT_YUYV</code></a></p></td></tr><tr><td valign="top"><p><code class="constant">VIDEO_PALETTE_YUYV</code><sup>[<a id="idp30973664" href="#ftn.idp30973664" class="footnote">c</a>]</sup></p></td><td valign="top"><p><a class="link" href="V4L2-PIX-FMT-YUYV.html" title="V4L2_PIX_FMT_YUYV ('YUYV')"><code class="constant">V4L2_PIX_FMT_YUYV</code></a></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_UYVY</code></td><td valign="top"><p><a class="link" href="V4L2-PIX-FMT-UYVY.html" title="V4L2_PIX_FMT_UYVY ('UYVY')"><code class="constant">V4L2_PIX_FMT_UYVY</code></a></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_YUV420</code></td><td valign="top">None</td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_YUV411</code></td><td valign="top"><p><a class="link" href="V4L2-PIX-FMT-Y41P.html" title="V4L2_PIX_FMT_Y41P ('Y41P')"><code class="constant">V4L2_PIX_FMT_Y41P</code></a><sup>[<a id="idp30977976" href="#ftn.idp30977976" class="footnote">d</a>]</sup></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_RAW</code></td><td valign="top"><p>None<sup>[<a id="idp30979328" href="#ftn.idp30979328" class="footnote">e</a>]</sup></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_YUV422P</code></td><td valign="top"><p><a class="link" href="V4L2-PIX-FMT-YUV422P.html" title="V4L2_PIX_FMT_YUV422P ('422P')"><code class="constant">V4L2_PIX_FMT_YUV422P</code></a></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_YUV411P</code></td><td valign="top"><p><a class="link" href="V4L2-PIX-FMT-YUV411P.html" title="V4L2_PIX_FMT_YUV411P ('411P')"><code class="constant">V4L2_PIX_FMT_YUV411P</code></a><sup>[<a id="idp30982000" href="#ftn.idp30982000" class="footnote">f</a>]</sup></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_YUV420P</code></td><td valign="top"><p><a class="link" href="re23.html#V4L2-PIX-FMT-YVU420"><code class="constant">V4L2_PIX_FMT_YVU420</code></a></p></td></tr><tr><td valign="top"><code class="constant">VIDEO_PALETTE_YUV410P</code></td><td valign="top"><p><a class="link" href="re26.html#V4L2-PIX-FMT-YVU410"><code class="constant">V4L2_PIX_FMT_YVU410</code></a></p></td></tr></tbody><tbody class="footnotes"><tr><td colspan="2"><div class="footnote"><p><sup>[<a id="ftn.idp30966384" href="#idp30966384" class="para">a</a>] </sup>This is a custom format used by the BTTV
+driver, not one of the V4L2 standard formats.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp30971184" href="#idp30971184" class="para">b</a>] </sup>Presumably all V4L RGB formats are
+little-endian, although some drivers might interpret them according to machine endianness. V4L2 defines little-endian, big-endian and red/blue
+swapped variants. For details see <a class="xref" href="pixfmt-rgb.html" title="RGB Formats">the section called &#8220;RGB Formats&#8221;</a>.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp30973664" href="#idp30973664" class="para">c</a>] </sup><code class="constant">VIDEO_PALETTE_YUV422</code>
+and <code class="constant">VIDEO_PALETTE_YUYV</code> are the same formats. Some
+V4L drivers respond to one, some to the other.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp30977976" href="#idp30977976" class="para">d</a>] </sup>Not to be confused with
+<code class="constant">V4L2_PIX_FMT_YUV411P</code>, which is a planar
+format.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp30979328" href="#idp30979328" class="para">e</a>] </sup>V4L explains this
+as: "RAW capture (BT848)"</p></div><div class="footnote"><p><sup>[<a id="ftn.idp30982000" href="#idp30982000" class="para">f</a>] </sup>Not to be confused with
+<code class="constant">V4L2_PIX_FMT_Y41P</code>, which is a packed
+format.</p></div></td></tr></tbody></table></div><p>V4L2 image formats are defined in <a class="xref" href="pixfmt.html" title="Chapter&#160;2.&#160;Image Formats">Chapter&#160;2, <i>Image Formats</i></a>. The image format can be selected with the
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl.</p></div><div class="section" title="Audio"><div class="titlepage"><div><div><h3 class="title"><a id="idp30986288"></a>Audio</h3></div></div></div><p>The <code class="constant">VIDIOCGAUDIO</code> and
+<code class="constant">VIDIOCSAUDIO</code> ioctl and struct
+<span class="structname">video_audio</span> are used to enumerate the
+audio inputs of a V4L device. The equivalent V4L2 ioctls are
+<a class="link" href="vidioc-g-audio.html" title="ioctl VIDIOC_G_AUDIO, VIDIOC_S_AUDIO"><code class="constant">VIDIOC_G_AUDIO</code></a> and <a class="link" href="vidioc-g-audio.html" title="ioctl VIDIOC_G_AUDIO, VIDIOC_S_AUDIO"><code class="constant">VIDIOC_S_AUDIO</code></a> using struct&#160;<a class="link" href="vidioc-g-audio.html#v4l2-audio" title="Table&#160;A.47.&#160;struct v4l2_audio">v4l2_audio</a> as
+discussed in <a class="xref" href="audio.html" title="Audio Inputs and Outputs">the section called &#8220;Audio Inputs and Outputs&#8221;</a>.</p><p>The <em class="structfield"><code>audio</code></em> "channel number"
+field counting audio inputs was renamed to
+<em class="structfield"><code>index</code></em>.</p><p>On <code class="constant">VIDIOCSAUDIO</code> the
+<em class="structfield"><code>mode</code></em> field selects <span class="emphasis"><em>one</em></span>
+of the <code class="constant">VIDEO_SOUND_MONO</code>,
+<code class="constant">VIDEO_SOUND_STEREO</code>,
+<code class="constant">VIDEO_SOUND_LANG1</code> or
+<code class="constant">VIDEO_SOUND_LANG2</code> audio demodulation modes. When
+the current audio standard is BTSC
+<code class="constant">VIDEO_SOUND_LANG2</code> refers to SAP and
+<code class="constant">VIDEO_SOUND_LANG1</code> is meaningless. Also
+undocumented in the V4L specification, there is no way to query the
+selected mode. On <code class="constant">VIDIOCGAUDIO</code> the driver returns
+the <span class="emphasis"><em>actually received</em></span> audio programmes in this
+field. In the V4L2 API this information is stored in the struct&#160;<a class="link" href="vidioc-g-tuner.html#v4l2-tuner" title="Table&#160;A.82.&#160;struct v4l2_tuner">v4l2_tuner</a>
+<em class="structfield"><code>rxsubchans</code></em> and
+<em class="structfield"><code>audmode</code></em> fields, respectively. See <a class="xref" href="tuner.html" title="Tuners and Modulators">the section called &#8220;Tuners and Modulators&#8221;</a> for more information on tuners. Related to audio
+modes struct&#160;<a class="link" href="vidioc-g-audio.html#v4l2-audio" title="Table&#160;A.47.&#160;struct v4l2_audio">v4l2_audio</a> also reports if this is a mono or stereo
+input, regardless if the source is a tuner.</p><p>The following fields where replaced by V4L2 controls
+accessible with the <a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYCTRL</code></a>, <a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_G_CTRL</code></a> and
+<a class="link" href="vidioc-g-ctrl.html" title="ioctl VIDIOC_G_CTRL, VIDIOC_S_CTRL"><code class="constant">VIDIOC_S_CTRL</code></a> ioctls:</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><thead><tr><th>struct
+<span class="structname">video_audio</span></th><th>V4L2 Control ID</th></tr></thead><tbody valign="top"><tr><td valign="top"><em class="structfield"><code>volume</code></em></td><td valign="top"><code class="constant">V4L2_CID_AUDIO_VOLUME</code></td></tr><tr><td valign="top"><em class="structfield"><code>bass</code></em></td><td valign="top"><code class="constant">V4L2_CID_AUDIO_BASS</code></td></tr><tr><td valign="top"><em class="structfield"><code>treble</code></em></td><td valign="top"><code class="constant">V4L2_CID_AUDIO_TREBLE</code></td></tr><tr><td valign="top"><em class="structfield"><code>balance</code></em></td><td valign="top"><code class="constant">V4L2_CID_AUDIO_BALANCE</code></td></tr></tbody></table></div><p>To determine which of these controls are supported by a
+driver V4L provides the <em class="structfield"><code>flags</code></em>
+<code class="constant">VIDEO_AUDIO_VOLUME</code>,
+<code class="constant">VIDEO_AUDIO_BASS</code>,
+<code class="constant">VIDEO_AUDIO_TREBLE</code> and
+<code class="constant">VIDEO_AUDIO_BALANCE</code>. In the V4L2 API the
+<a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYCTRL</code></a> ioctl reports if the respective control is
+supported. Accordingly the <code class="constant">VIDEO_AUDIO_MUTABLE</code>
+and <code class="constant">VIDEO_AUDIO_MUTE</code> flags where replaced by the
+boolean <code class="constant">V4L2_CID_AUDIO_MUTE</code> control.</p><p>All V4L2 controls have a <em class="structfield"><code>step</code></em>
+attribute replacing the struct <span class="structname">video_audio</span>
+<em class="structfield"><code>step</code></em> field. The V4L audio controls are
+assumed to range from 0 to 65535 with no particular reset value. The
+V4L2 API permits arbitrary limits and defaults which can be queried
+with the <a class="link" href="vidioc-queryctrl.html" title="ioctl VIDIOC_QUERYCTRL, VIDIOC_QUERYMENU"><code class="constant">VIDIOC_QUERYCTRL</code></a> ioctl. For general information about
+controls see <a class="xref" href="control.html" title="User Controls">the section called &#8220;User Controls&#8221;</a>.</p></div><div class="section" title="Frame Buffer Overlay"><div class="titlepage"><div><div><h3 class="title"><a id="idp31005624"></a>Frame Buffer Overlay</h3></div></div></div><p>The V4L2 ioctls equivalent to
+<code class="constant">VIDIOCGFBUF</code> and <code class="constant">VIDIOCSFBUF</code>
+are <a class="link" href="vidioc-g-fbuf.html" title="ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF"><code class="constant">VIDIOC_G_FBUF</code></a> and <a class="link" href="vidioc-g-fbuf.html" title="ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF"><code class="constant">VIDIOC_S_FBUF</code></a>. The
+<em class="structfield"><code>base</code></em> field of struct
+<span class="structname">video_buffer</span> remained unchanged, except V4L2
+defines a flag to indicate non-destructive overlays instead of a
+<code class="constant">NULL</code> pointer. All other fields moved into the
+struct&#160;<a class="link" href="pixfmt.html#v4l2-pix-format" title="Table&#160;2.1.&#160;struct v4l2_pix_format">v4l2_pix_format</a> <em class="structfield"><code>fmt</code></em> substructure of
+struct&#160;<a class="link" href="vidioc-g-fbuf.html#v4l2-framebuffer" title="Table&#160;A.64.&#160;struct v4l2_framebuffer">v4l2_framebuffer</a>. The <em class="structfield"><code>depth</code></em> field was
+replaced by <em class="structfield"><code>pixelformat</code></em>. See <a class="xref" href="pixfmt-rgb.html" title="RGB Formats">the section called &#8220;RGB Formats&#8221;</a> for a list of RGB formats and their
+respective color depths.</p><p>Instead of the special ioctls
+<code class="constant">VIDIOCGWIN</code> and <code class="constant">VIDIOCSWIN</code>
+V4L2 uses the general-purpose data format negotiation ioctls
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_G_FMT</code></a> and <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a>. They take a pointer to a
+struct&#160;<a class="link" href="vidioc-g-fmt.html#v4l2-format" title="Table&#160;A.67.&#160;struct v4l2_format">v4l2_format</a> as argument. Here the <em class="structfield"><code>win</code></em>
+member of the <em class="structfield"><code>fmt</code></em> union is used, a
+struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a>.</p><p>The <em class="structfield"><code>x</code></em>,
+<em class="structfield"><code>y</code></em>, <em class="structfield"><code>width</code></em> and
+<em class="structfield"><code>height</code></em> fields of struct
+<span class="structname">video_window</span> moved into struct&#160;<a class="link" href="overlay.html#v4l2-rect" title="Table&#160;4.3.&#160;struct v4l2_rect">v4l2_rect</a>
+substructure <em class="structfield"><code>w</code></em> of struct
+<span class="structname">v4l2_window</span>. The
+<em class="structfield"><code>chromakey</code></em>,
+<em class="structfield"><code>clips</code></em>, and
+<em class="structfield"><code>clipcount</code></em> fields remained unchanged. Struct
+<span class="structname">video_clip</span> was renamed to struct&#160;<a class="link" href="overlay.html#v4l2-clip" title="Table&#160;4.2.&#160;struct v4l2_clip">v4l2_clip</a>, also
+containing a struct <span class="structname">v4l2_rect</span>, but the
+semantics are still the same.</p><p>The <code class="constant">VIDEO_WINDOW_INTERLACE</code> flag was
+dropped. Instead applications must set the
+<em class="structfield"><code>field</code></em> field to
+<code class="constant">V4L2_FIELD_ANY</code> or
+<code class="constant">V4L2_FIELD_INTERLACED</code>. The
+<code class="constant">VIDEO_WINDOW_CHROMAKEY</code> flag moved into
+struct&#160;<a class="link" href="vidioc-g-fbuf.html#v4l2-framebuffer" title="Table&#160;A.64.&#160;struct v4l2_framebuffer">v4l2_framebuffer</a>, under the new name
+<code class="constant">V4L2_FBUF_FLAG_CHROMAKEY</code>.</p><p>In V4L, storing a bitmap pointer in
+<em class="structfield"><code>clips</code></em> and setting
+<em class="structfield"><code>clipcount</code></em> to
+<code class="constant">VIDEO_CLIP_BITMAP</code> (-1) requests bitmap
+clipping, using a fixed size bitmap of 1024 &#215; 625 bits. Struct
+<span class="structname">v4l2_window</span> has a separate
+<em class="structfield"><code>bitmap</code></em> pointer field for this purpose and
+the bitmap size is determined by <em class="structfield"><code>w.width</code></em> and
+<em class="structfield"><code>w.height</code></em>.</p><p>The <code class="constant">VIDIOCCAPTURE</code> ioctl to enable or
+disable overlay was renamed to <a class="link" href="vidioc-overlay.html" title="ioctl VIDIOC_OVERLAY"><code class="constant">VIDIOC_OVERLAY</code></a>.</p></div><div class="section" title="Cropping"><div class="titlepage"><div><div><h3 class="title"><a id="idp31022104"></a>Cropping</h3></div></div></div><p>To capture only a subsection of the full picture V4L
+defines the <code class="constant">VIDIOCGCAPTURE</code> and
+<code class="constant">VIDIOCSCAPTURE</code> ioctls using struct
+<span class="structname">video_capture</span>. The equivalent V4L2 ioctls are
+<a class="link" href="vidioc-g-crop.html" title="ioctl VIDIOC_G_CROP, VIDIOC_S_CROP"><code class="constant">VIDIOC_G_CROP</code></a> and <a class="link" href="vidioc-g-crop.html" title="ioctl VIDIOC_G_CROP, VIDIOC_S_CROP"><code class="constant">VIDIOC_S_CROP</code></a> using struct&#160;<a class="link" href="vidioc-g-crop.html#v4l2-crop" title="Table&#160;A.51.&#160;struct v4l2_crop">v4l2_crop</a>, and the related
+<a class="link" href="vidioc-cropcap.html" title="ioctl VIDIOC_CROPCAP"><code class="constant">VIDIOC_CROPCAP</code></a> ioctl. This is a rather complex matter, see
+<a class="xref" href="crop.html" title="Image Cropping, Insertion and Scaling">the section called &#8220;Image Cropping, Insertion and Scaling&#8221;</a> for details.</p><p>The <em class="structfield"><code>x</code></em>,
+<em class="structfield"><code>y</code></em>, <em class="structfield"><code>width</code></em> and
+<em class="structfield"><code>height</code></em> fields moved into struct&#160;<a class="link" href="overlay.html#v4l2-rect" title="Table&#160;4.3.&#160;struct v4l2_rect">v4l2_rect</a>
+substructure <em class="structfield"><code>c</code></em> of struct
+<span class="structname">v4l2_crop</span>. The
+<em class="structfield"><code>decimation</code></em> field was dropped. In the V4L2
+API the scaling factor is implied by the size of the cropping
+rectangle and the size of the captured or overlaid image.</p><p>The <code class="constant">VIDEO_CAPTURE_ODD</code>
+and <code class="constant">VIDEO_CAPTURE_EVEN</code> flags to capture only the
+odd or even field, respectively, were replaced by
+<code class="constant">V4L2_FIELD_TOP</code> and
+<code class="constant">V4L2_FIELD_BOTTOM</code> in the field named
+<em class="structfield"><code>field</code></em> of struct&#160;<a class="link" href="pixfmt.html#v4l2-pix-format" title="Table&#160;2.1.&#160;struct v4l2_pix_format">v4l2_pix_format</a> and
+struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a>. These structures are used to select a capture or
+overlay format with the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl.</p></div><div class="section" title="Reading Images, Memory Mapping"><div class="titlepage"><div><div><h3 class="title"><a id="idp31030800"></a>Reading Images, Memory Mapping</h3></div></div></div><div class="toc"><dl><dt><span class="section"><a href="compat.html#idp31031160">Capturing using the read method</a></span></dt><dt><span class="section"><a href="compat.html#idp31037784">Capturing using memory mapping</a></span></dt></dl></div><div class="section" title="Capturing using the read method"><div class="titlepage"><div><div><h4 class="title"><a id="idp31031160"></a>Capturing using the read method</h4></div></div></div><p>There is no essential difference between reading images
+from a V4L or V4L2 device using the <a class="link" href="func-read.html" title="V4L2 read()"><code class="function">read()</code></a> function, however V4L2
+drivers are not required to support this I/O method. Applications can
+determine if the function is available with the <a class="link" href="vidioc-querycap.html" title="ioctl VIDIOC_QUERYCAP"><code class="constant">VIDIOC_QUERYCAP</code></a>
+ioctl. All V4L2 devices exchanging data with applications must support
+the <a class="link" href="func-select.html" title="V4L2 select()"><code class="function">select()</code></a> and <a class="link" href="func-poll.html" title="V4L2 poll()"><code class="function">poll()</code></a> functions.</p><p>To select an image format and size, V4L provides the
+<code class="constant">VIDIOCSPICT</code> and <code class="constant">VIDIOCSWIN</code>
+ioctls. V4L2 uses the general-purpose data format negotiation ioctls
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_G_FMT</code></a> and <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a>. They take a pointer to a
+struct&#160;<a class="link" href="vidioc-g-fmt.html#v4l2-format" title="Table&#160;A.67.&#160;struct v4l2_format">v4l2_format</a> as argument, here the struct&#160;<a class="link" href="pixfmt.html#v4l2-pix-format" title="Table&#160;2.1.&#160;struct v4l2_pix_format">v4l2_pix_format</a> named
+<em class="structfield"><code>pix</code></em> of its <em class="structfield"><code>fmt</code></em>
+union is used.</p><p>For more information about the V4L2 read interface see
+<a class="xref" href="io.html#rw" title="Read/Write">the section called &#8220;Read/Write&#8221;</a>.</p></div><div class="section" title="Capturing using memory mapping"><div class="titlepage"><div><div><h4 class="title"><a id="idp31037784"></a>Capturing using memory mapping</h4></div></div></div><p>Applications can read from V4L devices by mapping
+buffers in device memory, or more often just buffers allocated in
+DMA-able system memory, into their address space. This avoids the data
+copying overhead of the read method. V4L2 supports memory mapping as
+well, with a few differences.</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><thead><tr><th>V4L</th><th>V4L2</th></tr></thead><tbody valign="top"><tr><td valign="top">&#160;</td><td valign="top">The image format must be selected before
+buffers are allocated, with the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl. When no format
+is selected the driver may use the last, possibly by another
+application requested format.</td></tr><tr><td valign="top"><p>Applications cannot change the number of
+buffers. The it is built into the driver, unless it has a module
+option to change the number when the driver module is
+loaded.</p></td><td valign="top"><p>The <a class="link" href="vidioc-reqbufs.html" title="ioctl VIDIOC_REQBUFS"><code class="constant">VIDIOC_REQBUFS</code></a> ioctl allocates the
+desired number of buffers, this is a required step in the initialization
+sequence.</p></td></tr><tr><td valign="top"><p>Drivers map all buffers as one contiguous
+range of memory. The <code class="constant">VIDIOCGMBUF</code> ioctl is
+available to query the number of buffers, the offset of each buffer
+from the start of the virtual file, and the overall amount of memory
+used, which can be used as arguments for the <a class="link" href="func-mmap.html" title="V4L2 mmap()"><code class="function">mmap()</code></a>
+function.</p></td><td valign="top"><p>Buffers are individually mapped. The
+offset and size of each buffer can be determined with the
+<a class="link" href="vidioc-querybuf.html" title="ioctl VIDIOC_QUERYBUF"><code class="constant">VIDIOC_QUERYBUF</code></a> ioctl.</p></td></tr><tr><td valign="top"><p>The <code class="constant">VIDIOCMCAPTURE</code>
+ioctl prepares a buffer for capturing. It also determines the image
+format for this buffer. The ioctl returns immediately, eventually with
+an <span class="errorcode">EAGAIN</span> error code if no video signal had been detected. When the driver
+supports more than one buffer applications can call the ioctl multiple
+times and thus have multiple outstanding capture
+requests.</p><p>The <code class="constant">VIDIOCSYNC</code> ioctl
+suspends execution until a particular buffer has been
+filled.</p></td><td valign="top"><p>Drivers maintain an incoming and outgoing
+queue. <a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF"><code class="constant">VIDIOC_QBUF</code></a> enqueues any empty buffer into the incoming
+queue. Filled buffers are dequeued from the outgoing queue with the
+<a class="link" href="vidioc-qbuf.html" title="ioctl VIDIOC_QBUF, VIDIOC_DQBUF"><code class="constant">VIDIOC_DQBUF</code></a> ioctl. To wait until filled buffers become available this
+function, <a class="link" href="func-select.html" title="V4L2 select()"><code class="function">select()</code></a> or <a class="link" href="func-poll.html" title="V4L2 poll()"><code class="function">poll()</code></a> can be used. The
+<a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMON</code></a> ioctl must be called once after enqueuing one or
+more buffers to start capturing. Its counterpart
+<a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMOFF</code></a> stops capturing and dequeues all buffers from both
+queues. Applications can query the signal status, if known, with the
+<a class="link" href="vidioc-enuminput.html" title="ioctl VIDIOC_ENUMINPUT"><code class="constant">VIDIOC_ENUMINPUT</code></a> ioctl.</p></td></tr></tbody></table></div><p>For a more in-depth discussion of memory mapping and
+examples, see <a class="xref" href="mmap.html" title="Streaming I/O (Memory Mapping)">the section called &#8220;Streaming I/O (Memory Mapping)&#8221;</a>.</p></div></div><div class="section" title="Reading Raw VBI Data"><div class="titlepage"><div><div><h3 class="title"><a id="idp31051664"></a>Reading Raw VBI Data</h3></div></div></div><p>Originally the V4L API did not specify a raw VBI capture
+interface, only the device file <code class="filename">/dev/vbi</code> was
+reserved for this purpose. The only driver supporting this interface
+was the BTTV driver, de-facto defining the V4L VBI interface. Reading
+from the device yields a raw VBI image with the following
+parameters:</p><div class="informaltable"><table border="1"><colgroup><col /><col /></colgroup><thead><tr><th>struct&#160;<a class="link" href="raw-vbi.html#v4l2-vbi-format" title="Table&#160;4.4.&#160;struct v4l2_vbi_format">v4l2_vbi_format</a></th><th>V4L, BTTV driver</th></tr></thead><tbody valign="top"><tr><td valign="top">sampling_rate</td><td valign="top">28636363&#160;Hz NTSC (or any other 525-line
+standard); 35468950&#160;Hz PAL and SECAM (625-line standards)</td></tr><tr><td valign="top">offset</td><td valign="top">?</td></tr><tr><td valign="top">samples_per_line</td><td valign="top">2048</td></tr><tr><td valign="top">sample_format</td><td valign="top">V4L2_PIX_FMT_GREY. The last four bytes (a
+machine endianness integer) contain a frame counter.</td></tr><tr><td valign="top">start[]</td><td valign="top">10, 273 NTSC; 22, 335 PAL and SECAM</td></tr><tr><td valign="top">count[]</td><td valign="top"><p>16, 16<sup>[<a id="idp31058312" href="#ftn.idp31058312" class="footnote">a</a>]</sup></p></td></tr><tr><td valign="top">flags</td><td valign="top">0</td></tr></tbody><tbody class="footnotes"><tr><td colspan="2"><div class="footnote"><p><sup>[<a id="ftn.idp31058312" href="#idp31058312" class="para">a</a>] </sup>Old driver
+versions used different values, eventually the custom
+<code class="constant">BTTV_VBISIZE</code> ioctl was added to query the
+correct values.</p></div></td></tr></tbody></table></div><p>Undocumented in the V4L specification, in Linux 2.3 the
+<code class="constant">VIDIOCGVBIFMT</code> and
+<code class="constant">VIDIOCSVBIFMT</code> ioctls using struct
+<span class="structname">vbi_format</span> were added to determine the VBI
+image parameters. These ioctls are only partially compatible with the
+V4L2 VBI interface specified in <a class="xref" href="raw-vbi.html" title="Raw VBI Data Interface">the section called &#8220;Raw VBI Data Interface&#8221;</a>.</p><p>An <em class="structfield"><code>offset</code></em> field does not
+exist, <em class="structfield"><code>sample_format</code></em> is supposed to be
+<code class="constant">VIDEO_PALETTE_RAW</code>, equivalent to
+<code class="constant">V4L2_PIX_FMT_GREY</code>. The remaining fields are
+probably equivalent to struct&#160;<a class="link" href="raw-vbi.html#v4l2-vbi-format" title="Table&#160;4.4.&#160;struct v4l2_vbi_format">v4l2_vbi_format</a>.</p><p>Apparently only the Zoran (ZR 36120) driver implements
+these ioctls. The semantics differ from those specified for V4L2 in two
+ways. The parameters are reset on <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a> and
+<code class="constant">VIDIOCSVBIFMT</code> always returns an <span class="errorcode">EINVAL</span> error code if the
+parameters are invalid.</p></div><div class="section" title="Miscellaneous"><div class="titlepage"><div><div><h3 class="title"><a id="idp31064480"></a>Miscellaneous</h3></div></div></div><p>V4L2 has no equivalent of the
+<code class="constant">VIDIOCGUNIT</code> ioctl. Applications can find the VBI
+device associated with a video capture device (or vice versa) by
+reopening the device and requesting VBI data. For details see
+<a class="xref" href="common.html#open" title="Opening and Closing Devices">the section called &#8220;Opening and Closing Devices&#8221;</a>.</p><p>No replacement exists for <code class="constant">VIDIOCKEY</code>,
+and the V4L functions for microcode programming. A new interface for
+MPEG compression and playback devices is documented in <a class="xref" href="extended-controls.html" title="Extended Controls">the section called &#8220;Extended Controls&#8221;</a>.</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="libv4l.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="v4l2spec.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="hist-v4l2.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&#160;6.&#160;Libv4l Userspace Library&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Changes of the V4L2 API</td></tr></table></div></body></html>

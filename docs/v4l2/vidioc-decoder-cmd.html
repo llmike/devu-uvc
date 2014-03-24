@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>ioctl VIDIOC_DECODER_CMD, VIDIOC_TRY_DECODER_CMD</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="user-func.html" title="Appendix&#160;A.&#160;Function Reference" /><link rel="prev" href="vidioc-dbg-g-register.html" title="ioctl VIDIOC_DBG_G_REGISTER, VIDIOC_DBG_S_REGISTER" /><link rel="next" href="vidioc-dqevent.html" title="ioctl VIDIOC_DQEVENT" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">ioctl VIDIOC_DECODER_CMD, VIDIOC_TRY_DECODER_CMD</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="vidioc-dbg-g-register.html">Prev</a>&#160;</td><th width="60%" align="center">Appendix&#160;A.&#160;Function Reference</th><td width="20%" align="right">&#160;<a accesskey="n" href="vidioc-dqevent.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="ioctl VIDIOC_DECODER_CMD, VIDIOC_TRY_DECODER_CMD"><a id="vidioc-decoder-cmd"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>VIDIOC_DECODER_CMD, VIDIOC_TRY_DECODER_CMD &#8212; Execute an decoder command</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>struct v4l2_decoder_cmd *<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div></div><div class="refsect1" title="Arguments"><a id="idp32340888"></a><h2>Arguments</h2><div class="variablelist"><dl><dt><span class="term"><em class="parameter"><code>fd</code></em></span></dt><dd><p>File descriptor returned by <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>.</p></dd><dt><span class="term"><em class="parameter"><code>request</code></em></span></dt><dd><p>VIDIOC_DECODER_CMD, VIDIOC_TRY_DECODER_CMD</p></dd><dt><span class="term"><em class="parameter"><code>argp</code></em></span></dt><dd><p></p></dd></dl></div></div><div class="refsect1" title="Description"><a id="idp32345000"></a><h2>Description</h2><p>These ioctls control an audio/video (usually MPEG-) decoder.
+<code class="constant">VIDIOC_DECODER_CMD</code> sends a command to the
+decoder, <code class="constant">VIDIOC_TRY_DECODER_CMD</code> can be used to
+try a command without actually executing it. To send a command applications
+must initialize all fields of a struct&#160;<a class="link" href="vidioc-decoder-cmd.html#v4l2-decoder-cmd" title="Table&#160;A.10.&#160;struct v4l2_decoder_cmd">v4l2_decoder_cmd</a> and call
+<code class="constant">VIDIOC_DECODER_CMD</code> or <code class="constant">VIDIOC_TRY_DECODER_CMD</code>
+with a pointer to this structure.</p><p>The <em class="structfield"><code>cmd</code></em> field must contain the
+command code. Some commands use the <em class="structfield"><code>flags</code></em> field for
+additional information.
+</p><p>A <code class="function">write</code>() or <a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMON</code></a> call sends an implicit
+START command to the decoder if it has not been started yet.
+</p><p>A <code class="function">close</code>() or <a class="link" href="vidioc-streamon.html" title="ioctl VIDIOC_STREAMON, VIDIOC_STREAMOFF"><code class="constant">VIDIOC_STREAMOFF</code></a> call of a streaming
+file descriptor sends an implicit immediate STOP command to the decoder, and all
+buffered data is discarded.</p><p>These ioctls are optional, not all drivers may support
+them. They were introduced in Linux 3.3.</p><div class="table"><a id="v4l2-decoder-cmd"></a><p class="title"><b>Table&#160;A.10.&#160;struct <span class="structname">v4l2_decoder_cmd</span></b></p><div class="table-contents"><table summary="struct v4l2_decoder_cmd" width="100%" border="0"><colgroup><col /><col /><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>cmd</code></em></td><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">The decoder command, see <a class="xref" href="vidioc-decoder-cmd.html#decoder-cmds" title="Table&#160;A.11.&#160;Decoder Commands">Table&#160;A.11, &#8220;Decoder Commands&#8221;</a>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>flags</code></em></td><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">Flags to go with the command. If no flags are defined for
+this command, drivers and applications must set this field to zero.</td></tr><tr><td valign="top">union</td><td valign="top">(anonymous)</td><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">&#160;</td></tr><tr><td valign="top">&#160;</td><td valign="top">struct</td><td valign="top"><em class="structfield"><code>start</code></em></td><td valign="top">&#160;</td><td valign="top">Structure containing additional data for the
+<code class="constant">V4L2_DEC_CMD_START</code> command.</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">__s32</td><td valign="top"><em class="structfield"><code>speed</code></em></td><td valign="top">Playback speed and direction. The playback speed is defined as
+<em class="structfield"><code>speed</code></em>/1000 of the normal speed. So 1000 is normal playback.
+Negative numbers denote reverse playback, so -1000 does reverse playback at normal
+speed. Speeds -1, 0 and 1 have special meanings: speed 0 is shorthand for 1000
+(normal playback). A speed of 1 steps just one frame forward, a speed of -1 steps
+just one frame back.
+	    </td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>format</code></em></td><td valign="top">Format restrictions. This field is set by the driver, not the
+application. Possible values are <code class="constant">V4L2_DEC_START_FMT_NONE</code> if
+there are no format restrictions or <code class="constant">V4L2_DEC_START_FMT_GOP</code>
+if the decoder operates on full GOPs (<em class="wordasword">Group Of Pictures</em>).
+This is usually the case for reverse playback: the decoder needs full GOPs, which
+it can then play in reverse order. So to implement reverse playback the application
+must feed the decoder the last GOP in the video file, then the GOP before that, etc. etc.
+	    </td></tr><tr><td valign="top">&#160;</td><td valign="top">struct</td><td valign="top"><em class="structfield"><code>stop</code></em></td><td valign="top">&#160;</td><td valign="top">Structure containing additional data for the
+<code class="constant">V4L2_DEC_CMD_STOP</code> command.</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">__u64</td><td valign="top"><em class="structfield"><code>pts</code></em></td><td valign="top">Stop playback at this <em class="structfield"><code>pts</code></em> or immediately
+if the playback is already past that timestamp. Leave to 0 if you want to stop after the
+last frame was decoded.
+	    </td></tr><tr><td valign="top">&#160;</td><td valign="top">struct</td><td valign="top"><em class="structfield"><code>raw</code></em></td><td valign="top">&#160;</td><td valign="top">&#160;</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>data</code></em>[16]</td><td valign="top">Reserved for future extensions. Drivers and
+applications must set the array to zero.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="decoder-cmds"></a><p class="title"><b>Table&#160;A.11.&#160;Decoder Commands</b></p><div class="table-contents"><table summary="Decoder Commands" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_DEC_CMD_START</code></td><td valign="top">0</td><td valign="top">Start the decoder. When the decoder is already
+running or paused, this command will just change the playback speed.
+That means that calling <code class="constant">V4L2_DEC_CMD_START</code> when
+the decoder was paused will <span class="emphasis"><em>not</em></span> resume the decoder.
+You have to explicitly call <code class="constant">V4L2_DEC_CMD_RESUME</code> for that.
+This command has one flag:
+<code class="constant">V4L2_DEC_CMD_START_MUTE_AUDIO</code>. If set, then audio will
+be muted when playing back at a non-standard speed.
+            </td></tr><tr><td valign="top"><code class="constant">V4L2_DEC_CMD_STOP</code></td><td valign="top">1</td><td valign="top">Stop the decoder. When the decoder is already stopped,
+this command does nothing. This command has two flags:
+if <code class="constant">V4L2_DEC_CMD_STOP_TO_BLACK</code> is set, then the decoder will
+set the picture to black after it stopped decoding. Otherwise the last image will
+repeat. If <code class="constant">V4L2_DEC_CMD_STOP_IMMEDIATELY</code> is set, then the decoder
+stops immediately (ignoring the <em class="structfield"><code>pts</code></em> value), otherwise it
+will keep decoding until timestamp &gt;= pts or until the last of the pending data from
+its internal buffers was decoded.
+</td></tr><tr><td valign="top"><code class="constant">V4L2_DEC_CMD_PAUSE</code></td><td valign="top">2</td><td valign="top">Pause the decoder. When the decoder has not been
+started yet, the driver will return an <span class="errorcode">EPERM</span> error code. When the decoder is
+already paused, this command does nothing. This command has one flag:
+if <code class="constant">V4L2_DEC_CMD_PAUSE_TO_BLACK</code> is set, then set the
+decoder output to black when paused.
+</td></tr><tr><td valign="top"><code class="constant">V4L2_DEC_CMD_RESUME</code></td><td valign="top">3</td><td valign="top">Resume decoding after a PAUSE command. When the
+decoder has not been started yet, the driver will return an <span class="errorcode">EPERM</span> error code.
+When the decoder is already running, this command does nothing. No
+flags are defined for this command.</td></tr></tbody></table></div></div><br class="table-break" /></div><div class="refsect1" title="Return Value"><a id="idp32378504"></a><h2>Return Value</h2><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="variablelist"><dl><dt><span class="term"><span class="errorcode">EINVAL</span></span></dt><dd><p>The <em class="structfield"><code>cmd</code></em> field is invalid.</p></dd><dt><span class="term"><span class="errorcode">EPERM</span></span></dt><dd><p>The application sent a PAUSE or RESUME command when
+the decoder was not running.</p></dd></dl></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="vidioc-dbg-g-register.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="user-func.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="vidioc-dqevent.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ioctl VIDIOC_DBG_G_REGISTER, VIDIOC_DBG_S_REGISTER&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;ioctl VIDIOC_DQEVENT</td></tr></table></div></body></html>

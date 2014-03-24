@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;2.&#160;Image Formats</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="v4l2spec.html" title="Part&#160;I.&#160;Video for Linux Two API Specification" /><link rel="prev" href="streaming-par.html" title="Streaming Parameters" /><link rel="next" href="ch02s02.html" title="Multi-planar format structures" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;2.&#160;Image Formats</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="streaming-par.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;I.&#160;Video for Linux Two API Specification</th><td width="20%" align="right">&#160;<a accesskey="n" href="ch02s02.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;2.&#160;Image Formats"><div class="titlepage"><div><div><h2 class="title"><a id="pixfmt"></a>Chapter&#160;2.&#160;Image Formats</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="pixfmt.html#idp22409960">Single-planar format structure</a></span></dt><dt><span class="section"><a href="ch02s02.html">Multi-planar format structures</a></span></dt><dt><span class="section"><a href="ch02s03.html">Standard Image Formats</a></span></dt><dt><span class="section"><a href="colorspaces.html">Colorspaces</a></span></dt><dt><span class="section"><a href="pixfmt-indexed.html">Indexed Format</a></span></dt><dt><span class="section"><a href="pixfmt-rgb.html">RGB Formats</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="packed-rgb.html">Packed RGB formats</a></span><span class="refpurpose"> &#8212; Packed RGB formats</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-SBGGR8.html">V4L2_PIX_FMT_SBGGR8 ('BA81')</a></span><span class="refpurpose"> &#8212; Bayer RGB format</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-SGBRG8.html">V4L2_PIX_FMT_SGBRG8 ('GBRG')</a></span><span class="refpurpose"> &#8212; Bayer RGB format</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-SGRBG8.html">V4L2_PIX_FMT_SGRBG8 ('GRBG')</a></span><span class="refpurpose"> &#8212; Bayer RGB format</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-SRGGB8.html">V4L2_PIX_FMT_SRGGB8 ('RGGB')</a></span><span class="refpurpose"> &#8212; Bayer RGB format</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-SBGGR16.html">V4L2_PIX_FMT_SBGGR16 ('BYR2')</a></span><span class="refpurpose"> &#8212; Bayer RGB format</span></dt><dt><span class="refentrytitle"><a href="pixfmt-srggb10.html">V4L2_PIX_FMT_SRGGB10 ('RG10'),
+	 V4L2_PIX_FMT_SGRBG10 ('BA10'),
+	 V4L2_PIX_FMT_SGBRG10 ('GB10'),
+	 V4L2_PIX_FMT_SBGGR10 ('BG10'),
+	 </a></span><span class="refpurpose"> &#8212; 10-bit Bayer formats expanded to 16 bits</span></dt><dt><span class="refentrytitle"><a href="re08.html">
+	      V4L2_PIX_FMT_SBGGR10ALAW8 ('aBA8'),
+	      V4L2_PIX_FMT_SGBRG10ALAW8 ('aGA8'),
+	      V4L2_PIX_FMT_SGRBG10ALAW8 ('agA8'),
+	      V4L2_PIX_FMT_SRGGB10ALAW8 ('aRA8'),
+	    </a></span><span class="refpurpose"> &#8212; 10-bit Bayer formats compressed to 8 bits</span></dt><dt><span class="refentrytitle"><a href="pixfmt-srggb10dpcm8.html">
+	 V4L2_PIX_FMT_SBGGR10DPCM8 ('bBA8'),
+	 V4L2_PIX_FMT_SGBRG10DPCM8 ('bGA8'),
+	 V4L2_PIX_FMT_SGRBG10DPCM8 ('BD10'),
+	 V4L2_PIX_FMT_SRGGB10DPCM8 ('bRA8'),
+	 </a></span><span class="refpurpose"> &#8212; 10-bit Bayer formats compressed to 8 bits</span></dt><dt><span class="refentrytitle"><a href="re10.html">V4L2_PIX_FMT_SRGGB12 ('RG12'),
+	 V4L2_PIX_FMT_SGRBG12 ('BA12'),
+	 V4L2_PIX_FMT_SGBRG12 ('GB12'),
+	 V4L2_PIX_FMT_SBGGR12 ('BG12'),
+	 </a></span><span class="refpurpose"> &#8212; 12-bit Bayer formats expanded to 16 bits</span></dt></dl></dd><dt><span class="section"><a href="yuv-formats.html">YUV Formats</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="packed-yuv.html">Packed YUV formats</a></span><span class="refpurpose"> &#8212; Packed YUV formats</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-GREY.html">V4L2_PIX_FMT_GREY ('GREY')</a></span><span class="refpurpose"> &#8212; Grey-scale image</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-Y10.html">V4L2_PIX_FMT_Y10 ('Y10 ')</a></span><span class="refpurpose"> &#8212; Grey-scale image</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-Y12.html">V4L2_PIX_FMT_Y12 ('Y12 ')</a></span><span class="refpurpose"> &#8212; Grey-scale image</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-Y10BPACK.html">V4L2_PIX_FMT_Y10BPACK ('Y10B')</a></span><span class="refpurpose"> &#8212; Grey-scale image as a bit-packed array</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-Y16.html">V4L2_PIX_FMT_Y16 ('Y16 ')</a></span><span class="refpurpose"> &#8212; Grey-scale image</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-UV8.html">V4L2_PIX_FMT_UV8  ('UV8')</a></span><span class="refpurpose"> &#8212; UV plane interleaved</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-YUYV.html">V4L2_PIX_FMT_YUYV ('YUYV')</a></span><span class="refpurpose"> &#8212; Packed format with &#189; horizontal chroma
+resolution, also known as YUV 4:2:2</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-UYVY.html">V4L2_PIX_FMT_UYVY ('UYVY')</a></span><span class="refpurpose"> &#8212; Variation of
+<code class="constant">V4L2_PIX_FMT_YUYV</code> with different order of samples
+in memory</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-YVYU.html">V4L2_PIX_FMT_YVYU ('YVYU')</a></span><span class="refpurpose"> &#8212; Variation of
+<code class="constant">V4L2_PIX_FMT_YUYV</code> with different order of samples
+in memory</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-VYUY.html">V4L2_PIX_FMT_VYUY ('VYUY')</a></span><span class="refpurpose"> &#8212; Variation of
+<code class="constant">V4L2_PIX_FMT_YUYV</code> with different order of samples
+in memory</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-Y41P.html">V4L2_PIX_FMT_Y41P ('Y41P')</a></span><span class="refpurpose"> &#8212; Format with &#188; horizontal chroma
+resolution, also known as YUV 4:1:1</span></dt><dt><span class="refentrytitle"><a href="re23.html">V4L2_PIX_FMT_YVU420 ('YV12'), V4L2_PIX_FMT_YUV420 ('YU12')</a></span><span class="refpurpose"> &#8212; Planar formats with &#189; horizontal and
+vertical chroma resolution, also known as YUV 4:2:0</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-YUV420M.html">V4L2_PIX_FMT_YUV420M ('YM12')</a></span><span class="refpurpose"> &#8212; Variation of <code class="constant">V4L2_PIX_FMT_YUV420</code>
+	  with planes non contiguous in memory. </span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-YVU420M.html">V4L2_PIX_FMT_YVU420M ('YM21')</a></span><span class="refpurpose"> &#8212; Variation of <code class="constant">V4L2_PIX_FMT_YVU420</code>
+	  with planes non contiguous in memory. </span></dt><dt><span class="refentrytitle"><a href="re26.html">V4L2_PIX_FMT_YVU410 ('YVU9'), V4L2_PIX_FMT_YUV410 ('YUV9')</a></span><span class="refpurpose"> &#8212; Planar formats with &#188; horizontal and
+vertical chroma resolution, also known as YUV 4:1:0</span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-YUV422P.html">V4L2_PIX_FMT_YUV422P ('422P')</a></span><span class="refpurpose"> &#8212; Format with &#189; horizontal chroma resolution,
+also known as YUV 4:2:2. Planar layout as opposed to
+<code class="constant">V4L2_PIX_FMT_YUYV</code></span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-YUV411P.html">V4L2_PIX_FMT_YUV411P ('411P')</a></span><span class="refpurpose"> &#8212; Format with &#188; horizontal chroma resolution,
+also known as YUV 4:1:1. Planar layout as opposed to
+<code class="constant">V4L2_PIX_FMT_Y41P</code></span></dt><dt><span class="refentrytitle"><a href="re29.html">V4L2_PIX_FMT_NV12 ('NV12'), V4L2_PIX_FMT_NV21 ('NV21')</a></span><span class="refpurpose"> &#8212; Formats with &#189; horizontal and vertical
+chroma resolution, also known as YUV 4:2:0. One luminance and one
+chrominance plane with alternating chroma samples as opposed to
+<code class="constant">V4L2_PIX_FMT_YVU420</code></span></dt><dt><span class="refentrytitle"><a href="re30.html">V4L2_PIX_FMT_NV12M ('NM12'), V4L2_PIX_FMT_NV21M ('NM21'), V4L2_PIX_FMT_NV12MT_16X16</a></span><span class="refpurpose"> &#8212; Variation of <code class="constant">V4L2_PIX_FMT_NV12</code> and <code class="constant">V4L2_PIX_FMT_NV21</code> with planes
+	  non contiguous in memory. </span></dt><dt><span class="refentrytitle"><a href="re31.html">V4L2_PIX_FMT_NV12MT ('TM12')</a></span><span class="refpurpose"> &#8212; Formats with &#189; horizontal and vertical
+chroma resolution. This format has two planes - one for luminance and one for
+chrominance. Chroma samples are interleaved. The difference to
+<code class="constant">V4L2_PIX_FMT_NV12</code> is the memory layout. Pixels are
+grouped in macroblocks of 64x32 size. The order of macroblocks in memory is
+also not standard.
+	</span></dt><dt><span class="refentrytitle"><a href="re32.html">V4L2_PIX_FMT_NV16 ('NV16'), V4L2_PIX_FMT_NV61 ('NV61')</a></span><span class="refpurpose"> &#8212; Formats with &#189; horizontal
+chroma resolution, also known as YUV 4:2:2. One luminance and one
+chrominance plane with alternating chroma samples as opposed to
+<code class="constant">V4L2_PIX_FMT_YVU420</code></span></dt><dt><span class="refentrytitle"><a href="re33.html">V4L2_PIX_FMT_NV16M ('NM16'), V4L2_PIX_FMT_NV61M ('NM61')</a></span><span class="refpurpose"> &#8212; Variation of <code class="constant">V4L2_PIX_FMT_NV16</code> and <code class="constant">V4L2_PIX_FMT_NV61</code> with planes
+	  non contiguous in memory. </span></dt><dt><span class="refentrytitle"><a href="re34.html">V4L2_PIX_FMT_NV24 ('NV24'), V4L2_PIX_FMT_NV42 ('NV42')</a></span><span class="refpurpose"> &#8212; Formats with full horizontal and vertical
+chroma resolutions, also known as YUV 4:4:4. One luminance and one
+chrominance plane with alternating chroma samples as opposed to
+<code class="constant">V4L2_PIX_FMT_YVU420</code></span></dt><dt><span class="refentrytitle"><a href="V4L2-PIX-FMT-M420.html">V4L2_PIX_FMT_M420 ('M420')</a></span><span class="refpurpose"> &#8212; Format with &#189; horizontal and vertical chroma
+	resolution, also known as YUV 4:2:0. Hybrid plane line-interleaved
+	layout.</span></dt></dl></dd><dt><span class="section"><a href="ch02s08.html">Compressed Formats</a></span></dt><dt><span class="section"><a href="pixfmt-reserved.html">Reserved Format Identifiers</a></span></dt></dl></div><p>The V4L2 API was primarily designed for devices exchanging
+image data with applications. The
+<span class="structname">v4l2_pix_format</span> and <span class="structname">v4l2_pix_format_mplane
+</span> structures define the format and layout of an image in memory.
+The former is used with the single-planar API, while the latter is used with the
+multi-planar version (see <a class="xref" href="planar-apis.html" title="Single- and multi-planar APIs">the section called &#8220;Single- and multi-planar APIs&#8221;</a>). Image formats are
+negotiated with the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl. (The explanations here focus on video
+capturing and output, for overlay frame buffer formats see also
+<a class="link" href="vidioc-g-fbuf.html" title="ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF"><code class="constant">VIDIOC_G_FBUF</code></a>.)</p><div class="section" title="Single-planar format structure"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="idp22409960"></a>Single-planar format structure</h2></div></div></div><div class="table"><a id="v4l2-pix-format"></a><p class="title"><b>Table&#160;2.1.&#160;struct <span class="structname">v4l2_pix_format</span></b></p><div class="table-contents"><table summary="struct v4l2_pix_format" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>width</code></em></td><td valign="top">Image width in pixels.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>height</code></em></td><td valign="top">Image height in pixels.</td></tr><tr><td colspan="3" valign="top">Applications set these fields to
+request an image size, drivers return the closest possible values. In
+case of planar formats the <em class="structfield"><code>width</code></em> and
+<em class="structfield"><code>height</code></em> applies to the largest plane. To
+avoid ambiguities drivers must return values rounded up to a multiple
+of the scale factor of any smaller planes. For example when the image
+format is YUV 4:2:0, <em class="structfield"><code>width</code></em> and
+<em class="structfield"><code>height</code></em> must be multiples of two.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>pixelformat</code></em></td><td valign="top">The pixel format or type of compression, set by the
+application. This is a little endian <a class="link" href="vidioc-enum-fmt.html#v4l2-fourcc">four character code</a>. V4L2 defines
+standard RGB formats in <a class="xref" href="packed-rgb.html#rgb-formats" title="Table&#160;2.6.&#160;Packed RGB Image Formats">Table&#160;2.6, &#8220;Packed RGB Image Formats&#8221;</a>, YUV formats in <a class="xref" href="yuv-formats.html" title="YUV Formats">the section called &#8220;YUV Formats&#8221;</a>, and reserved codes in <a class="xref" href="pixfmt-reserved.html#reserved-formats" title="Table&#160;2.10.&#160;Reserved Image Formats">Table&#160;2.10, &#8220;Reserved Image Formats&#8221;</a></td></tr><tr><td valign="top">enum&#160;<a class="link" href="field-order.html#v4l2-field" title="Table&#160;3.9.&#160;enum v4l2_field">v4l2_field</a></td><td valign="top"><em class="structfield"><code>field</code></em></td><td valign="top">Video images are typically interlaced. Applications
+can request to capture or output only the top or bottom field, or both
+fields interlaced or sequentially stored in one buffer or alternating
+in separate buffers. Drivers return the actual field order selected.
+For details see <a class="xref" href="field-order.html" title="Field Order">the section called &#8220;Field Order&#8221;</a>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>bytesperline</code></em></td><td valign="top">Distance in bytes between the leftmost pixels in two
+adjacent lines.</td></tr><tr><td colspan="3" valign="top"><p>Both applications and drivers
+can set this field to request padding bytes at the end of each line.
+Drivers however may ignore the value requested by the application,
+returning <em class="structfield"><code>width</code></em> times bytes per pixel or a
+larger value required by the hardware. That implies applications can
+just set this field to zero to get a reasonable
+default.</p><p>Video hardware may access padding bytes,
+therefore they must reside in accessible memory. Consider cases where
+padding bytes after the last line of an image cross a system page
+boundary. Input devices may write padding bytes, the value is
+undefined. Output devices ignore the contents of padding
+bytes.</p><p>When the image format is planar the
+<em class="structfield"><code>bytesperline</code></em> value applies to the largest
+plane and is divided by the same factor as the
+<em class="structfield"><code>width</code></em> field for any smaller planes. For
+example the Cb and Cr planes of a YUV 4:2:0 image have half as many
+padding bytes following each line as the Y plane. To avoid ambiguities
+drivers must return a <em class="structfield"><code>bytesperline</code></em> value
+rounded up to a multiple of the scale factor.</p></td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>sizeimage</code></em></td><td valign="top">Size in bytes of the buffer to hold a complete image,
+set by the driver. Usually this is
+<em class="structfield"><code>bytesperline</code></em> times
+<em class="structfield"><code>height</code></em>. When the image consists of variable
+length compressed data this is the maximum number of bytes required to
+hold an image.</td></tr><tr><td valign="top">enum&#160;<a class="link" href="colorspaces.html#v4l2-colorspace" title="Table&#160;2.4.&#160;enum v4l2_colorspace">v4l2_colorspace</a></td><td valign="top"><em class="structfield"><code>colorspace</code></em></td><td valign="top">This information supplements the
+<em class="structfield"><code>pixelformat</code></em> and must be set by the driver,
+see <a class="xref" href="colorspaces.html" title="Colorspaces">the section called &#8220;Colorspaces&#8221;</a>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>priv</code></em></td><td valign="top">Reserved for custom (driver defined) additional
+information about formats. When not used drivers and applications must
+set this field to zero.</td></tr></tbody></table></div></div><br class="table-break" /></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="streaming-par.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="v4l2spec.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="ch02s02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Streaming Parameters&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Multi-planar format structures</td></tr></table></div></body></html>

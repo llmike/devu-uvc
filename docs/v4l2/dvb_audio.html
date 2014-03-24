@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;12.&#160;DVB Audio Device</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvbapi.html" title="Part&#160;II.&#160;LINUX DVB API" /><link rel="prev" href="video_function_calls.html" title="Video Function Calls" /><link rel="next" href="audio_function_calls.html" title="Audio Function Calls" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;12.&#160;DVB Audio Device</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="video_function_calls.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;II.&#160;LINUX DVB API</th><td width="20%" align="right">&#160;<a accesskey="n" href="audio_function_calls.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;12.&#160;DVB Audio Device"><div class="titlepage"><div><div><h2 class="title"><a id="dvb_audio"></a>Chapter&#160;12.&#160;DVB Audio Device</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="dvb_audio.html#audio_data_types">Audio Data Types</a></span></dt><dd><dl><dt><span class="section"><a href="dvb_audio.html#audio-stream-source-t">audio_stream_source_t</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-play-state-t">audio_play_state_t</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-channel-select-t">audio_channel_select_t</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-status">struct audio_status</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-mixer">struct audio_mixer</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio_encodings">audio encodings</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-karaoke">struct audio_karaoke</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-attributes-t">audio attributes</a></span></dt></dl></dd><dt><span class="section"><a href="audio_function_calls.html">Audio Function Calls</a></span></dt><dd><dl><dt><span class="section"><a href="audio_function_calls.html#audio_fopen">open()</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#audio_fclose">close()</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#audio_fwrite">write()</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_STOP">AUDIO_STOP</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_PLAY">AUDIO_PLAY</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_PAUSE">AUDIO_PAUSE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_CONTINUE">AUDIO_CONTINUE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SELECT_SOURCE">AUDIO_SELECT_SOURCE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_MUTE">AUDIO_SET_MUTE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_AV_SYNC">AUDIO_SET_AV_SYNC</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_BYPASS_MODE">AUDIO_SET_BYPASS_MODE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_CHANNEL_SELECT">AUDIO_CHANNEL_SELECT</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_BILINGUAL_CHANNEL_SELECT">AUDIO_BILINGUAL_CHANNEL_SELECT</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_GET_PTS">AUDIO_GET_PTS</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_GET_STATUS">AUDIO_GET_STATUS</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_GET_CAPABILITIES">AUDIO_GET_CAPABILITIES</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_CLEAR_BUFFER">AUDIO_CLEAR_BUFFER</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_ID">AUDIO_SET_ID</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_MIXER">AUDIO_SET_MIXER</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_STREAMTYPE">AUDIO_SET_STREAMTYPE</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_EXT_ID">AUDIO_SET_EXT_ID</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_ATTRIBUTES">AUDIO_SET_ATTRIBUTES</a></span></dt><dt><span class="section"><a href="audio_function_calls.html#AUDIO_SET_KARAOKE">AUDIO_SET_KARAOKE</a></span></dt></dl></dd></dl></div><p>The DVB audio device controls the MPEG2 audio decoder of the DVB hardware. It
+can be accessed through <span class="tt">/dev/dvb/adapter0/audio0</span>. Data types and and
+ioctl definitions can be accessed by including <span class="tt">linux/dvb/audio.h</span> in your
+application.
+</p><p>Please note that some DVB cards don&#8217;t have their own MPEG decoder, which results in
+the omission of the audio and video device.
+</p><p>
+These ioctls were also used by V4L2 to control MPEG decoders implemented in V4L2. The use
+of these ioctls for that purpose has been made obsolete and proper V4L2 ioctls or controls
+have been created to replace that functionality.</p><div class="section" title="Audio Data Types"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="audio_data_types"></a>Audio Data Types</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="dvb_audio.html#audio-stream-source-t">audio_stream_source_t</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-play-state-t">audio_play_state_t</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-channel-select-t">audio_channel_select_t</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-status">struct audio_status</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-mixer">struct audio_mixer</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio_encodings">audio encodings</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-karaoke">struct audio_karaoke</a></span></dt><dt><span class="section"><a href="dvb_audio.html#audio-attributes-t">audio attributes</a></span></dt></dl></div><p>This section describes the structures, data types and defines used when talking to the
+audio device.
+</p><div class="section" title="audio_stream_source_t"><div class="titlepage"><div><div><h3 class="title"><a id="audio-stream-source-t"></a>audio_stream_source_t</h3></div></div></div><p>The audio stream source is set through the AUDIO_SELECT_SOURCE call and can take
+the following values, depending on whether we are replaying from an internal (demux) or
+external (user write) source.
+</p><pre class="programlisting">
+typedef enum {
+	AUDIO_SOURCE_DEMUX,
+	AUDIO_SOURCE_MEMORY
+} audio_stream_source_t;
+</pre><p>AUDIO_SOURCE_DEMUX selects the demultiplexer (fed either by the frontend or the
+DVR device) as the source of the video stream. If AUDIO_SOURCE_MEMORY
+is selected the stream comes from the application through the <span class="tt">write()</span> system
+call.
+</p></div><div class="section" title="audio_play_state_t"><div class="titlepage"><div><div><h3 class="title"><a id="audio-play-state-t"></a>audio_play_state_t</h3></div></div></div><p>The following values can be returned by the AUDIO_GET_STATUS call representing the
+state of audio playback.
+</p><pre class="programlisting">
+typedef enum {
+	AUDIO_STOPPED,
+	AUDIO_PLAYING,
+	AUDIO_PAUSED
+} audio_play_state_t;
+</pre></div><div class="section" title="audio_channel_select_t"><div class="titlepage"><div><div><h3 class="title"><a id="audio-channel-select-t"></a>audio_channel_select_t</h3></div></div></div><p>The audio channel selected via AUDIO_CHANNEL_SELECT is determined by the
+following values.
+</p><pre class="programlisting">
+typedef enum {
+	AUDIO_STEREO,
+	AUDIO_MONO_LEFT,
+	AUDIO_MONO_RIGHT,
+	AUDIO_MONO,
+	AUDIO_STEREO_SWAPPED
+} audio_channel_select_t;
+</pre></div><div class="section" title="struct audio_status"><div class="titlepage"><div><div><h3 class="title"><a id="audio-status"></a>struct audio_status</h3></div></div></div><p>The AUDIO_GET_STATUS call returns the following structure informing about various
+states of the playback operation.
+</p><pre class="programlisting">
+typedef struct audio_status {
+	boolean AV_sync_state;
+	boolean mute_state;
+	audio_play_state_t play_state;
+	audio_stream_source_t stream_source;
+	audio_channel_select_t channel_select;
+	boolean bypass_mode;
+	audio_mixer_t mixer_state;
+} audio_status_t;
+</pre></div><div class="section" title="struct audio_mixer"><div class="titlepage"><div><div><h3 class="title"><a id="audio-mixer"></a>struct audio_mixer</h3></div></div></div><p>The following structure is used by the AUDIO_SET_MIXER call to set the audio
+volume.
+</p><pre class="programlisting">
+typedef struct audio_mixer {
+	unsigned int volume_left;
+	unsigned int volume_right;
+} audio_mixer_t;
+</pre></div><div class="section" title="audio encodings"><div class="titlepage"><div><div><h3 class="title"><a id="audio_encodings"></a>audio encodings</h3></div></div></div><p>A call to AUDIO_GET_CAPABILITIES returns an unsigned integer with the following
+bits set according to the hardwares capabilities.
+</p><pre class="programlisting">
+ #define AUDIO_CAP_DTS    1
+ #define AUDIO_CAP_LPCM   2
+ #define AUDIO_CAP_MP1    4
+ #define AUDIO_CAP_MP2    8
+ #define AUDIO_CAP_MP3   16
+ #define AUDIO_CAP_AAC   32
+ #define AUDIO_CAP_OGG   64
+ #define AUDIO_CAP_SDDS 128
+ #define AUDIO_CAP_AC3  256
+</pre></div><div class="section" title="struct audio_karaoke"><div class="titlepage"><div><div><h3 class="title"><a id="audio-karaoke"></a>struct audio_karaoke</h3></div></div></div><p>The ioctl AUDIO_SET_KARAOKE uses the following format:
+</p><pre class="programlisting">
+typedef
+struct audio_karaoke {
+	int vocal1;
+	int vocal2;
+	int melody;
+} audio_karaoke_t;
+</pre><p>If Vocal1 or Vocal2 are non-zero, they get mixed into left and right t at 70% each. If both,
+Vocal1 and Vocal2 are non-zero, Vocal1 gets mixed into the left channel and Vocal2 into the
+right channel at 100% each. Ff Melody is non-zero, the melody channel gets mixed into left
+and right.
+</p></div><div class="section" title="audio attributes"><div class="titlepage"><div><div><h3 class="title"><a id="audio-attributes-t"></a>audio attributes</h3></div></div></div><p>The following attributes can be set by a call to AUDIO_SET_ATTRIBUTES:
+</p><pre class="programlisting">
+ typedef uint16_t audio_attributes_t;
+ /&#8902;   bits: descr. &#8902;/
+ /&#8902;   15-13 audio coding mode (0=ac3, 2=mpeg1, 3=mpeg2ext, 4=LPCM, 6=DTS, &#8902;/
+ /&#8902;   12    multichannel extension &#8902;/
+ /&#8902;   11-10 audio type (0=not spec, 1=language included) &#8902;/
+ /&#8902;    9- 8 audio application mode (0=not spec, 1=karaoke, 2=surround) &#8902;/
+ /&#8902;    7- 6 Quantization / DRC (mpeg audio: 1=DRC exists)(lpcm: 0=16bit,  &#8902;/
+ /&#8902;    5- 4 Sample frequency fs (0=48kHz, 1=96kHz) &#8902;/
+ /&#8902;    2- 0 number of audio channels (n+1 channels) &#8902;/
+</pre></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="video_function_calls.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvbapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="audio_function_calls.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Video Function Calls&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Audio Function Calls</td></tr></table></div></body></html>

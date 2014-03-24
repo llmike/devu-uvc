@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;10.&#160;DVB Demux Device</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvbapi.html" title="Part&#160;II.&#160;LINUX DVB API" /><link rel="prev" href="FE_GET_SET_PROPERTY.html" title="FE_GET_PROPERTY/FE_SET_PROPERTY" /><link rel="next" href="dmx_fcalls.html" title="Demux Function Calls" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;10.&#160;DVB Demux Device</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="FE_GET_SET_PROPERTY.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;II.&#160;LINUX DVB API</th><td width="20%" align="right">&#160;<a accesskey="n" href="dmx_fcalls.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;10.&#160;DVB Demux Device"><div class="titlepage"><div><div><h2 class="title"><a id="dvb_demux"></a>Chapter&#160;10.&#160;DVB Demux Device</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="dvb_demux.html#dmx_types">Demux Data Types</a></span></dt><dd><dl><dt><span class="section"><a href="dvb_demux.html#dmx-output-t">dmx_output_t</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-input-t">dmx_input_t</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-pes-type-t">dmx_pes_type_t</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-filter">struct dmx_filter</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-sct-filter-params">struct dmx_sct_filter_params</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-pes-filter-params">struct dmx_pes_filter_params</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-event">struct dmx_event</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-stc">struct dmx_stc</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-caps">struct dmx_caps</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-source-t">enum dmx_source_t</a></span></dt></dl></dd><dt><span class="section"><a href="dmx_fcalls.html">Demux Function Calls</a></span></dt><dd><dl><dt><span class="section"><a href="dmx_fcalls.html#dmx_fopen">open()</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#dmx_fclose">close()</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#dmx_fread">read()</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#dmx_fwrite">write()</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_START">DMX_START</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_STOP">DMX_STOP</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_SET_FILTER">DMX_SET_FILTER</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_SET_PES_FILTER">DMX_SET_PES_FILTER</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_SET_BUFFER_SIZE">DMX_SET_BUFFER_SIZE</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_GET_EVENT">DMX_GET_EVENT</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_GET_STC">DMX_GET_STC</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_GET_PES_PIDS">DMX_GET_PES_PIDS</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_GET_CAPS">DMX_GET_CAPS</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_SET_SOURCE">DMX_SET_SOURCE</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_ADD_PID">DMX_ADD_PID</a></span></dt><dt><span class="section"><a href="dmx_fcalls.html#DMX_REMOVE_PID">DMX_REMOVE_PID</a></span></dt></dl></dd></dl></div><p>The DVB demux device controls the filters of the DVB hardware/software. It can be
+accessed through <span class="tt">/dev/adapter0/demux0</span>. Data types and and ioctl definitions can be
+accessed by including <span class="tt">linux/dvb/dmx.h</span> in your application.
+</p><div class="section" title="Demux Data Types"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="dmx_types"></a>Demux Data Types</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="dvb_demux.html#dmx-output-t">dmx_output_t</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-input-t">dmx_input_t</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-pes-type-t">dmx_pes_type_t</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-filter">struct dmx_filter</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-sct-filter-params">struct dmx_sct_filter_params</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-pes-filter-params">struct dmx_pes_filter_params</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-event">struct dmx_event</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-stc">struct dmx_stc</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-caps">struct dmx_caps</a></span></dt><dt><span class="section"><a href="dvb_demux.html#dmx-source-t">enum dmx_source_t</a></span></dt></dl></div><div class="section" title="dmx_output_t"><div class="titlepage"><div><div><h3 class="title"><a id="dmx-output-t"></a>dmx_output_t</h3></div></div></div><pre class="programlisting">
+typedef enum
+{
+	DMX_OUT_DECODER, /&#8902; Streaming directly to decoder. &#8902;/
+	DMX_OUT_TAP,     /&#8902; Output going to a memory buffer &#8902;/
+			 /&#8902; (to be retrieved via the read command).&#8902;/
+	DMX_OUT_TS_TAP,  /&#8902; Output multiplexed into a new TS  &#8902;/
+			 /&#8902; (to be retrieved by reading from the &#8902;/
+			 /&#8902; logical DVR device).                 &#8902;/
+	DMX_OUT_TSDEMUX_TAP /&#8902; Like TS_TAP but retrieved from the DMX device &#8902;/
+} dmx_output_t;
+</pre><p><span class="tt">DMX_OUT_TAP</span> delivers the stream output to the demux device on which the ioctl is
+called.
+</p><p><span class="tt">DMX_OUT_TS_TAP</span> routes output to the logical DVR device <span class="tt">/dev/dvb/adapter0/dvr0</span>,
+which delivers a TS multiplexed from all filters for which <span class="tt">DMX_OUT_TS_TAP</span> was
+specified.
+</p></div><div class="section" title="dmx_input_t"><div class="titlepage"><div><div><h3 class="title"><a id="dmx-input-t"></a>dmx_input_t</h3></div></div></div><pre class="programlisting">
+typedef enum
+{
+	DMX_IN_FRONTEND, /&#8902; Input from a front-end device.  &#8902;/
+	DMX_IN_DVR       /&#8902; Input from the logical DVR device.  &#8902;/
+} dmx_input_t;
+</pre></div><div class="section" title="dmx_pes_type_t"><div class="titlepage"><div><div><h3 class="title"><a id="dmx-pes-type-t"></a>dmx_pes_type_t</h3></div></div></div><pre class="programlisting">
+typedef enum
+{
+	DMX_PES_AUDIO0,
+	DMX_PES_VIDEO0,
+	DMX_PES_TELETEXT0,
+	DMX_PES_SUBTITLE0,
+	DMX_PES_PCR0,
+
+	DMX_PES_AUDIO1,
+	DMX_PES_VIDEO1,
+	DMX_PES_TELETEXT1,
+	DMX_PES_SUBTITLE1,
+	DMX_PES_PCR1,
+
+	DMX_PES_AUDIO2,
+	DMX_PES_VIDEO2,
+	DMX_PES_TELETEXT2,
+	DMX_PES_SUBTITLE2,
+	DMX_PES_PCR2,
+
+	DMX_PES_AUDIO3,
+	DMX_PES_VIDEO3,
+	DMX_PES_TELETEXT3,
+	DMX_PES_SUBTITLE3,
+	DMX_PES_PCR3,
+
+	DMX_PES_OTHER
+} dmx_pes_type_t;
+</pre></div><div class="section" title="struct dmx_filter"><div class="titlepage"><div><div><h3 class="title"><a id="dmx-filter"></a>struct dmx_filter</h3></div></div></div><pre class="programlisting">
+ typedef struct dmx_filter
+{
+	__u8  filter[DMX_FILTER_SIZE];
+	__u8  mask[DMX_FILTER_SIZE];
+	__u8  mode[DMX_FILTER_SIZE];
+} dmx_filter_t;
+</pre></div><div class="section" title="struct dmx_sct_filter_params"><div class="titlepage"><div><div><h3 class="title"><a id="dmx-sct-filter-params"></a>struct dmx_sct_filter_params</h3></div></div></div><pre class="programlisting">
+struct dmx_sct_filter_params
+{
+	__u16          pid;
+	dmx_filter_t   filter;
+	__u32          timeout;
+	__u32          flags;
+#define DMX_CHECK_CRC       1
+#define DMX_ONESHOT         2
+#define DMX_IMMEDIATE_START 4
+#define DMX_KERNEL_CLIENT   0x8000
+};
+</pre></div><div class="section" title="struct dmx_pes_filter_params"><div class="titlepage"><div><div><h3 class="title"><a id="dmx-pes-filter-params"></a>struct dmx_pes_filter_params</h3></div></div></div><pre class="programlisting">
+struct dmx_pes_filter_params
+{
+	__u16          pid;
+	dmx_input_t    input;
+	dmx_output_t   output;
+	dmx_pes_type_t pes_type;
+	__u32          flags;
+};
+</pre></div><div class="section" title="struct dmx_event"><div class="titlepage"><div><div><h3 class="title"><a id="dmx-event"></a>struct dmx_event</h3></div></div></div><pre class="programlisting">
+ struct dmx_event
+ {
+	 dmx_event_t          event;
+	 time_t               timeStamp;
+	 union
+	 {
+		 dmx_scrambling_status_t scrambling;
+	 } u;
+ };
+</pre></div><div class="section" title="struct dmx_stc"><div class="titlepage"><div><div><h3 class="title"><a id="dmx-stc"></a>struct dmx_stc</h3></div></div></div><pre class="programlisting">
+struct dmx_stc {
+	unsigned int num;	/&#8902; input : which STC? 0..N &#8902;/
+	unsigned int base;	/&#8902; output: divisor for stc to get 90 kHz clock &#8902;/
+	__u64 stc;		/&#8902; output: stc in 'base'&#8902;90 kHz units &#8902;/
+};
+</pre></div><div class="section" title="struct dmx_caps"><div class="titlepage"><div><div><h3 class="title"><a id="dmx-caps"></a>struct dmx_caps</h3></div></div></div><pre class="programlisting">
+ typedef struct dmx_caps {
+	__u32 caps;
+	int num_decoders;
+} dmx_caps_t;
+</pre></div><div class="section" title="enum dmx_source_t"><div class="titlepage"><div><div><h3 class="title"><a id="dmx-source-t"></a>enum dmx_source_t</h3></div></div></div><pre class="programlisting">
+typedef enum {
+	DMX_SOURCE_FRONT0 = 0,
+	DMX_SOURCE_FRONT1,
+	DMX_SOURCE_FRONT2,
+	DMX_SOURCE_FRONT3,
+	DMX_SOURCE_DVR0   = 16,
+	DMX_SOURCE_DVR1,
+	DMX_SOURCE_DVR2,
+	DMX_SOURCE_DVR3
+} dmx_source_t;
+</pre></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="FE_GET_SET_PROPERTY.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvbapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="dmx_fcalls.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top"><code class="constant">FE_GET_PROPERTY/FE_SET_PROPERTY</code>&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Demux Function Calls</td></tr></table></div></body></html>

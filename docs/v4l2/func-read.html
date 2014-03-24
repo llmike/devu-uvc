@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>V4L2 read()</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="user-func.html" title="Appendix&#160;A.&#160;Function Reference" /><link rel="prev" href="func-poll.html" title="V4L2 poll()" /><link rel="next" href="func-select.html" title="V4L2 select()" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">V4L2 read()</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="func-poll.html">Prev</a>&#160;</td><th width="60%" align="center">Appendix&#160;A.&#160;Function Reference</th><td width="20%" align="right">&#160;<a accesskey="n" href="func-select.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="V4L2 read()"><a id="func-read"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>v4l2-read &#8212; Read from a V4L2 device</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="funcsynopsis"><pre class="funcsynopsisinfo">#include &lt;unistd.h&gt;</pre><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">ssize_t <b class="fsfunc">read</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>void *<var class="pdparam">buf</var>, </td></tr><tr><td>&#160;</td><td>size_t <var class="pdparam">count</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div></div><div class="refsect1" title="Arguments"><a id="idp36999648"></a><h2>Arguments</h2><div class="variablelist"><dl><dt><span class="term"><em class="parameter"><code>fd</code></em></span></dt><dd><p>File descriptor returned by <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>.</p></dd><dt><span class="term"><em class="parameter"><code>buf</code></em></span></dt><dd><p></p></dd><dt><span class="term"><em class="parameter"><code>count</code></em></span></dt><dd><p></p></dd></dl></div></div><div class="refsect1" title="Description"><a id="idp37054768"></a><h2>Description</h2><p><code class="function">read()</code> attempts to read up to
+<em class="parameter"><code>count</code></em> bytes from file descriptor
+<em class="parameter"><code>fd</code></em> into the buffer starting at
+<em class="parameter"><code>buf</code></em>. The layout of the data in the buffer is
+discussed in the respective device interface section, see ##. If <em class="parameter"><code>count</code></em> is zero,
+<code class="function">read()</code> returns zero and has no other results. If
+<em class="parameter"><code>count</code></em> is greater than
+<code class="constant">SSIZE_MAX</code>, the result is unspecified. Regardless
+of the <em class="parameter"><code>count</code></em> value each
+<code class="function">read()</code> call will provide at most one frame (two
+fields) worth of data.</p><p>By default <code class="function">read()</code> blocks until data
+becomes available. When the <code class="constant">O_NONBLOCK</code> flag was
+given to the <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a> function it
+returns immediately with an <span class="errorcode">EAGAIN</span> error code when no data is available. The
+<a class="link" href="func-select.html" title="V4L2 select()"><code class="function">select()</code></a> or <a class="link" href="func-poll.html" title="V4L2 poll()"><code class="function">poll()</code></a> functions
+can always be used to suspend execution until data becomes available. All
+drivers supporting the <code class="function">read()</code> function must also
+support <code class="function">select()</code> and
+<code class="function">poll()</code>.</p><p>Drivers can implement read functionality in different
+ways, using a single or multiple buffers and discarding the oldest or
+newest frames once the internal buffers are filled.</p><p><code class="function">read()</code> never returns a "snapshot" of a
+buffer being filled. Using a single buffer the driver will stop
+capturing when the application starts reading the buffer until the
+read is finished. Thus only the period of the vertical blanking
+interval is available for reading, or the capture rate must fall below
+the nominal frame rate of the video standard.</p><p>The behavior of
+<code class="function">read()</code> when called during the active picture
+period or the vertical blanking separating the top and bottom field
+depends on the discarding policy. A driver discarding the oldest
+frames keeps capturing into an internal buffer, continuously
+overwriting the previously, not read frame, and returns the frame
+being received at the time of the <code class="function">read()</code> call as
+soon as it is complete.</p><p>A driver discarding the newest frames stops capturing until
+the next <code class="function">read()</code> call. The frame being received at
+<code class="function">read()</code> time is discarded, returning the following
+frame instead. Again this implies a reduction of the capture rate to
+one half or less of the nominal frame rate. An example of this model
+is the video read mode of the bttv driver, initiating a DMA to user
+memory when <code class="function">read()</code> is called and returning when
+the DMA finished.</p><p>In the multiple buffer model drivers maintain a ring of
+internal buffers, automatically advancing to the next free buffer.
+This allows continuous capturing when the application can empty the
+buffers fast enough. Again, the behavior when the driver runs out of
+free buffers depends on the discarding policy.</p><p>Applications can get and set the number of buffers used
+internally by the driver with the <a class="link" href="vidioc-g-parm.html" title="ioctl VIDIOC_G_PARM, VIDIOC_S_PARM"><code class="constant">VIDIOC_G_PARM</code></a> and <a class="link" href="vidioc-g-parm.html" title="ioctl VIDIOC_G_PARM, VIDIOC_S_PARM"><code class="constant">VIDIOC_S_PARM</code></a>
+ioctls. They are optional, however. The discarding policy is not
+reported and cannot be changed. For minimum requirements see <a class="xref" href="devices.html" title="Chapter&#160;4.&#160;Interfaces">Chapter&#160;4, <i>Interfaces</i></a>.</p></div><div class="refsect1" title="Return Value"><a id="idp37069536"></a><h2>Return Value</h2><p>On success, the number of bytes read is returned. It is not
+an error if this number is smaller than the number of bytes requested,
+or the amount of data required for one frame. This may happen for
+example because <code class="function">read()</code> was interrupted by a
+signal. On error, -1 is returned, and the <code class="varname">errno</code>
+variable is set appropriately. In this case the next read will start
+at the beginning of a new frame. Possible error codes are:</p><div class="variablelist"><dl><dt><span class="term"><span class="errorcode">EAGAIN</span></span></dt><dd><p>Non-blocking I/O has been selected using
+O_NONBLOCK and no data was immediately available for reading.</p></dd><dt><span class="term"><span class="errorcode">EBADF</span></span></dt><dd><p><em class="parameter"><code>fd</code></em> is not a valid file
+descriptor or is not open for reading, or the process already has the
+maximum number of files open.</p></dd><dt><span class="term"><span class="errorcode">EBUSY</span></span></dt><dd><p>The driver does not support multiple read streams and the
+device is already in use.</p></dd><dt><span class="term"><span class="errorcode">EFAULT</span></span></dt><dd><p><em class="parameter"><code>buf</code></em> references an inaccessible
+memory area.</p></dd><dt><span class="term"><span class="errorcode">EINTR</span></span></dt><dd><p>The call was interrupted by a signal before any
+data was read.</p></dd><dt><span class="term"><span class="errorcode">EIO</span></span></dt><dd><p>I/O error. This indicates some hardware problem or a
+failure to communicate with a remote device (USB camera etc.).</p></dd><dt><span class="term"><span class="errorcode">EINVAL</span></span></dt><dd><p>The <code class="function">read()</code> function is not
+supported by this driver, not on this device, or generally not on this
+type of device.</p></dd></dl></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="func-poll.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="user-func.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="func-select.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">V4L2 poll()&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;V4L2 select()</td></tr></table></div></body></html>

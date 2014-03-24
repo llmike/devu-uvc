@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>ioctl VIDIOC_G_TUNER, VIDIOC_S_TUNER</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="user-func.html" title="Appendix&#160;A.&#160;Function Reference" /><link rel="prev" href="vidioc-g-std.html" title="ioctl VIDIOC_G_STD, VIDIOC_S_STD" /><link rel="next" href="vidioc-log-status.html" title="ioctl VIDIOC_LOG_STATUS" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">ioctl VIDIOC_G_TUNER, VIDIOC_S_TUNER</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="vidioc-g-std.html">Prev</a>&#160;</td><th width="60%" align="center">Appendix&#160;A.&#160;Function Reference</th><td width="20%" align="right">&#160;<a accesskey="n" href="vidioc-log-status.html">Next</a></td></tr></table><hr /></div><div class="refentry" title="ioctl VIDIOC_G_TUNER, VIDIOC_S_TUNER"><a id="vidioc-g-tuner"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>VIDIOC_G_TUNER, VIDIOC_S_TUNER &#8212; Get or set tuner attributes</p></div><div class="refsynopsisdiv" title="Synopsis"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>struct v4l2_tuner
+*<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div><div class="funcsynopsis"><table border="0" summary="Function synopsis" cellspacing="0" cellpadding="0" class="funcprototype-table"><tr><td><code class="funcdef">int <b class="fsfunc">ioctl</b>(</code></td><td>int <var class="pdparam">fd</var>, </td></tr><tr><td>&#160;</td><td>int <var class="pdparam">request</var>, </td></tr><tr><td>&#160;</td><td>const struct v4l2_tuner
+*<var class="pdparam">argp</var><code>)</code>;</td></tr></table><div class="funcprototype-spacer">&#160;</div></div></div><div class="refsect1" title="Arguments"><a id="idp35242256"></a><h2>Arguments</h2><div class="variablelist"><dl><dt><span class="term"><em class="parameter"><code>fd</code></em></span></dt><dd><p>File descriptor returned by <a class="link" href="func-open.html" title="V4L2 open()"><code class="function">open()</code></a>.</p></dd><dt><span class="term"><em class="parameter"><code>request</code></em></span></dt><dd><p>VIDIOC_G_TUNER, VIDIOC_S_TUNER</p></dd><dt><span class="term"><em class="parameter"><code>argp</code></em></span></dt><dd><p></p></dd></dl></div></div><div class="refsect1" title="Description"><a id="idp35246360"></a><h2>Description</h2><p>To query the attributes of a tuner applications initialize the
+<em class="structfield"><code>index</code></em> field and zero out the
+<em class="structfield"><code>reserved</code></em> array of a struct&#160;<a class="link" href="vidioc-g-tuner.html#v4l2-tuner" title="Table&#160;A.82.&#160;struct v4l2_tuner">v4l2_tuner</a> and call the
+<code class="constant">VIDIOC_G_TUNER</code> ioctl with a pointer to this
+structure. Drivers fill the rest of the structure or return an
+<span class="errorcode">EINVAL</span> error code when the index is out of bounds. To enumerate all tuners
+applications shall begin at index zero, incrementing by one until the
+driver returns <span class="errorcode">EINVAL</span>.</p><p>Tuners have two writable properties, the audio mode and
+the radio frequency. To change the audio mode, applications initialize
+the <em class="structfield"><code>index</code></em>,
+<em class="structfield"><code>audmode</code></em> and
+<em class="structfield"><code>reserved</code></em> fields and call the
+<code class="constant">VIDIOC_S_TUNER</code> ioctl. This will
+<span class="emphasis"><em>not</em></span> change the current tuner, which is determined
+by the current video input. Drivers may choose a different audio mode
+if the requested mode is invalid or unsupported. Since this is a
+write-only ioctl, it does not return the actually
+selected audio mode.</p><p>To change the radio frequency the <a class="link" href="vidioc-g-frequency.html" title="ioctl VIDIOC_G_FREQUENCY, VIDIOC_S_FREQUENCY"><code class="constant">VIDIOC_S_FREQUENCY</code></a> ioctl
+is available.</p><div class="table"><a id="v4l2-tuner"></a><p class="title"><b>Table&#160;A.82.&#160;struct <span class="structname">v4l2_tuner</span></b></p><div class="table-contents"><table summary="struct v4l2_tuner" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>index</code></em></td><td colspan="2" valign="top">Identifies the tuner, set by the
+application.</td></tr><tr><td valign="top">__u8</td><td valign="top"><em class="structfield"><code>name</code></em>[32]</td><td colspan="2" valign="top"><p>Name of the tuner, a
+NUL-terminated ASCII string. This information is intended for the
+user.</p></td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>type</code></em></td><td colspan="2" valign="top">Type of the tuner, see <a class="xref" href="vidioc-g-tuner.html#v4l2-tuner-type" title="Table&#160;A.83.&#160;enum v4l2_tuner_type">Table&#160;A.83, &#8220;enum v4l2_tuner_type&#8221;</a>.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>capability</code></em></td><td colspan="2" valign="top"><p>Tuner capability flags, see
+<a class="xref" href="vidioc-g-tuner.html#tuner-capability" title="Table&#160;A.84.&#160;Tuner and Modulator Capability Flags">Table&#160;A.84, &#8220;Tuner and Modulator Capability Flags&#8221;</a>. Audio flags indicate the ability
+to decode audio subprograms. They will <span class="emphasis"><em>not</em></span>
+change, for example with the current video standard.</p><p>When
+the structure refers to a radio tuner the
+<code class="constant">V4L2_TUNER_CAP_LANG1</code>,
+<code class="constant">V4L2_TUNER_CAP_LANG2</code> and
+<code class="constant">V4L2_TUNER_CAP_NORM</code> flags can't be used.</p>
+<p>If multiple frequency bands are supported, then
+<em class="structfield"><code>capability</code></em> is the union of all
+<em class="structfield"><code>capability</code></em> fields of each struct&#160;<a class="link" href="vidioc-enum-freq-bands.html#v4l2-frequency-band" title="Table&#160;A.33.&#160;struct v4l2_frequency_band">v4l2_frequency_band</a>.
+</p></td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>rangelow</code></em></td><td colspan="2" valign="top">The lowest tunable frequency in
+units of 62.5 kHz, or if the <em class="structfield"><code>capability</code></em>
+flag <code class="constant">V4L2_TUNER_CAP_LOW</code> is set, in units of 62.5
+Hz. If multiple frequency bands are supported, then
+<em class="structfield"><code>rangelow</code></em> is the lowest frequency
+of all the frequency bands.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>rangehigh</code></em></td><td colspan="2" valign="top">The highest tunable frequency in
+units of 62.5 kHz, or if the <em class="structfield"><code>capability</code></em>
+flag <code class="constant">V4L2_TUNER_CAP_LOW</code> is set, in units of 62.5
+Hz. If multiple frequency bands are supported, then
+<em class="structfield"><code>rangehigh</code></em> is the highest frequency
+of all the frequency bands.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>rxsubchans</code></em></td><td colspan="2" valign="top"><p>Some tuners or audio
+decoders can determine the received audio subprograms by analyzing
+audio carriers, pilot tones or other indicators. To pass this
+information drivers set flags defined in <a class="xref" href="vidioc-g-tuner.html#tuner-rxsubchans" title="Table&#160;A.85.&#160;Tuner Audio Reception Flags">Table&#160;A.85, &#8220;Tuner Audio Reception Flags&#8221;</a> in this field. For
+example:</p></td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top"><code class="constant">V4L2_TUNER_SUB_MONO</code></td><td valign="top">receiving mono audio</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top"><code class="constant">STEREO | SAP</code></td><td valign="top">receiving stereo audio and a secondary audio
+program</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top"><code class="constant">MONO | STEREO</code></td><td valign="top">receiving mono or stereo audio, the hardware cannot
+distinguish</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top"><code class="constant">LANG1 | LANG2</code></td><td valign="top">receiving bilingual audio</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td valign="top"><code class="constant">MONO | STEREO | LANG1 | LANG2</code></td><td valign="top">receiving mono, stereo or bilingual
+audio</td></tr><tr><td valign="top">&#160;</td><td valign="top">&#160;</td><td colspan="2" valign="top"><p>When the
+<code class="constant">V4L2_TUNER_CAP_STEREO</code>,
+<code class="constant">_LANG1</code>, <code class="constant">_LANG2</code> or
+<code class="constant">_SAP</code> flag is cleared in the
+<em class="structfield"><code>capability</code></em> field, the corresponding
+<code class="constant">V4L2_TUNER_SUB_</code> flag must not be set
+here.</p><p>This field is valid only if this is the tuner of the
+current video input, or when the structure refers to a radio
+tuner.</p></td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>audmode</code></em></td><td colspan="2" valign="top"><p>The selected audio mode, see
+<a class="xref" href="vidioc-g-tuner.html#tuner-audmode" title="Table&#160;A.86.&#160;Tuner Audio Modes">Table&#160;A.86, &#8220;Tuner Audio Modes&#8221;</a> for valid values. The audio mode does
+not affect audio subprogram detection, and like a <a class="link" href="control.html" title="User Controls">control</a> it does not automatically change
+unless the requested mode is invalid or unsupported. See <a class="xref" href="vidioc-g-tuner.html#tuner-matrix" title="Table&#160;A.87.&#160;Tuner Audio Matrix">Table&#160;A.87, &#8220;Tuner Audio Matrix&#8221;</a> for possible results when
+the selected and received audio programs do not
+match.</p><p>Currently this is the only field of struct
+<span class="structname">v4l2_tuner</span> applications can
+change.</p></td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>signal</code></em></td><td colspan="2" valign="top">The signal strength if known, ranging
+from 0 to 65535. Higher values indicate a better signal.</td></tr><tr><td valign="top">__s32</td><td valign="top"><em class="structfield"><code>afc</code></em></td><td colspan="2" valign="top">Automatic frequency control: When the
+<em class="structfield"><code>afc</code></em> value is negative, the frequency is too
+low, when positive too high.</td></tr><tr><td valign="top">__u32</td><td valign="top"><em class="structfield"><code>reserved</code></em>[4]</td><td colspan="2" valign="top">Reserved for future extensions. Drivers and
+applications must set the array to zero.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="v4l2-tuner-type"></a><p class="title"><b>Table&#160;A.83.&#160;enum v4l2_tuner_type</b></p><div class="table-contents"><table summary="enum v4l2_tuner_type" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_TUNER_RADIO</code></td><td valign="top">1</td><td valign="top">&#160;</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_ANALOG_TV</code></td><td valign="top">2</td><td valign="top">&#160;</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="tuner-capability"></a><p class="title"><b>Table&#160;A.84.&#160;Tuner and Modulator Capability Flags</b></p><div class="table-contents"><table summary="Tuner and Modulator Capability Flags" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_LOW</code></td><td valign="top">0x0001</td><td valign="top">When set, tuning frequencies are expressed in units of
+62.5&#160;Hz, otherwise in units of 62.5&#160;kHz.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_NORM</code></td><td valign="top">0x0002</td><td valign="top">This is a multi-standard tuner; the video standard
+can or must be switched. (B/G PAL tuners for example are typically not
+      considered multi-standard because the video standard is automatically
+      determined from the frequency band.) The set of supported video
+      standards is available from the struct&#160;<a class="link" href="vidioc-enuminput.html#v4l2-input" title="Table&#160;A.35.&#160;struct v4l2_input">v4l2_input</a> pointing to this tuner,
+      see the description of ioctl <a class="link" href="vidioc-enuminput.html" title="ioctl VIDIOC_ENUMINPUT"><code class="constant">VIDIOC_ENUMINPUT</code></a> for details. Only
+      <code class="constant">V4L2_TUNER_ANALOG_TV</code> tuners can have this capability.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_HWSEEK_BOUNDED</code></td><td valign="top">0x0004</td><td valign="top">If set, then this tuner supports the hardware seek functionality
+	    where the seek stops when it reaches the end of the frequency range.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_HWSEEK_WRAP</code></td><td valign="top">0x0008</td><td valign="top">If set, then this tuner supports the hardware seek functionality
+	    where the seek wraps around when it reaches the end of the frequency range.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_STEREO</code></td><td valign="top">0x0010</td><td valign="top">Stereo audio reception is supported.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_LANG1</code></td><td valign="top">0x0040</td><td valign="top">Reception of the primary language of a bilingual
+audio program is supported. Bilingual audio is a feature of
+two-channel systems, transmitting the primary language monaural on the
+main audio carrier and a secondary language monaural on a second
+carrier. Only
+      <code class="constant">V4L2_TUNER_ANALOG_TV</code> tuners can have this capability.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_LANG2</code></td><td valign="top">0x0020</td><td valign="top">Reception of the secondary language of a bilingual
+audio program is supported. Only
+      <code class="constant">V4L2_TUNER_ANALOG_TV</code> tuners can have this capability.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_SAP</code></td><td valign="top">0x0020</td><td valign="top"><p>Reception of a secondary audio program is
+supported. This is a feature of the BTSC system which accompanies the
+NTSC video standard. Two audio carriers are available for mono or
+stereo transmissions of a primary language, and an independent third
+carrier for a monaural secondary language. Only
+      <code class="constant">V4L2_TUNER_ANALOG_TV</code> tuners can have this capability.</p><p>Note the
+<code class="constant">V4L2_TUNER_CAP_LANG2</code> and
+<code class="constant">V4L2_TUNER_CAP_SAP</code> flags are synonyms.
+<code class="constant">V4L2_TUNER_CAP_SAP</code> applies when the tuner
+supports the <code class="constant">V4L2_STD_NTSC_M</code> video
+standard.</p></td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_RDS</code></td><td valign="top">0x0080</td><td valign="top">RDS capture is supported. This capability is only valid for
+radio tuners.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_RDS_BLOCK_IO</code></td><td valign="top">0x0100</td><td valign="top">The RDS data is passed as unparsed RDS blocks.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_RDS_CONTROLS</code></td><td valign="top">0x0200</td><td valign="top">The RDS data is parsed by the hardware and set via controls.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_FREQ_BANDS</code></td><td valign="top">0x0400</td><td valign="top">The <a class="link" href="vidioc-enum-freq-bands.html" title="ioctl VIDIOC_ENUM_FREQ_BANDS"><code class="constant">VIDIOC_ENUM_FREQ_BANDS</code></a> ioctl can be used to enumerate
+	the available frequency bands.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_CAP_HWSEEK_PROG_LIM</code></td><td valign="top">0x0800</td><td valign="top">The range to search when using the hardware seek functionality
+	is programmable, see <a class="link" href="vidioc-s-hw-freq-seek.html" title="ioctl VIDIOC_S_HW_FREQ_SEEK"><code class="constant">VIDIOC_S_HW_FREQ_SEEK</code></a> for details.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="tuner-rxsubchans"></a><p class="title"><b>Table&#160;A.85.&#160;Tuner Audio Reception Flags</b></p><div class="table-contents"><table summary="Tuner Audio Reception Flags" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_TUNER_SUB_MONO</code></td><td valign="top">0x0001</td><td valign="top">The tuner receives a mono audio signal.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_SUB_STEREO</code></td><td valign="top">0x0002</td><td valign="top">The tuner receives a stereo audio signal.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_SUB_LANG1</code></td><td valign="top">0x0008</td><td valign="top">The tuner receives the primary language of a
+bilingual audio signal. Drivers must clear this flag when the current
+video standard is <code class="constant">V4L2_STD_NTSC_M</code>.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_SUB_LANG2</code></td><td valign="top">0x0004</td><td valign="top">The tuner receives the secondary language of a
+bilingual audio signal (or a second audio program).</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_SUB_SAP</code></td><td valign="top">0x0004</td><td valign="top">The tuner receives a Second Audio Program. Note the
+<code class="constant">V4L2_TUNER_SUB_LANG2</code> and
+<code class="constant">V4L2_TUNER_SUB_SAP</code> flags are synonyms. The
+<code class="constant">V4L2_TUNER_SUB_SAP</code> flag applies when the
+current video standard is <code class="constant">V4L2_STD_NTSC_M</code>.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_SUB_RDS</code></td><td valign="top">0x0010</td><td valign="top">The tuner receives an RDS channel.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="tuner-audmode"></a><p class="title"><b>Table&#160;A.86.&#160;Tuner Audio Modes</b></p><div class="table-contents"><table summary="Tuner Audio Modes" width="100%" border="0"><colgroup><col /><col /><col /></colgroup><tbody valign="top"><tr><td valign="top"><code class="constant">V4L2_TUNER_MODE_MONO</code></td><td valign="top">0</td><td valign="top">Play mono audio. When the tuner receives a stereo
+signal this a down-mix of the left and right channel. When the tuner
+receives a bilingual or SAP signal this mode selects the primary
+language.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_MODE_STEREO</code></td><td valign="top">1</td><td valign="top"><p>Play stereo audio. When the tuner receives
+bilingual audio it may play different languages on the left and right
+channel or the primary language is played on both channels.</p><p>Playing
+different languages in this mode is
+deprecated. New drivers should do this only in
+<code class="constant">MODE_LANG1_LANG2</code>.</p><p>When the tuner
+receives no stereo signal or does not support stereo reception the
+driver shall fall back to <code class="constant">MODE_MONO</code>.</p></td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_MODE_LANG1</code></td><td valign="top">3</td><td valign="top">Play the primary language, mono or stereo. Only
+<code class="constant">V4L2_TUNER_ANALOG_TV</code> tuners support this
+mode.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_MODE_LANG2</code></td><td valign="top">2</td><td valign="top">Play the secondary language, mono. When the tuner
+receives no bilingual audio or SAP, or their reception is not
+supported the driver shall fall back to mono or stereo mode. Only
+<code class="constant">V4L2_TUNER_ANALOG_TV</code> tuners support this
+mode.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_MODE_SAP</code></td><td valign="top">2</td><td valign="top">Play the Second Audio Program. When the tuner
+receives no bilingual audio or SAP, or their reception is not
+supported the driver shall fall back to mono or stereo mode. Only
+<code class="constant">V4L2_TUNER_ANALOG_TV</code> tuners support this mode.
+Note the <code class="constant">V4L2_TUNER_MODE_LANG2</code> and
+<code class="constant">V4L2_TUNER_MODE_SAP</code> are synonyms.</td></tr><tr><td valign="top"><code class="constant">V4L2_TUNER_MODE_LANG1_LANG2</code></td><td valign="top">4</td><td valign="top">Play the primary language on the left channel, the
+secondary language on the right channel. When the tuner receives no
+bilingual audio or SAP, it shall fall back to
+<code class="constant">MODE_LANG1</code> or <code class="constant">MODE_MONO</code>.
+Only <code class="constant">V4L2_TUNER_ANALOG_TV</code> tuners support this
+mode.</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="tuner-matrix"></a><p class="title"><b>Table&#160;A.87.&#160;Tuner Audio Matrix</b></p><div class="table-contents"><table summary="Tuner Audio Matrix" width="100%" border="1"><colgroup><col align="left" /><col align="center" /><col align="center" /><col align="center" /><col /><col align="center" /></colgroup><thead><tr><th align="left">&#160;</th><th colspan="5" align="center">Selected
+<code class="constant">V4L2_TUNER_MODE_</code></th></tr><tr><th align="left">Received <code class="constant">V4L2_TUNER_SUB_</code></th><th align="center"><code class="constant">MONO</code></th><th align="center"><code class="constant">STEREO</code></th><th align="center"><code class="constant">LANG1</code></th><th align="center"><code class="constant">LANG2 = SAP</code></th><th align="center"><code class="constant">LANG1_LANG2</code><sup>[<a id="idp35336144" href="#ftn.idp35336144" class="footnote">a</a>]</sup></th></tr></thead><tbody valign="top"><tr><td align="left" valign="top"><code class="constant">MONO</code></td><td align="center" valign="top">Mono</td><td align="center" valign="top">Mono/Mono</td><td align="center" valign="top">Mono</td><td align="center" valign="top">Mono</td><td align="center" valign="top">Mono/Mono</td></tr><tr><td align="left" valign="top"><code class="constant">MONO | SAP</code></td><td align="center" valign="top">Mono</td><td align="center" valign="top">Mono/Mono</td><td align="center" valign="top">Mono</td><td align="center" valign="top">SAP</td><td align="center" valign="top">Mono/SAP (preferred) or Mono/Mono</td></tr><tr><td align="left" valign="top"><code class="constant">STEREO</code></td><td align="center" valign="top">L+R</td><td align="center" valign="top">L/R</td><td align="center" valign="top">Stereo L/R (preferred) or Mono L+R</td><td align="center" valign="top">Stereo L/R (preferred) or Mono L+R</td><td align="center" valign="top">L/R (preferred) or L+R/L+R</td></tr><tr><td align="left" valign="top"><code class="constant">STEREO | SAP</code></td><td align="center" valign="top">L+R</td><td align="center" valign="top">L/R</td><td align="center" valign="top">Stereo L/R (preferred) or Mono L+R</td><td align="center" valign="top">SAP</td><td align="center" valign="top">L+R/SAP (preferred) or L/R or L+R/L+R</td></tr><tr><td align="left" valign="top"><code class="constant">LANG1 | LANG2</code></td><td align="center" valign="top">Language&#160;1</td><td align="center" valign="top">Lang1/Lang2 (deprecated<sup>[<a id="idp35343776" href="#ftn.idp35343776" class="footnote">b</a>]</sup>) or
+Lang1/Lang1</td><td align="center" valign="top">Language&#160;1</td><td align="center" valign="top">Language&#160;2</td><td align="center" valign="top">Lang1/Lang2 (preferred) or Lang1/Lang1</td></tr></tbody><tbody class="footnotes"><tr><td colspan="6"><div class="footnote"><p><sup>[<a id="ftn.idp35336144" href="#idp35336144" class="para">a</a>] </sup>This
+mode has been added in Linux 2.6.17 and may not be supported by older
+drivers.</p></div><div class="footnote"><p><sup>[<a id="ftn.idp35343776" href="#idp35343776" class="para">b</a>] </sup>Playback of
+both languages in <code class="constant">MODE_STEREO</code> is deprecated. In
+the future drivers should produce only the primary language in this
+mode. Applications should request
+<code class="constant">MODE_LANG1_LANG2</code> to record both languages or a
+stereo signal.</p></div></td></tr></tbody></table></div></div><br class="table-break" /></div><div class="refsect1" title="Return Value"><a id="idp35345872"></a><h2>Return Value</h2><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p><div class="variablelist"><dl><dt><span class="term"><span class="errorcode">EINVAL</span></span></dt><dd><p>The struct&#160;<a class="link" href="vidioc-g-tuner.html#v4l2-tuner" title="Table&#160;A.82.&#160;struct v4l2_tuner">v4l2_tuner</a> <em class="structfield"><code>index</code></em> is
+out of bounds.</p></dd></dl></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="vidioc-g-std.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="user-func.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="vidioc-log-status.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">ioctl VIDIOC_G_STD, VIDIOC_S_STD&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;ioctl VIDIOC_LOG_STATUS</td></tr></table></div></body></html>

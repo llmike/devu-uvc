@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Section Feed API</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_kdapi.html" title="Chapter&#160;15.&#160;Kernel Demux API" /><link rel="prev" href="ts_feed_api.html" title="TS Feed API" /><link rel="next" href="kdapi_set.html" title="set()" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Section Feed API</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ts_feed_api.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;15.&#160;Kernel Demux API</th><td width="20%" align="right">&#160;<a accesskey="n" href="kdapi_set.html">Next</a></td></tr></table><hr /></div><div class="section" title="Section Feed API"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="section_feed_api"></a>Section Feed API</h2></div></div></div><p>A section feed is a resource consisting of a PID filter and a set of section filters. Using this
+API, the client can set the properties of a section feed and to start/stop filtering. The API is
+defined as an abstract interface of the type dmx_section_feed_t. The functions that implement
+the interface should be defined static or module private. The client can get the handle of
+a section feed API by calling the function allocate_section_feed() in the demux
+API.
+</p><p>On demux platforms that provide section filtering in hardware, the Section Feed API
+implementation provides a software wrapper for the demux hardware. Other platforms may
+support only PID filtering in hardware, requiring that TS packets are converted to sections in
+software. In the latter case the Section Feed API implementation can be a client of the TS
+Feed API.
+</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ts_feed_api.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_kdapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="kdapi_set.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">TS Feed API&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;set()</td></tr></table></div></body></html>

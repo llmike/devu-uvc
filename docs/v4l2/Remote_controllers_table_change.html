@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Changing default Remote Controller mappings</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="remote_controllers.html" title="Chapter&#160;17.&#160;Remote Controllers" /><link rel="prev" href="remote_controllers.html" title="Chapter&#160;17.&#160;Remote Controllers" /><link rel="next" href="lirc_dev.html" title="LIRC Device Interface" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Changing default Remote Controller mappings</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="remote_controllers.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;17.&#160;Remote Controllers</th><td width="20%" align="right">&#160;<a accesskey="n" href="lirc_dev.html">Next</a></td></tr></table><hr /></div><div class="section" title="Changing default Remote Controller mappings"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="Remote_controllers_table_change"></a>Changing default Remote Controller mappings</h2></div></div></div><p>The event interface provides two ioctls to be used against
+the /dev/input/event device, to allow changing the default
+keymapping.</p><p>This program demonstrates how to replace the keymap tables.</p><pre class="programlisting">
+/* keytable.c - This program allows checking/replacing keys at IR
+
+   Copyright (C) 2006-2009 Mauro Carvalho Chehab &lt;mchehab@infradead.org&gt;
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, version 2 of the License.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+ */
+
+#include &lt;ctype.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;linux/input.h&gt;
+#include &lt;sys/ioctl.h&gt;
+
+#include "parse.h"
+
+void prtcode (int *codes)
+{
+        struct parse_key *p;
+
+        for (p=keynames;p-&gt;name!=NULL;p++) {
+                if (p-&gt;value == (unsigned)codes[1]) {
+                        printf("scancode 0x%04x = %s (0x%02x)\n", codes[0], p-&gt;name, codes[1]);
+                        return;
+                }
+        }
+
+        if (isprint (codes[1]))
+                printf("scancode %d = '%c' (0x%02x)\n", codes[0], codes[1], codes[1]);
+        else
+                printf("scancode %d = 0x%02x\n", codes[0], codes[1]);
+}
+
+int parse_code(char *string)
+{
+        struct parse_key *p;
+
+        for (p=keynames;p-&gt;name!=NULL;p++) {
+                if (!strcasecmp(p-&gt;name, string)) {
+                        return p-&gt;value;
+                }
+        }
+        return -1;
+}
+
+int main (int argc, char *argv[])
+{
+        int fd;
+        unsigned int i, j;
+        int codes[2];
+
+        if (argc&lt;2 || argc&gt;4) {
+                printf ("usage: %s &lt;device&gt; to get table; or\n"
+                        "       %s &lt;device&gt; &lt;scancode&gt; &lt;keycode&gt;\n"
+                        "       %s &lt;device&gt; &lt;keycode_file&gt;\n",*argv,*argv,*argv);
+                return -1;
+        }
+
+        if ((fd = open(argv[1], O_RDONLY)) &lt; 0) {
+                perror("Couldn't open input device");
+                return(-1);
+        }
+
+        if (argc==4) {
+                int value;
+
+                value=parse_code(argv[3]);
+
+                if (value==-1) {
+                        value = strtol(argv[3], NULL, 0);
+                        if (errno)
+                                perror("value");
+                }
+
+                codes [0] = (unsigned) strtol(argv[2], NULL, 0);
+                codes [1] = (unsigned) value;
+
+                if(ioctl(fd, EVIOCSKEYCODE, codes))
+                        perror ("EVIOCSKEYCODE");
+
+                if(ioctl(fd, EVIOCGKEYCODE, codes)==0)
+                        prtcode(codes);
+                return 0;
+        }
+
+        if (argc==3) {
+                FILE *fin;
+                int value;
+                char *scancode, *keycode, s[2048];
+
+                fin=fopen(argv[2],"r");
+                if (fin==NULL) {
+                        perror ("opening keycode file");
+                        return -1;
+                }
+
+                /* Clears old table */
+                for (j = 0; j &lt; 256; j++) {
+                        for (i = 0; i &lt; 256; i++) {
+                                codes[0] = (j &lt;&lt; 8) | i;
+                                codes[1] = KEY_RESERVED;
+                                ioctl(fd, EVIOCSKEYCODE, codes);
+                        }
+                }
+
+                while (fgets(s,sizeof(s),fin)) {
+                        scancode=strtok(s,"\n\t =:");
+                        if (!scancode) {
+                                perror ("parsing input file scancode");
+                                return -1;
+                        }
+                        if (!strcasecmp(scancode, "scancode")) {
+                                scancode = strtok(NULL,"\n\t =:");
+                                if (!scancode) {
+                                        perror ("parsing input file scancode");
+                                        return -1;
+                                }
+                        }
+
+                        keycode=strtok(NULL,"\n\t =:(");
+                        if (!keycode) {
+                                perror ("parsing input file keycode");
+                                return -1;
+                        }
+
+                        // printf ("parsing %s=%s:", scancode, keycode);
+                        value=parse_code(keycode);
+                        // printf ("\tvalue=%d\n",value);
+
+                        if (value==-1) {
+                                value = strtol(keycode, NULL, 0);
+                                if (errno)
+                                        perror("value");
+                        }
+
+                        codes [0] = (unsigned) strtol(scancode, NULL, 0);
+                        codes [1] = (unsigned) value;
+
+                        // printf("\t%04x=%04x\n",codes[0], codes[1]);
+                        if(ioctl(fd, EVIOCSKEYCODE, codes)) {
+                                fprintf(stderr, "Setting scancode 0x%04x with 0x%04x via ",codes[0], codes[1]);
+                                perror ("EVIOCSKEYCODE");
+                        }
+
+                        if(ioctl(fd, EVIOCGKEYCODE, codes)==0)
+                                prtcode(codes);
+                }
+                return 0;
+        }
+
+        /* Get scancode table */
+        for (j = 0; j &lt; 256; j++) {
+                for (i = 0; i &lt; 256; i++) {
+                        codes[0] = (j &lt;&lt; 8) | i;
+                        if (!ioctl(fd, EVIOCGKEYCODE, codes) &amp;&amp; codes[1] != KEY_RESERVED)
+                                prtcode(codes);
+                }
+        }
+        return 0;
+}
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="remote_controllers.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="remote_controllers.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="lirc_dev.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&#160;17.&#160;Remote Controllers&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;LIRC Device Interface</td></tr></table></div></body></html>

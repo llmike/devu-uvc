@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Appendix&#160;K.&#160;DVB Video Header File</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvbapi.html" title="Part&#160;II.&#160;LINUX DVB API" /><link rel="prev" href="net_h.html" title="Appendix&#160;J.&#160;DVB Network Header File" /><link rel="next" href="v4ldvb_common.html" title="Part&#160;III.&#160;Remote Controller API" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Appendix&#160;K.&#160;DVB Video Header File</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="net_h.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;II.&#160;LINUX DVB API</th><td width="20%" align="right">&#160;<a accesskey="n" href="v4ldvb_common.html">Next</a></td></tr></table><hr /></div><div class="appendix" title="Appendix&#160;K.&#160;DVB Video Header File"><div class="titlepage"><div><div><h2 class="title"><a id="video_h"></a>Appendix&#160;K.&#160;DVB Video Header File</h2></div></div></div><pre class="programlisting">
+/*
+ * video.h
+ *
+ * Copyright (C) 2000 Marcus Metzler &lt;marcus@convergence.de&gt;
+ *                  &amp; Ralph  Metzler &lt;ralph@convergence.de&gt;
+ *                    for convergence integrated media GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+#ifndef _UAPI_DVBVIDEO_H_
+#define _UAPI_DVBVIDEO_H_
+
+#include &lt;linux/types.h&gt;
+#ifndef __KERNEL__
+#include &lt;stdint.h&gt;
+#include &lt;time.h&gt;
+#endif
+
+typedef enum {
+        VIDEO_FORMAT_4_3,     /* Select 4:3 format */
+        VIDEO_FORMAT_16_9,    /* Select 16:9 format. */
+        VIDEO_FORMAT_221_1    /* 2.21:1 */
+} <a class="link" href="dvb_video.html#video-format-t" title="video_format_t">video_format_t</a>;
+
+
+typedef enum {
+         VIDEO_SYSTEM_PAL,
+         VIDEO_SYSTEM_NTSC,
+         VIDEO_SYSTEM_PALN,
+         VIDEO_SYSTEM_PALNc,
+         VIDEO_SYSTEM_PALM,
+         VIDEO_SYSTEM_NTSC60,
+         VIDEO_SYSTEM_PAL60,
+         VIDEO_SYSTEM_PALM60
+} <a class="link" href="dvb_video.html#video-system" title="video_system_t">video_system_t</a>;
+
+
+typedef enum {
+        VIDEO_PAN_SCAN,       /* use pan and scan format */
+        VIDEO_LETTER_BOX,     /* use letterbox format */
+        VIDEO_CENTER_CUT_OUT  /* use center cut out format */
+} <a class="link" href="dvb_video.html#video-displayformat-t" title="video_displayformat_t">video_displayformat_t</a>;
+
+typedef struct {
+        int w;
+        int h;
+        video_format_t aspect_ratio;
+} <a class="link" href="dvb_video.html#video-size-t" title="video_size_t">video_size_t</a>;
+
+typedef enum {
+        VIDEO_SOURCE_DEMUX, /* Select the demux as the main source */
+        VIDEO_SOURCE_MEMORY /* If this source is selected, the stream
+                               comes from the user through the write
+                               system call */
+} <a class="link" href="dvb_video.html#video-stream-source-t" title="video_stream_source_t">video_stream_source_t</a>;
+
+
+typedef enum {
+        VIDEO_STOPPED, /* Video is stopped */
+        VIDEO_PLAYING, /* Video is currently playing */
+        VIDEO_FREEZED  /* Video is freezed */
+} <a class="link" href="dvb_video.html#video-play-state-t" title="video_play_state_t">video_play_state_t</a>;
+
+
+/* Decoder commands */
+#define VIDEO_CMD_PLAY        (0)
+#define VIDEO_CMD_STOP        (1)
+#define VIDEO_CMD_FREEZE      (2)
+#define VIDEO_CMD_CONTINUE    (3)
+
+/* Flags for VIDEO_CMD_FREEZE */
+#define VIDEO_CMD_FREEZE_TO_BLACK       (1 &lt;&lt; 0)
+
+/* Flags for VIDEO_CMD_STOP */
+#define VIDEO_CMD_STOP_TO_BLACK         (1 &lt;&lt; 0)
+#define VIDEO_CMD_STOP_IMMEDIATELY      (1 &lt;&lt; 1)
+
+/* Play input formats: */
+/* The decoder has no special format requirements */
+#define VIDEO_PLAY_FMT_NONE         (0)
+/* The decoder requires full GOPs */
+#define VIDEO_PLAY_FMT_GOP          (1)
+
+/* The structure must be zeroed before use by the application
+   This ensures it can be extended safely in the future. */
+struct <a class="link" href="dvb_video.html#video-command" title="struct video_command">video_command</a> {
+        __u32 cmd;
+        __u32 flags;
+        union {
+                struct {
+                        __u64 pts;
+                } stop;
+
+                struct {
+                        /* 0 or 1000 specifies normal speed,
+                           1 specifies forward single stepping,
+                           -1 specifies backward single stepping,
+                           &gt;1: playback at speed/1000 of the normal speed,
+                           &lt;-1: reverse playback at (-speed/1000) of the normal speed. */
+                        __s32 speed;
+                        __u32 format;
+                } play;
+
+                struct {
+                        __u32 data[16];
+                } raw;
+        };
+};
+
+/* FIELD_UNKNOWN can be used if the hardware does not know whether
+   the Vsync is for an odd, even or progressive (i.e.ie; non-interlaced)
+   field. */
+#define VIDEO_VSYNC_FIELD_UNKNOWN       (0)
+#define VIDEO_VSYNC_FIELD_ODD           (1)
+#define VIDEO_VSYNC_FIELD_EVEN          (2)
+#define VIDEO_VSYNC_FIELD_PROGRESSIVE   (3)
+
+struct <a class="link" href="dvb_video.html#video-event" title="struct video_event">video_event</a> {
+        __s32 type;
+#define VIDEO_EVENT_SIZE_CHANGED        1
+#define VIDEO_EVENT_FRAME_RATE_CHANGED  2
+#define VIDEO_EVENT_DECODER_STOPPED     3
+#define VIDEO_EVENT_VSYNC               4
+        __kernel_time_t timestamp;
+        union {
+                video_size_t size;
+                unsigned int frame_rate;        /* in frames per 1000sec */
+                unsigned char vsync_field;      /* unknown/odd/even/progressive */
+        } u;
+};
+
+
+struct <a class="link" href="dvb_video.html#video-status" title="struct video_status">video_status</a> {
+        int                   video_blank;   /* blank video on freeze? */
+        video_play_state_t    play_state;    /* current state of playback */
+        video_stream_source_t stream_source; /* current source (demux/memory) */
+        video_format_t        video_format;  /* current aspect ratio of stream*/
+        video_displayformat_t display_format;/* selected cropping mode */
+};
+
+
+struct <a class="link" href="dvb_video.html#video-still-picture" title="struct video_still_picture">video_still_picture</a> {
+        char __user *iFrame;        /* pointer to a single iframe in memory */
+        __s32 size;
+};
+
+
+typedef
+struct <a class="link" href="dvb_video.html#video-highlight" title="struct video_highlight">video_highlight</a> {
+        int     active;      /*    1=show highlight, 0=hide highlight */
+        __u8    contrast1;   /*    7- 4  Pattern pixel contrast */
+                             /*    3- 0  Background pixel contrast */
+        __u8    contrast2;   /*    7- 4  Emphasis pixel-2 contrast */
+                             /*    3- 0  Emphasis pixel-1 contrast */
+        __u8    color1;      /*    7- 4  Pattern pixel color */
+                             /*    3- 0  Background pixel color */
+        __u8    color2;      /*    7- 4  Emphasis pixel-2 color */
+                             /*    3- 0  Emphasis pixel-1 color */
+        __u32    ypos;       /*   23-22  auto action mode */
+                             /*   21-12  start y */
+                             /*    9- 0  end y */
+        __u32    xpos;       /*   23-22  button color number */
+                             /*   21-12  start x */
+                             /*    9- 0  end x */
+} <a class="link" href="dvb_video.html#video-highlight" title="struct video_highlight">video_highlight_t</a>;
+
+
+typedef struct <a class="link" href="dvb_video.html#video-spu" title="struct video_spu">video_spu</a> {
+        int active;
+        int stream_id;
+} <a class="link" href="dvb_video.html#video-spu" title="struct video_spu">video_spu_t</a>;
+
+
+typedef struct <a class="link" href="dvb_video.html#video-spu-palette" title="struct video_spu_palette">video_spu_palette</a> {      /* SPU Palette information */
+        int length;
+        __u8 __user *palette;
+} <a class="link" href="dvb_video.html#video-spu-palette" title="struct video_spu_palette">video_spu_palette_t</a>;
+
+
+typedef struct <a class="link" href="dvb_video.html#video-navi-pack" title="struct video_navi_pack">video_navi_pack</a> {
+        int length;          /* 0 ... 1024 */
+        __u8 data[1024];
+} <a class="link" href="dvb_video.html#video-navi-pack" title="struct video_navi_pack">video_navi_pack_t</a>;
+
+
+typedef __u16 video_attributes_t;
+/*   bits: descr. */
+/*   15-14 Video compression mode (0=MPEG-1, 1=MPEG-2) */
+/*   13-12 TV system (0=525/60, 1=625/50) */
+/*   11-10 Aspect ratio (0=4:3, 3=16:9) */
+/*    9- 8 permitted display mode on 4:3 monitor (0=both, 1=only pan-sca */
+/*    7    line 21-1 data present in GOP (1=yes, 0=no) */
+/*    6    line 21-2 data present in GOP (1=yes, 0=no) */
+/*    5- 3 source resolution (0=720x480/576, 1=704x480/576, 2=352x480/57 */
+/*    2    source letterboxed (1=yes, 0=no) */
+/*    0    film/camera mode (0=camera, 1=film (625/50 only)) */
+
+
+/* bit definitions for capabilities: */
+/* can the hardware decode MPEG1 and/or MPEG2? */
+#define VIDEO_CAP_MPEG1   1
+#define VIDEO_CAP_MPEG2   2
+/* can you send a system and/or program stream to video device?
+   (you still have to open the video and the audio device but only
+    send the stream to the video device) */
+#define VIDEO_CAP_SYS     4
+#define VIDEO_CAP_PROG    8
+/* can the driver also handle SPU, NAVI and CSS encoded data?
+   (CSS API is not present yet) */
+#define VIDEO_CAP_SPU    16
+#define VIDEO_CAP_NAVI   32
+#define VIDEO_CAP_CSS    64
+
+
+#define <a class="link" href="video_function_calls.html#VIDEO_STOP" title="VIDEO_STOP">VIDEO_STOP</a>                 _IO('o', 21)
+#define <a class="link" href="video_function_calls.html#VIDEO_PLAY" title="VIDEO_PLAY">VIDEO_PLAY</a>                 _IO('o', 22)
+#define <a class="link" href="video_function_calls.html#VIDEO_FREEZE" title="VIDEO_FREEZE">VIDEO_FREEZE</a>               _IO('o', 23)
+#define <a class="link" href="video_function_calls.html#VIDEO_CONTINUE" title="VIDEO_CONTINUE">VIDEO_CONTINUE</a>             _IO('o', 24)
+#define <a class="link" href="video_function_calls.html#VIDEO_SELECT_SOURCE" title="VIDEO_SELECT_SOURCE">VIDEO_SELECT_SOURCE</a>        _IO('o', 25)
+#define <a class="link" href="video_function_calls.html#VIDEO_SET_BLANK" title="VIDEO_SET_BLANK">VIDEO_SET_BLANK</a>            _IO('o', 26)
+#define <a class="link" href="video_function_calls.html#VIDEO_GET_STATUS" title="VIDEO_GET_STATUS">VIDEO_GET_STATUS</a>           _IOR('o', 27, struct video_status)
+#define <a class="link" href="video_function_calls.html#VIDEO_GET_EVENT" title="VIDEO_GET_EVENT">VIDEO_GET_EVENT</a>            _IOR('o', 28, struct video_event)
+#define <a class="link" href="video_function_calls.html#VIDEO_SET_DISPLAY_FORMAT" title="VIDEO_SET_DISPLAY_FORMAT">VIDEO_SET_DISPLAY_FORMAT</a>   _IO('o', 29)
+#define <a class="link" href="video_function_calls.html#VIDEO_STILLPICTURE" title="VIDEO_STILLPICTURE">VIDEO_STILLPICTURE</a>         _IOW('o', 30, struct video_still_picture)
+#define <a class="link" href="video_function_calls.html#VIDEO_FAST_FORWARD" title="VIDEO_FAST_FORWARD">VIDEO_FAST_FORWARD</a>         _IO('o', 31)
+#define <a class="link" href="video_function_calls.html#VIDEO_SLOWMOTION" title="VIDEO_SLOWMOTION">VIDEO_SLOWMOTION</a>           _IO('o', 32)
+#define <a class="link" href="video_function_calls.html#VIDEO_GET_CAPABILITIES" title="VIDEO_GET_CAPABILITIES">VIDEO_GET_CAPABILITIES</a>     _IOR('o', 33, unsigned int)
+#define <a class="link" href="video_function_calls.html#VIDEO_CLEAR_BUFFER" title="VIDEO_CLEAR_BUFFER">VIDEO_CLEAR_BUFFER</a>         _IO('o',  34)
+#define <a class="link" href="video_function_calls.html#VIDEO_SET_ID" title="VIDEO_SET_ID">VIDEO_SET_ID</a>               _IO('o', 35)
+#define <a class="link" href="video_function_calls.html#VIDEO_SET_STREAMTYPE" title="VIDEO_SET_STREAMTYPE">VIDEO_SET_STREAMTYPE</a>       _IO('o', 36)
+#define <a class="link" href="video_function_calls.html#VIDEO_SET_FORMAT" title="VIDEO_SET_FORMAT">VIDEO_SET_FORMAT</a>           _IO('o', 37)
+#define <a class="link" href="video_function_calls.html#VIDEO_SET_SYSTEM" title="VIDEO_SET_SYSTEM">VIDEO_SET_SYSTEM</a>           _IO('o', 38)
+#define <a class="link" href="video_function_calls.html#VIDEO_SET_HIGHLIGHT" title="VIDEO_SET_HIGHLIGHT">VIDEO_SET_HIGHLIGHT</a>        _IOW('o', 39, video_highlight_t)
+#define <a class="link" href="video_function_calls.html#VIDEO_SET_SPU" title="VIDEO_SET_SPU">VIDEO_SET_SPU</a>              _IOW('o', 50, video_spu_t)
+#define <a class="link" href="video_function_calls.html#VIDEO_SET_SPU_PALETTE" title="VIDEO_SET_SPU_PALETTE">VIDEO_SET_SPU_PALETTE</a>      _IOW('o', 51, video_spu_palette_t)
+#define <a class="link" href="video_function_calls.html#VIDEO_GET_NAVI" title="VIDEO_GET_NAVI">VIDEO_GET_NAVI</a>             _IOR('o', 52, video_navi_pack_t)
+#define <a class="link" href="video_function_calls.html#VIDEO_SET_ATTRIBUTES" title="VIDEO_SET_ATTRIBUTES">VIDEO_SET_ATTRIBUTES</a>       _IO('o', 53)
+#define <a class="link" href="video_function_calls.html#VIDEO_GET_SIZE" title="VIDEO_GET_SIZE">VIDEO_GET_SIZE</a>             _IOR('o', 55, video_size_t)
+#define <a class="link" href="video_function_calls.html#VIDEO_GET_FRAME_RATE" title="VIDEO_GET_FRAME_RATE">VIDEO_GET_FRAME_RATE</a>       _IOR('o', 56, unsigned int)
+
+/**
+ * VIDEO_GET_PTS
+ *
+ * Read the 33 bit presentation time stamp as defined
+ * in ITU T-REC-H.222.0 / ISO/IEC 13818-1.
+ *
+ * The PTS should belong to the currently played
+ * frame if possible, but may also be a value close to it
+ * like the PTS of the last decoded frame or the last PTS
+ * extracted by the PES parser.
+ */
+#define <a class="link" href="video_function_calls.html#VIDEO_GET_PTS" title="VIDEO_GET_PTS">VIDEO_GET_PTS</a>              _IOR('o', 57, __u64)
+
+/* Read the number of displayed frames since the decoder was started */
+#define <a class="link" href="video_function_calls.html#VIDEO_GET_FRAME_COUNT" title="VIDEO_GET_FRAME_COUNT">VIDEO_GET_FRAME_COUNT</a>      _IOR('o', 58, __u64)
+
+#define <a class="link" href="video_function_calls.html#VIDEO_COMMAND" title="VIDEO_COMMAND">VIDEO_COMMAND</a>              _IOWR('o', 59, struct video_command)
+#define <a class="link" href="video_function_calls.html#VIDEO_TRY_COMMAND" title="VIDEO_TRY_COMMAND">VIDEO_TRY_COMMAND</a>          _IOWR('o', 60, struct video_command)
+
+#endif /* _UAPI_DVBVIDEO_H_ */
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="net_h.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvbapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="v4ldvb_common.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Appendix&#160;J.&#160;DVB Network Header File&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Part&#160;III.&#160;Remote Controller API</td></tr></table></div></body></html>

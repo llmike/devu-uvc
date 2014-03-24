@@ -1,0 +1,17 @@
+1. Add RGB format emulation (JPEG decode to NV12/RGB, YUY2/NV12 conversion).
+2. Add YUV format emulation (YUY2->UYVY using 16 bit swap on whole data,
+                             YUY2->VYUY using 16 bit swap on whole data + UV swap,
+                             YUY2->YVYU using UV swap,
+                             NV12->NV21 using data store with Cr/Cb swap)
+3. Add audio enumeration, based on USB device data.
+4. Implement V4L2_CID_PAN_RELATIVE/V4L2_CID_TILT_RELATIVE.
+5. Priority RECORD is used to decline device parameters changes on other fds.
+6. Add private controls for IT and PU.
+7. Add correct mmap() handling. Test it.
+8. VIDIOC_CREATE_BUFFERS, VIDIOC_PREPARE_BUF. It is experimental API, anybody use them?
+9. Add UVCIOC_CTRL_MAP and UVCIOC_CTRL_QUERY for extension units control and raw read.
+10. Implement selector unit control trough the VIDIOC_S_INPUT/VIDIOC_G_INPUT/VIDIOC_ENUMINPUT.
+    Also add support for media controller to configure input links at runtime.
+- 11. Implement /dev/media[control] controller device.
+12. Reset pipe after each USB i/o error.
+13. Add correct close, stop isochronous transfer.

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Chapter&#160;13.&#160;DVB CA Device</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvbapi.html" title="Part&#160;II.&#160;LINUX DVB API" /><link rel="prev" href="audio_function_calls.html" title="Audio Function Calls" /><link rel="next" href="ca_function_calls.html" title="CA Function Calls" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&#160;13.&#160;DVB CA Device</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="audio_function_calls.html">Prev</a>&#160;</td><th width="60%" align="center">Part&#160;II.&#160;LINUX DVB API</th><td width="20%" align="right">&#160;<a accesskey="n" href="ca_function_calls.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter&#160;13.&#160;DVB CA Device"><div class="titlepage"><div><div><h2 class="title"><a id="dvb_ca"></a>Chapter&#160;13.&#160;DVB CA Device</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="dvb_ca.html#ca_data_types">CA Data Types</a></span></dt><dd><dl><dt><span class="section"><a href="dvb_ca.html#ca-slot-info">ca_slot_info_t</a></span></dt><dt><span class="section"><a href="dvb_ca.html#ca-descr-info">ca_descr_info_t</a></span></dt><dt><span class="section"><a href="dvb_ca.html#ca-caps">ca_caps_t</a></span></dt><dt><span class="section"><a href="dvb_ca.html#ca-msg">ca_msg_t</a></span></dt><dt><span class="section"><a href="dvb_ca.html#ca-descr">ca_descr_t</a></span></dt><dt><span class="section"><a href="dvb_ca.html#ca-pid">ca-pid</a></span></dt></dl></dd><dt><span class="section"><a href="ca_function_calls.html">CA Function Calls</a></span></dt><dd><dl><dt><span class="section"><a href="ca_function_calls.html#ca_fopen">open()</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#ca_fclose">close()</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_RESET">CA_RESET</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_GET_CAP">CA_GET_CAP</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_GET_SLOT_INFO">CA_GET_SLOT_INFO</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_GET_DESCR_INFO">CA_GET_DESCR_INFO</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_GET_MSG">CA_GET_MSG</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_SEND_MSG">CA_SEND_MSG</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_SET_DESCR">CA_SET_DESCR</a></span></dt><dt><span class="section"><a href="ca_function_calls.html#CA_SET_PID">CA_SET_PID</a></span></dt></dl></dd></dl></div><p>The DVB CA device controls the conditional access hardware. It can be accessed through
+<span class="tt">/dev/dvb/adapter0/ca0</span>. Data types and and ioctl definitions can be accessed by
+including <span class="tt">linux/dvb/ca.h</span> in your application.
+</p><div class="section" title="CA Data Types"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="ca_data_types"></a>CA Data Types</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="dvb_ca.html#ca-slot-info">ca_slot_info_t</a></span></dt><dt><span class="section"><a href="dvb_ca.html#ca-descr-info">ca_descr_info_t</a></span></dt><dt><span class="section"><a href="dvb_ca.html#ca-caps">ca_caps_t</a></span></dt><dt><span class="section"><a href="dvb_ca.html#ca-msg">ca_msg_t</a></span></dt><dt><span class="section"><a href="dvb_ca.html#ca-descr">ca_descr_t</a></span></dt><dt><span class="section"><a href="dvb_ca.html#ca-pid">ca-pid</a></span></dt></dl></div><div class="section" title="ca_slot_info_t"><div class="titlepage"><div><div><h3 class="title"><a id="ca-slot-info"></a>ca_slot_info_t</h3></div></div></div><pre class="programlisting">
+typedef struct ca_slot_info {
+	int num;               /&#8902; slot number &#8902;/
+
+	int type;              /&#8902; CA interface this slot supports &#8902;/
+#define CA_CI            1     /&#8902; CI high level interface &#8902;/
+#define CA_CI_LINK       2     /&#8902; CI link layer level interface &#8902;/
+#define CA_CI_PHYS       4     /&#8902; CI physical layer level interface &#8902;/
+#define CA_DESCR         8     /&#8902; built-in descrambler &#8902;/
+#define CA_SC          128     /&#8902; simple smart card interface &#8902;/
+
+	unsigned int flags;
+#define CA_CI_MODULE_PRESENT 1 /&#8902; module (or card) inserted &#8902;/
+#define CA_CI_MODULE_READY   2
+} ca_slot_info_t;
+</pre></div><div class="section" title="ca_descr_info_t"><div class="titlepage"><div><div><h3 class="title"><a id="ca-descr-info"></a>ca_descr_info_t</h3></div></div></div><pre class="programlisting">
+typedef struct ca_descr_info {
+	unsigned int num;  /&#8902; number of available descramblers (keys) &#8902;/
+	unsigned int type; /&#8902; type of supported scrambling system &#8902;/
+#define CA_ECD           1
+#define CA_NDS           2
+#define CA_DSS           4
+} ca_descr_info_t;
+</pre></div><div class="section" title="ca_caps_t"><div class="titlepage"><div><div><h3 class="title"><a id="ca-caps"></a>ca_caps_t</h3></div></div></div><pre class="programlisting">
+typedef struct ca_caps {
+	unsigned int slot_num;  /&#8902; total number of CA card and module slots &#8902;/
+	unsigned int slot_type; /&#8902; OR of all supported types &#8902;/
+	unsigned int descr_num; /&#8902; total number of descrambler slots (keys) &#8902;/
+	unsigned int descr_type;/&#8902; OR of all supported types &#8902;/
+ } ca_cap_t;
+</pre></div><div class="section" title="ca_msg_t"><div class="titlepage"><div><div><h3 class="title"><a id="ca-msg"></a>ca_msg_t</h3></div></div></div><pre class="programlisting">
+/&#8902; a message to/from a CI-CAM &#8902;/
+typedef struct ca_msg {
+	unsigned int index;
+	unsigned int type;
+	unsigned int length;
+	unsigned char msg[256];
+} ca_msg_t;
+</pre></div><div class="section" title="ca_descr_t"><div class="titlepage"><div><div><h3 class="title"><a id="ca-descr"></a>ca_descr_t</h3></div></div></div><pre class="programlisting">
+typedef struct ca_descr {
+	unsigned int index;
+	unsigned int parity;
+	unsigned char cw[8];
+} ca_descr_t;
+</pre></div><div class="section" title="ca-pid"><div class="titlepage"><div><div><h3 class="title"><a id="ca-pid"></a>ca-pid</h3></div></div></div><pre class="programlisting">
+typedef struct ca_pid {
+	unsigned int pid;
+	int index;		/&#8902; -1 == disable&#8902;/
+} ca_pid_t;
+</pre></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="audio_function_calls.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvbapi.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="ca_function_calls.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Audio Function Calls&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;CA Function Calls</td></tr></table></div></body></html>

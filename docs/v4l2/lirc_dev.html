@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>LIRC Device Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="remote_controllers.html" title="Chapter&#160;17.&#160;Remote Controllers" /><link rel="prev" href="Remote_controllers_table_change.html" title="Changing default Remote Controller mappings" /><link rel="next" href="media_common.html" title="Part&#160;IV.&#160;Media Controller API" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">LIRC Device Interface</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="Remote_controllers_table_change.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;17.&#160;Remote Controllers</th><td width="20%" align="right">&#160;<a accesskey="n" href="media_common.html">Next</a></td></tr></table><hr /></div><div class="section" title="LIRC Device Interface"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="lirc_dev"></a>LIRC Device Interface</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="lirc_dev.html#lirc_dev_intro">Introduction</a></span></dt><dt><span class="section"><a href="lirc_dev.html#lirc_read">LIRC read fop</a></span></dt><dt><span class="section"><a href="lirc_dev.html#lirc_write">LIRC write fop</a></span></dt><dt><span class="section"><a href="lirc_dev.html#lirc_ioctl">LIRC ioctl fop</a></span></dt></dl></div><div class="section" title="Introduction"><div class="titlepage"><div><div><h3 class="title"><a id="lirc_dev_intro"></a>Introduction</h3></div></div></div><p>The LIRC device interface is a bi-directional interface for
+transporting raw IR data between userspace and kernelspace. Fundamentally,
+it is just a chardev (/dev/lircX, for X = 0, 1, 2, ...), with a number
+of standard struct file_operations defined on it. With respect to
+transporting raw IR data to and fro, the essential fops are read, write
+and ioctl.</p><p>Example dmesg output upon a driver registering w/LIRC:</p><div class="blockquote"><blockquote class="blockquote"><p>$ dmesg |grep lirc_dev</p><p>lirc_dev: IR Remote Control driver registered, major 248</p><p>rc rc0: lirc_dev: driver ir-lirc-codec (mceusb) registered at minor = 0</p></blockquote></div><p>What you should see for a chardev:</p><div class="blockquote"><blockquote class="blockquote"><p>$ ls -l /dev/lirc*</p><p>crw-rw---- 1 root root 248, 0 Jul  2 22:20 /dev/lirc0</p></blockquote></div></div><div class="section" title="LIRC read fop"><div class="titlepage"><div><div><h3 class="title"><a id="lirc_read"></a>LIRC read fop</h3></div></div></div><p>The lircd userspace daemon reads raw IR data from the LIRC chardev. The
+exact format of the data depends on what modes a driver supports, and what
+mode has been selected. lircd obtains supported modes and sets the active mode
+via the ioctl interface, detailed at <a class="xref" href="lirc_dev.html#lirc_ioctl" title="LIRC ioctl fop">the section called &#8220;LIRC ioctl fop&#8221;</a>. The generally
+preferred mode is LIRC_MODE_MODE2, in which packets containing an int value
+describing an IR signal are read from the chardev.</p><p>See also <a class="ulink" href="http://www.lirc.org/html/technical.html" target="_top">http://www.lirc.org/html/technical.html</a> for more info.</p></div><div class="section" title="LIRC write fop"><div class="titlepage"><div><div><h3 class="title"><a id="lirc_write"></a>LIRC write fop</h3></div></div></div><p>The data written to the chardev is a pulse/space sequence of integer
+values. Pulses and spaces are only marked implicitly by their position. The
+data must start and end with a pulse, therefore, the data must always include
+an uneven number of samples. The write function must block until the data has
+been transmitted by the hardware. If more data is provided than the hardware
+can send, the driver returns EINVAL.</p></div><div class="section" title="LIRC ioctl fop"><div class="titlepage"><div><div><h3 class="title"><a id="lirc_ioctl"></a>LIRC ioctl fop</h3></div></div></div><div class="toc"><dl><dt><span class="section"><a href="lirc_dev.html#lirc_dev_errors">Return Value</a></span></dt></dl></div><p>The LIRC device's ioctl definition is bound by the ioctl function
+definition of struct file_operations, leaving us with an unsigned int
+for the ioctl command and an unsigned long for the arg. For the purposes
+of ioctl portability across 32-bit and 64-bit, these values are capped
+to their 32-bit sizes.</p><p>The following ioctls can be used to change specific hardware settings.
+In general each driver should have a default set of settings. The driver
+implementation is expected to re-apply the default settings when the device
+is closed by user-space, so that every application opening the device can rely
+on working with the default settings initially.</p><div class="variablelist"><dl><dt><span class="term">LIRC_GET_FEATURES</span></dt><dd><p>Obviously, get the underlying hardware device's features. If a driver
+      does not announce support of certain features, calling of the corresponding
+      ioctls is undefined.</p></dd><dt><span class="term">LIRC_GET_SEND_MODE</span></dt><dd><p>Get supported transmit mode. Only LIRC_MODE_PULSE is supported by lircd.</p></dd><dt><span class="term">LIRC_GET_REC_MODE</span></dt><dd><p>Get supported receive modes. Only LIRC_MODE_MODE2 and LIRC_MODE_LIRCCODE
+      are supported by lircd.</p></dd><dt><span class="term">LIRC_GET_SEND_CARRIER</span></dt><dd><p>Get carrier frequency (in Hz) currently used for transmit.</p></dd><dt><span class="term">LIRC_GET_REC_CARRIER</span></dt><dd><p>Get carrier frequency (in Hz) currently used for IR reception.</p></dd><dt><span class="term">LIRC_{G,S}ET_{SEND,REC}_DUTY_CYCLE</span></dt><dd><p>Get/set the duty cycle (from 0 to 100) of the carrier signal. Currently,
+      no special meaning is defined for 0 or 100, but this could be used to switch
+      off carrier generation in the future, so these values should be reserved.</p></dd><dt><span class="term">LIRC_GET_REC_RESOLUTION</span></dt><dd><p>Some receiver have maximum resolution which is defined by internal
+      sample rate or data format limitations. E.g. it's common that signals can
+      only be reported in 50 microsecond steps. This integer value is used by
+      lircd to automatically adjust the aeps tolerance value in the lircd
+      config file.</p></dd><dt><span class="term">LIRC_GET_M{IN,AX}_TIMEOUT</span></dt><dd><p>Some devices have internal timers that can be used to detect when
+      there's no IR activity for a long time. This can help lircd in detecting
+      that a IR signal is finished and can speed up the decoding process.
+      Returns an integer value with the minimum/maximum timeout that can be
+      set. Some devices have a fixed timeout, in that case both ioctls will
+      return the same value even though the timeout cannot be changed.</p></dd><dt><span class="term">LIRC_GET_M{IN,AX}_FILTER_{PULSE,SPACE}</span></dt><dd><p>Some devices are able to filter out spikes in the incoming signal
+      using given filter rules. These ioctls return the hardware capabilities
+      that describe the bounds of the possible filters. Filter settings depend
+      on the IR protocols that are expected. lircd derives the settings from
+      all protocols definitions found in its config file.</p></dd><dt><span class="term">LIRC_GET_LENGTH</span></dt><dd><p>Retrieves the code length in bits (only for LIRC_MODE_LIRCCODE).
+      Reads on the device must be done in blocks matching the bit count.
+      The bit could should be rounded up so that it matches full bytes.</p></dd><dt><span class="term">LIRC_SET_{SEND,REC}_MODE</span></dt><dd><p>Set send/receive mode. Largely obsolete for send, as only
+      LIRC_MODE_PULSE is supported.</p></dd><dt><span class="term">LIRC_SET_{SEND,REC}_CARRIER</span></dt><dd><p>Set send/receive carrier (in Hz).</p></dd><dt><span class="term">LIRC_SET_TRANSMITTER_MASK</span></dt><dd><p>This enables the given set of transmitters. The first transmitter
+      is encoded by the least significant bit, etc. When an invalid bit mask
+      is given, i.e. a bit is set, even though the device does not have so many
+      transitters, then this ioctl returns the number of available transitters
+      and does nothing otherwise.</p></dd><dt><span class="term">LIRC_SET_REC_TIMEOUT</span></dt><dd><p>Sets the integer value for IR inactivity timeout (cf.
+      LIRC_GET_MIN_TIMEOUT and LIRC_GET_MAX_TIMEOUT). A value of 0 (if
+      supported by the hardware) disables all hardware timeouts and data should
+      be reported as soon as possible. If the exact value cannot be set, then
+      the next possible value _greater_ than the given value should be set.</p></dd><dt><span class="term">LIRC_SET_REC_TIMEOUT_REPORTS</span></dt><dd><p>Enable (1) or disable (0) timeout reports in LIRC_MODE_MODE2. By
+      default, timeout reports should be turned off.</p></dd><dt><span class="term">LIRC_SET_REC_FILTER_{,PULSE,SPACE}</span></dt><dd><p>Pulses/spaces shorter than this are filtered out by hardware. If
+      filters cannot be set independently for pulse/space, the corresponding
+      ioctls must return an error and LIRC_SET_REC_FILTER shall be used instead.</p></dd><dt><span class="term">LIRC_SET_MEASURE_CARRIER_MODE</span></dt><dd><p>Enable (1)/disable (0) measure mode. If enabled, from the next key
+      press on, the driver will send LIRC_MODE2_FREQUENCY packets. By default
+      this should be turned off.</p></dd><dt><span class="term">LIRC_SET_REC_{DUTY_CYCLE,CARRIER}_RANGE</span></dt><dd><p>To set a range use LIRC_SET_REC_DUTY_CYCLE_RANGE/LIRC_SET_REC_CARRIER_RANGE
+      with the lower bound first and later LIRC_SET_REC_DUTY_CYCLE/LIRC_SET_REC_CARRIER
+      with the upper bound.</p></dd><dt><span class="term">LIRC_NOTIFY_DECODE</span></dt><dd><p>This ioctl is called by lircd whenever a successful decoding of an
+      incoming IR signal could be done. This can be used by supporting hardware
+      to give visual feedback to the user e.g. by flashing a LED.</p></dd><dt><span class="term">LIRC_SETUP_{START,END}</span></dt><dd><p>Setting of several driver parameters can be optimized by encapsulating
+      the according ioctl calls with LIRC_SETUP_START/LIRC_SETUP_END. When a
+      driver receives a LIRC_SETUP_START ioctl it can choose to not commit
+      further setting changes to the hardware until a LIRC_SETUP_END is received.
+      But this is open to the driver implementation and every driver must also
+      handle parameter changes which are not encapsulated by LIRC_SETUP_START
+      and LIRC_SETUP_END. Drivers can also choose to ignore these ioctls.</p></dd><dt><span class="term">LIRC_SET_WIDEBAND_RECEIVER</span></dt><dd><p>Some receivers are equipped with special wide band receiver which is intended
+      to be used to learn output of existing remote.
+      Calling that ioctl with (1) will enable it, and with (0) disable it.
+      This might be useful of receivers that have otherwise narrow band receiver
+      that prevents them to be used with some remotes.
+      Wide band receiver might also be more precise
+      On the other hand its disadvantage it usually reduced range of reception.
+      Note: wide band receiver might be implictly enabled if you enable
+      carrier reports. In that case it will be disabled as soon as you disable
+      carrier reports. Trying to disable wide band receiver while carrier
+      reports are active will do nothing.</p></dd></dl></div><div class="section" title="Return Value"><div class="titlepage"><div><div><h4 class="title"><a id="lirc_dev_errors"></a>Return Value</h4></div></div></div><p>On success <span class="returnvalue">0</span> is returned, on error <span class="returnvalue">-1</span> and the <code class="varname">errno</code> variable is set appropriately. The generic error codes are described at the <a class="link" href="gen_errors.html#gen-errors" title="Table&#160;19.1.&#160;Generic error codes">Generic Error Codes</a> chapter.</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="Remote_controllers_table_change.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="remote_controllers.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="media_common.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Changing default Remote Controller mappings&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Part&#160;IV.&#160;Media Controller API</td></tr></table></div></body></html>

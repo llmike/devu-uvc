@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Video Output Overlay Interface</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="devices.html" title="Chapter&#160;4.&#160;Interfaces" /><link rel="prev" href="output.html" title="Video Output Interface" /><link rel="next" href="codec.html" title="Codec Interface" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Video Output Overlay Interface</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="output.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;4.&#160;Interfaces</th><td width="20%" align="right">&#160;<a accesskey="n" href="codec.html">Next</a></td></tr></table><hr /></div><div class="section" title="Video Output Overlay Interface"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="osd"></a>Video Output Overlay Interface</h2></div><div><h3 class="subtitle">Also known as On-Screen Display (OSD)</h3></div></div></div><div class="toc"><dl><dt><span class="section"><a href="osd.html#idp26904008">Querying Capabilities</a></span></dt><dt><span class="section"><a href="osd.html#idp26908800">Framebuffer</a></span></dt><dt><span class="section"><a href="osd.html#idp26980152">Overlay Window and Scaling</a></span></dt><dt><span class="section"><a href="osd.html#idp26990632">Enabling Overlay</a></span></dt></dl></div><p>Some video output devices can overlay a framebuffer image onto
+the outgoing video signal. Applications can set up such an overlay
+using this interface, which borrows structures and ioctls of the <a class="link" href="overlay.html" title="Video Overlay Interface">Video Overlay</a> interface.</p><p>The OSD function is accessible through the same character
+special file as the <a class="link" href="devices.html#capture" title="Video Capture Interface">Video Output</a> function.
+Note the default function of such a <code class="filename">/dev/video</code> device
+is video capturing or output. The OSD function is only available after
+calling the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl.</p><div class="section" title="Querying Capabilities"><div class="titlepage"><div><div><h3 class="title"><a id="idp26904008"></a>Querying Capabilities</h3></div></div></div><p>Devices supporting the <em class="wordasword">Video Output
+Overlay</em> interface set the
+<code class="constant">V4L2_CAP_VIDEO_OUTPUT_OVERLAY</code> flag in the
+<em class="structfield"><code>capabilities</code></em> field of struct&#160;<a class="link" href="vidioc-querycap.html#v4l2-capability" title="Table&#160;A.88.&#160;struct v4l2_capability">v4l2_capability</a>
+returned by the <a class="link" href="vidioc-querycap.html" title="ioctl VIDIOC_QUERYCAP"><code class="constant">VIDIOC_QUERYCAP</code></a> ioctl.</p></div><div class="section" title="Framebuffer"><div class="titlepage"><div><div><h3 class="title"><a id="idp26908800"></a>Framebuffer</h3></div></div></div><p>Contrary to the <em class="wordasword">Video Overlay</em>
+interface the framebuffer is normally implemented on the TV card and
+not the graphics card. On Linux it is accessible as a framebuffer
+device (<code class="filename">/dev/fbN</code>). Given a V4L2 device,
+applications can find the corresponding framebuffer device by calling
+the <a class="link" href="vidioc-g-fbuf.html" title="ioctl VIDIOC_G_FBUF, VIDIOC_S_FBUF"><code class="constant">VIDIOC_G_FBUF</code></a> ioctl. It returns, amongst other information, the
+physical address of the framebuffer in the
+<em class="structfield"><code>base</code></em> field of struct&#160;<a class="link" href="vidioc-g-fbuf.html#v4l2-framebuffer" title="Table&#160;A.64.&#160;struct v4l2_framebuffer">v4l2_framebuffer</a>. The
+framebuffer device ioctl <code class="constant">FBIOGET_FSCREENINFO</code>
+returns the same address in the <em class="structfield"><code>smem_start</code></em>
+field of struct <span class="structname">fb_fix_screeninfo</span>. The
+<code class="constant">FBIOGET_FSCREENINFO</code> ioctl and struct
+<span class="structname">fb_fix_screeninfo</span> are defined in the
+<code class="filename">linux/fb.h</code> header file.</p><p>The width and height of the framebuffer depends on the
+current video standard. A V4L2 driver may reject attempts to change
+the video standard (or any other ioctl which would imply a framebuffer
+size change) with an <span class="errorcode">EBUSY</span> error code until all applications closed the
+framebuffer device.</p><div class="example"><a id="idp26977168"></a><p class="title"><b>Example&#160;4.1.&#160;Finding a framebuffer device for OSD</b></p><div class="example-contents"><pre class="programlisting">
+#include &lt;linux/fb.h&gt;
+
+struct&#160;<a class="link" href="vidioc-g-fbuf.html#v4l2-framebuffer" title="Table&#160;A.64.&#160;struct v4l2_framebuffer">v4l2_framebuffer</a> fbuf;
+unsigned int i;
+int fb_fd;
+
+if (-1 == ioctl (fd, VIDIOC_G_FBUF, &amp;fbuf)) {
+	perror ("VIDIOC_G_FBUF");
+	exit (EXIT_FAILURE);
+}
+
+for (i = 0; i &gt; 30; ++i) {
+	char dev_name[16];
+	struct fb_fix_screeninfo si;
+
+	snprintf (dev_name, sizeof (dev_name), "/dev/fb%u", i);
+
+	fb_fd = open (dev_name, O_RDWR);
+	if (-1 == fb_fd) {
+		switch (errno) {
+		case ENOENT: /* no such file */
+		case ENXIO:  /* no driver */
+			continue;
+
+		default:
+			perror ("open");
+			exit (EXIT_FAILURE);
+		}
+	}
+
+	if (0 == ioctl (fb_fd, FBIOGET_FSCREENINFO, &amp;si)) {
+		if (si.smem_start == (unsigned long) fbuf.base)
+			break;
+	} else {
+		/* Apparently not a framebuffer device. */
+	}
+
+	close (fb_fd);
+	fb_fd = -1;
+}
+
+/* fb_fd is the file descriptor of the framebuffer device
+   for the video output overlay, or -1 if no device was found. */
+</pre></div></div><br class="example-break" /></div><div class="section" title="Overlay Window and Scaling"><div class="titlepage"><div><div><h3 class="title"><a id="idp26980152"></a>Overlay Window and Scaling</h3></div></div></div><p>The overlay is controlled by source and target rectangles.
+The source rectangle selects a subsection of the framebuffer image to
+be overlaid, the target rectangle an area in the outgoing video signal
+where the image will appear. Drivers may or may not support scaling,
+and arbitrary sizes and positions of these rectangles. Further drivers
+may support any (or none) of the clipping/blending methods defined for
+the <a class="link" href="overlay.html" title="Video Overlay Interface">Video Overlay</a> interface.</p><p>A struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a> defines the size of the source rectangle,
+its position in the framebuffer and the clipping/blending method to be
+used for the overlay. To get the current parameters applications set
+the <em class="structfield"><code>type</code></em> field of a struct&#160;<a class="link" href="vidioc-g-fmt.html#v4l2-format" title="Table&#160;A.67.&#160;struct v4l2_format">v4l2_format</a> to
+<code class="constant">V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY</code> and call the
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_G_FMT</code></a> ioctl. The driver fills the
+<span class="structname">v4l2_window</span> substructure named
+<em class="structfield"><code>win</code></em>. It is not possible to retrieve a
+previously programmed clipping list or bitmap.</p><p>To program the source rectangle applications set the
+<em class="structfield"><code>type</code></em> field of a struct&#160;<a class="link" href="vidioc-g-fmt.html#v4l2-format" title="Table&#160;A.67.&#160;struct v4l2_format">v4l2_format</a> to
+<code class="constant">V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY</code>, initialize
+the <em class="structfield"><code>win</code></em> substructure and call the
+<a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_S_FMT</code></a> ioctl. The driver adjusts the parameters against
+hardware limits and returns the actual parameters as
+<code class="constant">VIDIOC_G_FMT</code> does. Like
+<code class="constant">VIDIOC_S_FMT</code>, the <a class="link" href="vidioc-g-fmt.html" title="ioctl VIDIOC_G_FMT, VIDIOC_S_FMT, VIDIOC_TRY_FMT"><code class="constant">VIDIOC_TRY_FMT</code></a> ioctl can be
+used to learn about driver capabilities without actually changing
+driver state. Unlike <code class="constant">VIDIOC_S_FMT</code> this also works
+after the overlay has been enabled.</p><p>A struct&#160;<a class="link" href="vidioc-g-crop.html#v4l2-crop" title="Table&#160;A.51.&#160;struct v4l2_crop">v4l2_crop</a> defines the size and position of the target
+rectangle. The scaling factor of the overlay is implied by the width
+and height given in struct&#160;<a class="link" href="overlay.html#v4l2-window" title="Table&#160;4.1.&#160;struct v4l2_window">v4l2_window</a> and struct&#160;<a class="link" href="vidioc-g-crop.html#v4l2-crop" title="Table&#160;A.51.&#160;struct v4l2_crop">v4l2_crop</a>. The cropping API
+applies to <em class="wordasword">Video Output</em> and <em class="wordasword">Video
+Output Overlay</em> devices in the same way as to
+<em class="wordasword">Video Capture</em> and <em class="wordasword">Video
+Overlay</em> devices, merely reversing the direction of the
+data flow. For more information see <a class="xref" href="crop.html" title="Image Cropping, Insertion and Scaling">the section called &#8220;Image Cropping, Insertion and Scaling&#8221;</a>.</p></div><div class="section" title="Enabling Overlay"><div class="titlepage"><div><div><h3 class="title"><a id="idp26990632"></a>Enabling Overlay</h3></div></div></div><p>There is no V4L2 ioctl to enable or disable the overlay,
+however the framebuffer interface of the driver may support the
+<code class="constant">FBIOBLANK</code> ioctl.</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="output.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="devices.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="codec.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Video Output Interface&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Codec Interface</td></tr></table></div></body></html>

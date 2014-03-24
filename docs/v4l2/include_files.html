@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>API include files</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_introdution.html" title="Chapter&#160;8.&#160;Introduction" /><link rel="prev" href="dvb_devices.html" title="Linux DVB Devices" /><link rel="next" href="dvb_frontend.html" title="Chapter&#160;9.&#160;DVB Frontend API" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">API include files</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="dvb_devices.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;8.&#160;Introduction</th><td width="20%" align="right">&#160;<a accesskey="n" href="dvb_frontend.html">Next</a></td></tr></table><hr /></div><div class="section" title="API include files"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="include_files"></a>API include files</h2></div></div></div><p>For each of the DVB devices a corresponding include file exists.
+The DVB API include files should be included in application sources with
+a partial path like:</p><pre class="programlisting">
+	#include &lt;linux/dvb/audio.h&gt;
+</pre><pre class="programlisting">
+	#include &lt;linux/dvb/ca.h&gt;
+</pre><pre class="programlisting">
+	#include &lt;linux/dvb/dmx.h&gt;
+</pre><pre class="programlisting">
+	#include &lt;linux/dvb/frontend.h&gt;
+</pre><pre class="programlisting">
+	#include &lt;linux/dvb/net.h&gt;
+</pre><pre class="programlisting">
+	#include &lt;linux/dvb/osd.h&gt;
+</pre><pre class="programlisting">
+	#include &lt;linux/dvb/video.h&gt;
+</pre><p>To enable applications to support different API version, an
+additional include file <span class="tt">linux/dvb/version.h</span> exists, which defines the
+constant <span class="tt">DVB_API_VERSION</span>. This document
+describes <span class="tt">DVB_API_VERSION 5.8</span>.
+</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="dvb_devices.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_introdution.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="dvb_frontend.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Linux DVB Devices&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Chapter&#160;9.&#160;DVB Frontend API</td></tr></table></div></body></html>

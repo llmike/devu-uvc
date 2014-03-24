@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ANSI_X3.4-1968" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ANSI_X3.4-1968" /><title>Overview</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="LINUX MEDIA INFRASTRUCTURE API" /><link rel="up" href="dvb_introdution.html" title="Chapter&#160;8.&#160;Introduction" /><link rel="prev" href="history.html" title="History" /><link rel="next" href="dvb_devices.html" title="Linux DVB Devices" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Overview</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="history.html">Prev</a>&#160;</td><th width="60%" align="center">Chapter&#160;8.&#160;Introduction</th><td width="20%" align="right">&#160;<a accesskey="n" href="dvb_devices.html">Next</a></td></tr></table><hr /></div><div class="section" title="Overview"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="overview"></a>Overview</h2></div></div></div><div class="figure"><a id="stb_components"></a><p class="title"><b>Figure&#160;8.1.&#160;Components of a DVB card/STB</b></p><div class="figure-contents"><div class="mediaobject"><img src="dvbstb.png" alt="Components of a DVB card/STB" /></div></div></div><br class="figure-break" /><p>A DVB PCI card or DVB set-top-box (STB) usually consists of the
+following main hardware components: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Frontend consisting of tuner and DVB demodulator</p><p>Here the raw signal reaches the DVB hardware from a satellite dish
+or antenna or directly from cable. The frontend down-converts and
+demodulates this signal into an MPEG transport stream (TS). In case of a
+satellite frontend, this includes a facility for satellite equipment
+control (SEC), which allows control of LNB polarization, multi feed
+switches or dish rotors.</p></li><li class="listitem"><p>Conditional Access (CA) hardware like CI adapters and smartcard slots
+</p><p>The complete TS is passed through the CA hardware. Programs to
+which the user has access (controlled by the smart card) are decoded in
+real time and re-inserted into the TS.</p></li><li class="listitem"><p>Demultiplexer which filters the incoming DVB stream</p><p>The demultiplexer splits the TS into its components like audio and
+video streams. Besides usually several of such audio and video streams
+it also contains data streams with information about the programs
+offered in this or other streams of the same provider.</p></li><li class="listitem"><p>MPEG2 audio and video decoder</p><p>The main targets of the demultiplexer are the MPEG2 audio and
+video decoders. After decoding they pass on the uncompressed audio and
+video to the computer screen or (through a PAL/NTSC encoder) to a TV
+set.</p></li></ul></div><p><a class="xref" href="overview.html#stb_components" title="Figure&#160;8.1.&#160;Components of a DVB card/STB">Figure&#160;8.1, &#8220;Components of a DVB card/STB&#8221;</a> shows a crude schematic of the control and data flow
+between those components.</p><p>On a DVB PCI card not all of these have to be present since some
+functionality can be provided by the main CPU of the PC (e.g. MPEG
+picture and sound decoding) or is not needed (e.g. for data-only uses
+like &#8220;internet over satellite&#8221;). Also not every card or STB
+provides conditional access hardware.</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="history.html">Prev</a>&#160;</td><td width="20%" align="center"><a accesskey="u" href="dvb_introdution.html">Up</a></td><td width="40%" align="right">&#160;<a accesskey="n" href="dvb_devices.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">History&#160;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&#160;Linux DVB Devices</td></tr></table></div></body></html>
